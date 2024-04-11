@@ -1,10 +1,6 @@
-import NextAuth from "next-auth/next";
-import GoogleProvider from "next-auth/providers/google";
-import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { loginUser } from "@/lib/mongodb/actions/user.actions";
 
-const handler = NextAuth({
+const authOptions = {
   providers: [
     // GoogleProvider({
     //   clientId: process.env.GOOGLE_CLIENT_ID,
@@ -40,10 +36,18 @@ const handler = NextAuth({
       if (user) {
         token.user = user;
       }
+      console.log({
+        token,
+        user,
+      });
       return token;
     },
     async session({ session, token }) {
       session.user = token.user;
+      console.log({
+        session,
+        token,
+      });
       return session;
     },
   },
@@ -53,6 +57,6 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
-});
+};
 
-export {handler as GET, handler as POST}
+export default authOptions

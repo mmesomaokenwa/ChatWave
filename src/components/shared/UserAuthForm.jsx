@@ -15,8 +15,19 @@ import {
 
 import { cn } from "@/lib/utils";
 import CustomInput from "./CustomInput";
+import { useSocket } from "@/providers/SocketProvider";
+import { createUser } from "@/lib/mongodb/actions/user.actions";
+import { useToast } from "../ui/use-toast";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function UserAuthForm({ className, mode }) {
+  const { connect: socketConnect } = useSocket();
+  const router = useRouter();
+  const { toast } = useToast();
+  const { data: session } = useSession();
+  
   const form = useForm({
     defaultValues: {
       name: "",
@@ -28,22 +39,109 @@ export default function UserAuthForm({ className, mode }) {
     mode: 'all'
   });
 
-  const registers = [
-    form.register("name", { required: true }),
-    form.register("username"),
-    form.register("email", { required: true, pattern: /^\S+@\S+$/i }),
-    form.register("password", { required: true }),
-    form.register("confirmPassword", {
-      valueAsNumber: true, // the value will be sent to the server as a number
-      validate: {
-        isEqualToPassword: (value) =>
-          value === form.watch("password") || "Passwords do not match",
-      },
-    }),
-  ]
+  let registers;
+
+  if (mode === "signup") {
+    registers = [
+      [
+        form.register("name", {
+          required: "Name is required",
+        }),
+        form.register("username", {
+          required: "Username is required",
+        }),
+        form.register("email", {
+          required: "Email is required",
+          pattern: /^\S+@\S+$/i || "Please enter a valid email",
+        }),
+        form.register("password", { required: "Password is required" }),
+        form.register("confirmPassword", {
+          required: "Confirm Password is required",
+          valueAsNumber: true, // the value will be sent to the server as a number
+          validate: {
+            isEqualToPassword: (value) =>
+              value === form.watch("password") || "Passwords do not match",
+          },
+        }),
+      ],
+    ];
+  } else if (mode === "login") {
+    registers = [
+      [
+        form.register("email", {
+          required: "Email is required",
+          pattern: /^\S+@\S+$/i || "Please enter a valid email",
+        }),
+        form.register("password", { required: "Password is required" }),
+      ],
+    ];
+  }
 
   async function onSubmit(data) {
-    console.log(data);
+    if (mode === "signup") { 
+      try {
+        const createdUser = await createUser(data);
+
+        if (createdUser) {
+          const signedInUser = await signIn("credentials", {
+            email: createdUser.email,
+            password: data.password,
+            redirect: false,
+          });
+
+          console.log(signedInUser)
+
+          if (signedInUser.error) {
+            throw new Error(signedInUser.error);
+          } else {
+            socketConnect(createdUser.username);
+            toast({
+              title: "Success",
+              description: "Account created successfully",
+              variant: "success",
+              status: "success",
+              duration: 3000,
+            })
+            router.push("/");
+          }
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+          status: "error",
+          duration: 3000
+        })
+      }
+    }
+
+    if (mode === "login") {
+      console.log(data)
+      try {
+        const signedInUser = await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        });
+
+        if (signedInUser.error) {
+          throw new Error(signedInUser.error);
+        } else {
+          console.log(session)
+          socketConnect(session?.user?.username);
+          router.push("/");
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+          status: "error",
+          duration: 3000,
+        })
+      }
+    }
   }
 
   return (
@@ -61,6 +159,7 @@ export default function UserAuthForm({ className, mode }) {
                     type={"text"}
                     placeholder={"Name"}
                     label={<IoMdPerson className="w-6 h-6" />}
+                    error={form.formState.errors.name}
                   />
                 )}
               />
@@ -73,6 +172,7 @@ export default function UserAuthForm({ className, mode }) {
                     type={"text"}
                     placeholder={"Username"}
                     label={<IoMdPerson className="w-6 h-6" />}
+                    error={form.formState.errors.username}
                   />
                 )}
               />
@@ -87,6 +187,7 @@ export default function UserAuthForm({ className, mode }) {
                 type={"email"}
                 placeholder={"Email"}
                 label={<MdEmail className="w-6 h-6" />}
+                error={form.formState.errors.email}
               />
             )}
           />
@@ -99,6 +200,7 @@ export default function UserAuthForm({ className, mode }) {
                 type={"password"}
                 placeholder={"Password"}
                 label={<FaKey className="w-5 h-5" />}
+                error={form.formState.errors.password}
               />
             )}
           />
@@ -112,6 +214,7 @@ export default function UserAuthForm({ className, mode }) {
                   type={"password"}
                   placeholder={"Confirm Password"}
                   label={<FaKey className="w-5 h-5" />}
+                  error={form.formState.errors.confirmPassword}
                 />
               )}
             />
@@ -121,7 +224,9 @@ export default function UserAuthForm({ className, mode }) {
             size="lg"
             disabled={form.formState.isSubmitting}
           >
-            Sign In
+            {mode === "signup"
+              ? "Sign Up"
+              : mode === "login" && "Sign In"}
           </Button>
         </form>
       </Form>

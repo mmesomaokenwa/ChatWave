@@ -1,6 +1,9 @@
 import { Poppins } from "next/font/google";
 import ThemeProvider from "@/providers/ThemeProvider";
 import "./globals.css";
+import SocketProvider from "@/providers/SocketProvider";
+import { Toaster } from "@/components/ui/toaster";
+import AuthProvider from "@/providers/AuthProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -19,11 +22,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-    <body className={poppins.className}>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
-    </body>
+      <body className={poppins.className}>
+        <AuthProvider>
+          <SocketProvider>
+            <ThemeProvider>
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </SocketProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }
