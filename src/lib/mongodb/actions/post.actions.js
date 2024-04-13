@@ -19,6 +19,9 @@ export const createPost = async ({ post, creatorId, path }) => {
       creator: creatorId
     })
 
+    creator.posts.push(newPost?._id);
+    await creator.save();
+
     if (typeof path === "string") revalidatePath(path)
     else path.forEach((path) => revalidatePath(path))
 
@@ -185,13 +188,16 @@ export const savePost = async ({ postId, userId, path }) => {
   try {
     await connectToDatabase()
 
-    const savedPost = await Post.findOneById(postId)
-    const user = await User.findOneById(userId)
+    const savedPost = await Post.findOne({ _id: postId })
+    const user = await User.findOne({ _id: userId })
 
     if (!savedPost || !user) throw new Error("Post or user not found");
 
+    console.log(user.savedPosts.includes(postId));
+    console.log(savedPost.saves.includes(userId));
+
     if (user.savedPosts.includes(postId)) {
-      user.savedPosts = user.savedPosts.filter((id) => id !== postId)
+      user.savedPosts = user.savedPosts.filter((id) => id.toString() !== postId.toString())
     } else {
       user.savedPosts.push(postId)
     }
@@ -199,7 +205,7 @@ export const savePost = async ({ postId, userId, path }) => {
     if (!savedPost.saves.includes(userId)) {
       savedPost.saves.push(userId)
     } else {
-      savedPost.saves = savedPost.saves.filter((id) => id !== userId)
+      savedPost.saves = savedPost.saves.filter((id) => id.toString() !== userId.toString())
     }
     await Promise.all([user.save(), savedPost.save()])
 
@@ -230,7 +236,7 @@ export const commentPost = async ({ postId, userId, comment, path }) => {
     if (typeof path === "string") revalidatePath(path)
     else path.forEach((path) => revalidatePath(path))
 
-    return JSON.parse(JSON.stringify(commentedPost))
+    return JSON.parse(JSON.stringify(commentedPost.comments[commentedPost.comments.length - 1]))
   } catch (error) {
     handleError(error)
   }

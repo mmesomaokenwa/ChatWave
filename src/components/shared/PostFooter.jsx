@@ -11,7 +11,7 @@ import PostControls from './PostControls';
 const PostFooter = ({ post }) => {
   const [show, setShow] = useState(false);
   return (
-    <CardFooter className="flex-col gap-2">
+    <CardFooter className="flex-col gap-2 p-4 pt-0">
       {post.caption && (
         <p
           className={`w-full text-sm lg:text-[16px] font-medium ${

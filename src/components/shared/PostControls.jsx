@@ -13,6 +13,8 @@ const PostControls = ({ post }) => {
   const { data: session } = useSession()
   const user = session?.user
 
+  console.log(post)
+
   const { ref, inView } = useInView({
     threshold: 1,
     triggerOnce: true
@@ -22,77 +24,65 @@ const PostControls = ({ post }) => {
   const [comments, setComments] = useState(post.comments)
   const [saves, setSaves] = useState(post.saves)
   const [shares, setShares] = useState(post.shares)
-  const [liked, setLiked] = useState(post.likes.find((like) => like?._id?.toString() === user?.id) ? true : false)
-  const [saved, setSaved] = useState(post.saves.find((save) => save?._id?.toString() === user?.id) ? true : false)
+  const [liked, setLiked] = useState(post.likes.find((like) => like?._id?.toString() === user?.id?.toString()) ? true : false)
+  const [saved, setSaved] = useState(post.saves.find((save) => save?._id?.toString() === user?.id?.toString()) ? true : false)
 
-  const handleLike = async () => {
+  const handleLike = () => {
     try {
+      let isLiked;
+
       if (liked) {
         setLiked(false)
-        setLikes(prev => prev.filter((like) => like !== user?.id))
-        const { likes } = await likePost({
-          postId: post._id,
-          userId: user?.id,
-          liked: false,
-          path: [
-            `/posts/${post._id}`,
-            '/'
-          ]
-        })
-        setLikes(likes)
+        setLikes(prev => prev.filter((like) => like?.toString() !== user?.id?.toString()))
+        isLiked = false
       } else {
         setLiked(true)
         setLikes(prev => [...prev, user?.id])
-        const { likes } = await likePost({
-          postId: post._id,
-          userId: user?.id,
-          liked: true,
-          path: [
-            `/posts/${post._id}`,
-            '/'
-          ]
-        })
-        setLikes(likes)
+        isLiked = true
       }
+
+      likePost({
+        postId: post._id,
+        userId: user?.id,
+        liked: isLiked,
+        path: [
+          `/posts/${post._id}`,
+          '/'
+        ]
+      })
     } catch (error) {
       console.log(error)
     }
   }
 
-  const handleSave = async () => {
+  const handleSave = () => {
     try {
       if (saved) {
         setSaved(false)
-        setSaves(prev => prev.filter((save) => save !== user?.id))
-        const { saves } = await savePost({
-          postId: post._id,
-          userId: user?.id,
-          path: [
-            '/'
-            `/posts/${post._id}`,
-            '/profile',
-          ]
-        })
-        setSaves(saves)
+        // setSaves(prev => prev.filter((save) => save !== user?.id))
       } else {
         setSaved(true)
-        setSaves(prev => [...prev, user?.id])
-        const { saves } = await savePost({
-          postId: post._id,
-          userId: user?.id,
-          path: `/posts/${post._id}`
-        })
-        setSaves(saves)
+        // setSaves(prev => [...prev, user?.id])
       }
+
+      savePost({
+        postId: post._id,
+        userId: user?.id,
+        path: [
+          "/",
+          `/posts/${post._id}`,
+          "/profile"
+        ],
+      });
     } catch (error) {
       console.log(error)
     }
   }
   return (
     <div ref={ref} className="w-full flex flex-col gap-4">
-      <div className="w-full flex items-center">
+      <div className="w-full flex gap-4">
         <div className="flex items-center">
-          <Button variant="ghost" onClick={handleLike}>
+          <Button variant="ghost" size="sm" onClick={handleLike}>
             <Image
               src={liked ? "/assets/liked.svg" : "/assets/like.svg"}
               alt="like"
@@ -101,11 +91,11 @@ const PostControls = ({ post }) => {
             />
           </Button>
           {likes.length > 0 && (
-            <p className="text-sm">{formatNumber(likes.length)}</p>
+            <p className="text-sm font-medium">{formatNumber(likes.length)}</p>
           )}
         </div>
         <div className="flex items-center">
-          <Button variant="ghost">
+          <Button variant="ghost" size="sm">
             <Image
               src="/assets/comment.svg"
               alt="comment"
@@ -114,18 +104,18 @@ const PostControls = ({ post }) => {
             />
           </Button>
           {comments.length > 0 && (
-            <p className="text-sm">{formatNumber(comments.length)}</p>
+            <p className="text-sm font-medium">{formatNumber(comments.length)}</p>
           )}
         </div>
         <div className="flex items-center">
-          <Button variant="ghost">
+          <Button variant="ghost" size="sm">
             <Image src="/assets/share.svg" alt="share" width={23} height={23} />
           </Button>
           {shares.length > 0 && (
-            <p className="text-sm">{formatNumber(shares.length)}</p>
+            <p className="text-sm font-medium">{formatNumber(shares.length)}</p>
           )}
         </div>
-        <Button variant="ghost" onClick={() => setSaves(saves + 1)} className="ml-auto">
+        <Button variant="ghost" size="sm" onClick={handleSave} className="ml-auto">
           <Image
             src={saved ? "/assets/saved.svg" : "/assets/save.svg"}
             alt="like"
@@ -139,7 +129,7 @@ const PostControls = ({ post }) => {
         profileImage={user?.profileImage}
         userId={user?.id}
         postId={post._id}
-        className={`my-4 hidden opacity-0 h-0 transition-all ${
+        className={`my-4 mt-2 hidden opacity-0 h-0 transition-all ${
           inView && "!flex opacity-100 h-full"
         }`}
       />

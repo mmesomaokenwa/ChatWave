@@ -21,7 +21,7 @@ const PostCard = async ({ post }) => {
 
   return (
     <Card>
-      <CardHeader className="flex-row gap-4">
+      <CardHeader className="flex-row gap-4 p-4">
         <Link href={`/profile/${post.creator._id}`}>
           <Image
             className="size-12 rounded-full"
@@ -52,7 +52,7 @@ const PostCard = async ({ post }) => {
           </Link>
         )}
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4">
         <CardCarousel postMedia={post.media} />
       </CardContent>
       <PostFooter post={post} />
