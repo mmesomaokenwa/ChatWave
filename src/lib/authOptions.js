@@ -36,18 +36,10 @@ const authOptions = {
       if (user) {
         token.user = user;
       }
-      console.log({
-        token,
-        user,
-      });
       return token;
     },
     async session({ session, token }) {
       session.user = token.user;
-      console.log({
-        session,
-        token,
-      });
       return session;
     },
   },

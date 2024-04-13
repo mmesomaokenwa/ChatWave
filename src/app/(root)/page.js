@@ -2,9 +2,7 @@ import PostCard from "@/components/shared/PostCard";
 import { getAllPosts } from "@/lib/mongodb/actions/post.actions";
 
 export default async function Home() {
-  const recentPosts = await getAllPosts({
-    limit: 10,
-  })
+  const recentPosts = await getAllPosts()
   return (
     <div className="flex flex-1">
       <div
@@ -15,15 +13,17 @@ export default async function Home() {
             Home Feed
           </h2>
           <section aria-labelledby="recent-posts" className="w-full">
-            {recentPosts && (
+            {recentPosts ? (
               <ul className="w-full flex flex-col flex-1 gap-4">
-                {recentPosts?.posts.map((post) => (
+                {recentPosts?.map((post) => (
                   <PostCard
                     key={post._id}
                     post={post}
                   />
                 ))}
               </ul>
+            ) : (
+              <p className="w-full text-center">No posts</p>
             )}
           </section>
         </div>

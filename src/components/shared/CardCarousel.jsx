@@ -42,8 +42,8 @@ const CardCarousel = ({ postMedia, className}) => {
                       src={media.url || URL.createObjectURL(media)}
                       alt={media.url}
                       className="w-full h-full object-cover"
-                      width={1000}
-                      height={1000}
+                      width={500}
+                      height={500}
                     />
                   ) : (
                     <video

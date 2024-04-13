@@ -3,12 +3,11 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { getServerSession } from 'next-auth';
-import { cn } from '@/lib/utils';
+import { cn, timePast } from '@/lib/utils';
 import { buttonVariants } from '../ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,34 +17,8 @@ import PostFooter from './PostFooter';
 
 const PostCard = async ({ post }) => {
   const session = await getServerSession(authOptions);
-  const user = session.user
+  const user = session?.user
 
-  const timePast = (date) => {
-    const now = new Date();
-    const past = new Date(date);
-    const diff = now - past;
-    const diffDays = Math.floor(diff / (1000 * 3600 * 24));
-    const diffHours = Math.floor(diff / (1000 * 3600));
-    const diffMinutes = Math.floor(diff / (1000 * 60));
-    const diffSeconds = Math.floor(diff / 1000);
-
-    if (diffDays > 0) {
-      if (diffDays === 1) return `${diffDays} day ago`;
-      return `${diffDays} days ago`;
-    }
-    if (diffHours > 0) {
-      if (diffHours === 1) return `${diffHours} hour ago`;
-      return `${diffHours} hours ago`;
-    }
-    if (diffMinutes > 0) {
-      if (diffMinutes === 1) return `${diffMinutes} minute ago`;
-      return `${diffMinutes} minutes ago`;
-    }
-    if (diffSeconds > 0) {
-      if (diffSeconds === 1) return `${diffSeconds} second ago`;
-      return `${diffSeconds} seconds ago`;
-    }
-  };
   return (
     <Card>
       <CardHeader className="flex-row gap-4">
