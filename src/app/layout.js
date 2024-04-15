@@ -4,6 +4,9 @@ import "./globals.css";
 import SocketProvider from "@/providers/SocketProvider";
 import { Toaster } from "@/components/ui/toaster";
 import AuthProvider from "@/providers/AuthProvider";
+import { getServerSession } from "next-auth";
+import authOptions from "@/lib/authOptions";
+import { redirect } from "next/navigation";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -19,7 +22,13 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const session = await getServerSession(authOptions);
+  const user = session?.user
+
+  if (!user?.id) {
+    redirect("/sign-in")
+  }
   return (
     <html lang="en">
       <body className={poppins.className}>
