@@ -68,7 +68,9 @@ export const getPostById = async (id) => {
   try {
     await connectToDatabase()
 
-    const post = await Post.findById(id).populate('creator')
+    const post = await Post.findById(id)
+      .populate('creator', ['name', 'username', 'profileImage', '_id'])
+      .populate('likes', ['name', 'username', 'profileImage', '_id']);
 
     if (!post) throw new Error('Post not found')
 

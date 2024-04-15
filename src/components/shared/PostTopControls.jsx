@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React from 'react'
 import { Button, buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
+import DeleteDialog from './DeleteDialog';
 
 const PostTopControls = ({ post, addDeleteBtn }) => {
   return (
@@ -16,11 +17,9 @@ const PostTopControls = ({ post, addDeleteBtn }) => {
         <Image src="/assets/edit.svg" alt="edit" width={25} height={25} />
       </Link>
       {addDeleteBtn && (
-        <Button variant="ghost">
-          <Image src="/assets/delete.svg" alt="delete" width={25} height={25} />
-        </Button>
+        <DeleteDialog postId={post?._id} />
       )}
-    </div>
+    </div> 
   );
 }
 
