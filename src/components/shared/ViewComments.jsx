@@ -14,7 +14,7 @@ import CommentCard from './CommentCard';
 const ViewComments = ({ comments }) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>View Comments</AlertDialogTrigger>
+      <AlertDialogTrigger className='text-sm'>View Comments</AlertDialogTrigger>
       <AlertDialogContent className="h-full md:h-[50vh] flex flex-col">
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -33,7 +33,7 @@ const ViewComments = ({ comments }) => {
           )}
         </AlertDialogHeader>
         {comments?.length > 0 && (
-          <div className="flex flex-col gap-3 overflow-y-scroll h-full grow">
+          <div className="flex flex-col gap-0 overflow-y-scroll h-full grow">
             {comments?.map((comment, index) => (
               <CommentCard key={index} comment={comment} />
             ))}

@@ -70,7 +70,8 @@ export const getPostById = async (id) => {
 
     const post = await Post.findById(id)
       .populate('creator', ['name', 'username', 'profileImage', '_id'])
-      .populate('likes', ['name', 'username', 'profileImage', '_id']);
+      .populate('likes', ['name', 'username', 'profileImage', '_id'])
+      .populate('comments.user', ['name', 'username', 'profileImage', '_id']);
 
     if (!post) throw new Error('Post not found')
 
