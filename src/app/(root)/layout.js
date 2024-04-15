@@ -3,6 +3,7 @@ import SideBar from "@/components/shared/SideBar";
 import TopBar from "@/components/shared/TopBar";
 import authOptions from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 const RootLayout = async ({ children }) => {
   const session = await getServerSession(authOptions);
