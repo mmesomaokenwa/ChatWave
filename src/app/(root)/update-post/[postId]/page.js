@@ -16,7 +16,7 @@ const UpdatePost = async ({ params: { postId } }) => {
             width={36}
             className="invert dark:invert-0"
           />
-          <h2 className="text-3xl md:text-2xl font-bold">Create Post</h2>
+          <h2 className="text-3xl md:text-2xl font-bold">Update Post</h2>
         </div>
         <PostForm action={"update"} post={post} />
       </div>

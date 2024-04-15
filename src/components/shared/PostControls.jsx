@@ -91,7 +91,7 @@ const PostControls = ({ post }) => {
             />
           </Button>
           {likes.length > 0 && (
-            <p className="text-sm font-medium">{formatNumber(likes.length)}</p>
+            <p className="text-sm font-medium -ml-2">{formatNumber(likes.length)}</p>
           )}
         </div>
         <div className="flex items-center">
@@ -104,7 +104,7 @@ const PostControls = ({ post }) => {
             />
           </Button>
           {comments.length > 0 && (
-            <p className="text-sm font-medium">{formatNumber(comments.length)}</p>
+            <p className="text-sm font-medium -ml-2">{formatNumber(comments.length)}</p>
           )}
         </div>
         <div className="flex items-center">
@@ -112,7 +112,7 @@ const PostControls = ({ post }) => {
             <Image src="/assets/share.svg" alt="share" width={23} height={23} />
           </Button>
           {shares.length > 0 && (
-            <p className="text-sm font-medium">{formatNumber(shares.length)}</p>
+            <p className="text-sm font-medium -ml-2">{formatNumber(shares.length)}</p>
           )}
         </div>
         <Button variant="ghost" size="sm" onClick={handleSave} className="ml-auto">

@@ -193,9 +193,6 @@ export const savePost = async ({ postId, userId, path }) => {
 
     if (!savedPost || !user) throw new Error("Post or user not found");
 
-    console.log(user.savedPosts.includes(postId));
-    console.log(savedPost.saves.includes(userId));
-
     if (user.savedPosts.includes(postId)) {
       user.savedPosts = user.savedPosts.filter((id) => id.toString() !== postId.toString())
     } else {

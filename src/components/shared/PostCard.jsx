@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -13,7 +14,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import authOptions from '@/lib/authOptions';
 import CardCarousel from './CardCarousel';
-import PostFooter from './PostFooter';
+import PostFooter, { PostCaptionAndTags } from './PostFooter';
+import PostTopControls from './PostTopControls';
+import PostControls from './PostControls';
 
 const PostCard = async ({ post }) => {
   const session = await getServerSession(authOptions);
@@ -21,43 +24,55 @@ const PostCard = async ({ post }) => {
 
   return (
     <Card>
+      {/* <Link href={`/posts/${post._id}`}> */}
       <CardHeader className="flex-row gap-4 p-4">
-        <Link href={`/profile/${post.creator._id}`}>
-          <Image
-            className="size-12 rounded-full"
-            src={post.creator.profileImage || "/assets/profile-placeholder.svg"}
-            alt={post.creator.username}
-            width={48}
-            height={48}
-          />
-        </Link>
+        <PostProfileImage post={post} />
         <div>
-          <Link href={`/profile/${post.creator._id}`}>
-            <CardTitle className="font-bold text-sm lg:text-[16px]">
-              {post.creator.username}
-            </CardTitle>
-          </Link>
-          <CardDescription className="flex gap-2 text-xs lg:text-sm font-semibold items-center">
-            <span>{timePast(post.createdAt)}</span>
-            {post.location && <span>&#x2022;</span>}
-            {post.location && <span>{post.location}</span>}
-          </CardDescription>
+          <PostTitle post={post} />
+          <PostDescription post={post} />
         </div>
         {user?.id === post.creator._id.toString() && (
-          <Link
-            href={`/update-post/${post._id}`}
-            className={cn(buttonVariants({ variant: "ghost" }), "ml-auto")}
-          >
-            <Image src="/assets/edit.svg" alt="edit" width={25} height={25} />
-          </Link>
+          <PostTopControls post={post} />
         )}
       </CardHeader>
-      <CardContent className="px-4">
+      <CardContent className="px-4 flex flex-col gap-3">
+        <PostCaptionAndTags post={post} />
         <CardCarousel postMedia={post.media} />
       </CardContent>
-      <PostFooter post={post} />
+      {/* </Link> */}
+      <CardFooter className="p-4 pt-0">
+        <PostControls post={post} />
+      </CardFooter>
     </Card>
   );
 }
 
 export default PostCard
+
+export const PostTitle = ({ post }) => (
+  <Link href={`/profile/${post.creator._id}`}>
+    <CardTitle className="font-bold text-sm lg:text-[16px]">
+      {post.creator.username}
+    </CardTitle>
+  </Link>
+);
+
+export const PostDescription = ({ post }) => (
+  <CardDescription className="flex gap-2 text-xs lg:text-sm font-semibold items-center">
+    <span>{timePast(post.createdAt)}</span>
+    {post.location && <span>&#x2022;</span>}
+    {post.location && <span>{post.location}</span>}
+  </CardDescription>
+);
+
+export const PostProfileImage = ({ post }) => (
+  <Link href={`/profile/${post.creator._id}`}>
+    <Image
+      className="size-12 rounded-full"
+      src={post.creator.profileImage || "/assets/profile-placeholder.svg"}
+      alt={post.creator.username}
+      width={48}
+      height={48}
+    />
+  </Link>
+);
