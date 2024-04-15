@@ -1,4 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import { loginUser } from "./mongodb/actions/user.actions";
 
 const authOptions = {
   providers: [
