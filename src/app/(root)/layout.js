@@ -1,8 +1,16 @@
 import BottomBar from "@/components/shared/BottomBar";
 import SideBar from "@/components/shared/SideBar";
 import TopBar from "@/components/shared/TopBar";
+import authOptions from "@/lib/authOptions";
+import { getServerSession } from "next-auth";
 
-const RootLayout = ({ children }) => {
+const RootLayout = async ({ children }) => {
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
+
+  if (!user?.id) {
+    redirect("/sign-in");
+  }
   return (
     <div className="w-full h-screen md:flex overflow-y-auto">
       <TopBar />
