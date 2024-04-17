@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getServerSession } from 'next-auth';
-import { cn, timePast } from '@/lib/utils';
+import { cn, formatDateString, timePast } from '@/lib/utils';
 import { buttonVariants } from '../ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -24,22 +24,22 @@ const PostCard = async ({ post }) => {
 
   return (
     <Card>
-      {/* <Link href={`/posts/${post._id}`}> */}
-      <CardHeader className="flex-row gap-4 p-4">
-        <PostProfileImage post={post} />
-        <div>
-          <PostTitle post={post} />
-          <PostDescription post={post} />
-        </div>
-        {user?.id === post.creator._id.toString() && (
-          <PostTopControls post={post} />
-        )}
-      </CardHeader>
+      <Link href={`/posts/${post._id}`}>
+        <CardHeader className="flex-row gap-4 p-4">
+          <PostProfileImage post={post} />
+          <div>
+            <PostTitle post={post} />
+            <PostDescription post={post} />
+          </div>
+          {user?.id === post.creator._id.toString() && (
+            <PostTopControls post={post} />
+          )}
+        </CardHeader>
+      </Link>
       <CardContent className="px-4 flex flex-col gap-3">
         <PostCaptionAndTags post={post} />
         <CardCarousel postMedia={post.media} />
       </CardContent>
-      {/* </Link> */}
       <CardFooter className="p-4 pt-0">
         <PostControls post={post} />
       </CardFooter>
@@ -57,9 +57,11 @@ export const PostTitle = ({ post }) => (
   </Link>
 );
 
-export const PostDescription = ({ post }) => (
+export const PostDescription = ({ post, isFullDate }) => (
   <CardDescription className="flex gap-2 text-xs lg:text-sm font-semibold items-center">
-    <span>{timePast(post.createdAt)}</span>
+    <span>
+      {isFullDate ? formatDateString(post.createdAt) : timePast(post.createdAt)}
+    </span>
     {post.location && <span>&#x2022;</span>}
     {post.location && <span>{post.location}</span>}
   </CardDescription>

@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
-import { formatNumber } from '@/lib/utils'
+import { checkIsLiked, formatNumber } from '@/lib/utils'
 import { useInView } from 'react-intersection-observer'
 import CommentForm from './CommentForm'
 import { likePost, savePost } from '@/lib/mongodb/actions/post.actions'
@@ -13,7 +13,7 @@ const PostControls = ({ post }) => {
   const { data: session } = useSession()
   const user = session?.user
 
-  console.log(post)
+  console.log(user)
 
   const { ref, inView } = useInView({
     threshold: 1,
@@ -24,8 +24,12 @@ const PostControls = ({ post }) => {
   const [comments, setComments] = useState(post.comments)
   const [saves, setSaves] = useState(post.saves)
   const [shares, setShares] = useState(post.shares)
-  const [liked, setLiked] = useState(post.likes.find((like) => like?._id?.toString() === user?.id?.toString()) ? true : false)
+  const [liked, setLiked] = useState(checkIsLiked(likes, user?.id))
   const [saved, setSaved] = useState(post.saves.find((save) => save?._id?.toString() === user?.id?.toString()) ? true : false)
+
+  useEffect(() => {
+    if (likes) setLiked(checkIsLiked(likes, user?.id))
+  }, [likes])
 
   const handleLike = () => {
     try {
@@ -71,7 +75,7 @@ const PostControls = ({ post }) => {
         path: [
           "/",
           `/posts/${post._id}`,
-          "/profile"
+          "/saved"
         ],
       });
     } catch (error) {

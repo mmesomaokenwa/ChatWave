@@ -27,7 +27,7 @@ const CardCarousel = ({ postMedia, className}) => {
     });
   }, [api])
   return (
-    <div>
+    <div className="relative">
       <Carousel
         setApi={setApi}
         className={`w-full h-72 lg:h-[300px] rounded-xl overflow-hidden ${className}`}
@@ -61,13 +61,13 @@ const CardCarousel = ({ postMedia, className}) => {
           ))}
         </CarouselContent>
       </Carousel>
-      <div className="flex justify-center gap-2 my-2">
+      <div className="flex justify-center gap-2 absolute top-[90%] right-0 left-0 z-50">
         {count > 1 &&
           Array.from({ length: count }).map((file, index) => (
             <div
               key={index}
               className={`size-2 rounded-full transition ${
-                index === current - 1 ? "bg-accent" : "bg-gray-400"
+                index === current - 1 ? "bg-white" : "bg-gray-400"
               }`}
             />
           ))}

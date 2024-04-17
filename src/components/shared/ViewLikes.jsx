@@ -34,7 +34,7 @@ const ViewLikes = ({ likes, userId }) => {
         </AlertDialogHeader>
         {likes?.length > 0 && (
           <div className="flex flex-col gap-0 overflow-y-scroll h-full grow">
-            {likes?.map((like, index) => (
+            {likes?.reverse().map((like, index) => (
               <LikeCard key={index} like={like} userId={userId} />
             ))}
           </div>

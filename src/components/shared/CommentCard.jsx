@@ -25,7 +25,7 @@ const CommentCard = ({ comment }) => {
             height={40}
           />
           <div className="flex items-center gap-2">
-            <CardTitle className="font-bold text-sm lg:text-[16px]">
+            <CardTitle className="text-sm lg:text-[16px]">
               {comment?.user?.name}
             </CardTitle>
             <CardDescription className="text-sm">

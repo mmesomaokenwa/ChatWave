@@ -7,14 +7,13 @@ import React from 'react'
 
 const PostDetails = async ({ params: { postId } }) => {
   const user = await getServerSession(authOptions).then(res => res?.user)
-  const post = await getPostById(postId);
-  let relatedPosts;
+  const { post, relatedPosts } = await getPostById(postId);
   return (
     <div className="flex flex-1">
       <div className="flex flex-col flex-1 items-center overflow-y-scroll py-8 px-0 md:px-8 lg:p-14">
         <PostDetailsCard post={post} userId={user?.id} />
         {relatedPosts && (
-          <PostCardList title="Related Posts" posts={relatedPosts} />
+          <PostCardList title="More Related Posts" posts={relatedPosts} />
         )}
       </div>
     </div>

@@ -12,7 +12,7 @@ const TopBar = () => {
   const user = session?.user;
   return (
     <header className="sticky top-0 z-50 md:hidden bg-gray-200 dark:bg-slate-800 w-full">
-      <div className="flex justify-between items-center py-4 px-5">
+      <div className="flex justify-between items-center p-5">
         <Link
           href="/"
           className="flex items-center gap-2"
@@ -26,7 +26,6 @@ const TopBar = () => {
           <h1 className="text-2xl font-bold">ChatWave</h1>
         </Link>
         <div className="flex items-center gap-4">
-          <LogoutButton />
           <Link href="/profile">
             <Image
               className="size-8 rounded-full"

@@ -34,7 +34,7 @@ const ViewComments = ({ comments }) => {
         </AlertDialogHeader>
         {comments?.length > 0 && (
           <div className="flex flex-col gap-0 overflow-y-scroll h-full grow">
-            {comments?.map((comment, index) => (
+            {comments?.reverse().map((comment, index) => (
               <CommentCard key={index} comment={comment} />
             ))}
           </div>

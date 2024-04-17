@@ -49,7 +49,7 @@ const PostForm = ({ post, action }) => {
       try {
         const uploadedFiles = await startUpload(data.media);
 
-        if (!uploadedFiles || uploadedFiles.length < data.media) return;
+        if (!uploadedFiles) return;
 
         const post = {
           ...data,

@@ -75,7 +75,11 @@ export const getPostById = async (id) => {
 
     if (!post) throw new Error('Post not found')
 
-    return JSON.parse(JSON.stringify(post._doc))
+    const relatedPosts = await Post.find({
+      tags: { $in: post._doc.tags || [] },
+    }).populate("creator", ["name", "username", "profileImage", "_id"]);
+
+    return JSON.parse(JSON.stringify({ post: post._doc, relatedPosts }));
   } catch (err) {
     handleError(err)
   }
@@ -138,8 +142,10 @@ export const getSavedPostsByUserId = async ({ userId }) => {
   try {
     await connectToDatabase()
 
-    return User.findOne({ _id: userId }).populate('savedPosts')  
-      .then((user) => { return user?._doc.savedPosts.populate('creator', ['name', 'username', 'profileImage', '_id']) || [] })
+    const user = await User.findOne({ _id: userId })
+      .populate('savedPosts')
+
+    return user?._doc?.savedPosts
   } catch (error) {
     handleError(error)
   }
@@ -151,6 +157,19 @@ export const getPostsByUserId = async ({ userId }) => {
 
     return User.findOne({ _id: userId }).populate('posts')
       .then((user) => { return user?._doc.posts.populate('creator', ['name', 'username', 'profileImage', '_id']) || [] })
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const getPostsByTags = async ({ tagsArray }) => {
+  try {
+    await connectToDatabase()
+
+    const relatedPosts = await Post.find({ tags: { $in: tagsArray || [] } })
+      .populate('creator', ['name', 'username', 'profileImage', '_id'])
+
+    return relatedPosts
   } catch (error) {
     handleError(error)
   }

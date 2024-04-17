@@ -13,6 +13,7 @@ import {
 import { HiMiniBars3BottomRight } from "react-icons/hi2";
 import DarkModeToggler from './DarkModeToggler';
 import { Button } from '../ui/button';
+import LogoutButton from './LogoutButton';
 
 const MobileNav = () => {
   return (
@@ -31,6 +32,7 @@ const MobileNav = () => {
           </SheetHeader>
           <SheetFooter className="flex justify-between gap-4 mt-4">
             <DarkModeToggler />
+            <LogoutButton showText />
             <Button variant="destructive">Delete account</Button>
           </SheetFooter>
         </SheetContent>

@@ -63,6 +63,24 @@ export const timePastShort = (date) => {
   return result;
 }
 
+export const formatDateString = (dateString) => {
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+
+  const date = new Date(dateString);
+  const formattedDate = date.toLocaleDateString("en-US", options);
+
+  const time = date.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  return `${formattedDate} at ${time}`;
+}
+
 export const formatNumber = (number) => {
   if (number > 999 && number < 1000000) {
     return (number / 1000).toFixed(1) + "K";
@@ -71,4 +89,18 @@ export const formatNumber = (number) => {
     return (number / 1000000).toFixed(1) + "M";
   }
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+export const checkIsLiked = (likeList, userId) => {
+  return likeList?.includes(userId);
+};
+
+export const generateRandomSizes = (count) => {
+  const sizes = [];
+  for (let i = 0; i < count; i++) {
+    // const width = Math.floor(Math.random() * (400 - 200) + 200); // Random width between 200 and 400 pixels
+    const height = Math.floor(Math.random() * (500 - 300) + 300); // Random height between 150 and 300 pixels
+    sizes.push(height);
+  }
+  return sizes;
 };
