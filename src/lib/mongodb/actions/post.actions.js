@@ -117,10 +117,10 @@ export const getInfiniteScrollPosts = async ({
   limit = 10,
 }) => {
   try {
-    await connectToDatabase()
+    await connectToDatabase();
 
     const startIndex = (page - 1) * limit;
-    const totalPosts = await Post.countDocuments({});
+    const totalPosts = await Post.countDocuments();
 
     const posts = await Post.find()
       .skip(startIndex)
@@ -129,7 +129,7 @@ export const getInfiniteScrollPosts = async ({
       .populate('creator', ['name', 'username', 'profileImage', '_id']);
 
     return {
-      posts,
+      posts: posts?.map((p) => JSON.parse(JSON.stringify(p._doc))),
       totalPosts,
     };
   } catch (err) {
@@ -256,6 +256,29 @@ export const commentPost = async ({ postId, userId, comment, path }) => {
     else path.forEach((path) => revalidatePath(path))
 
     return JSON.parse(JSON.stringify(commentedPost.comments[commentedPost.comments.length - 1]))
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const searchForPosts = async (query) => {
+  if (!query) return
+  try {
+    await connectToDatabase()
+
+    const [postsByCaption, postsByTags, postsByLocation] = await Promise.all([
+      Post.find({ caption: { $regex: query, $options: "i" } }).sort({ createdAt: "desc" }),
+      Post.find({ tags: { $in: query } }).sort({ createdAt: "desc" }),
+      Post.find({ location: { $regex: query, $options: "i" } }).sort({ createdAt: "desc" }),
+    ]);
+
+    const queriedPosts = {
+      captions: postsByCaption,
+      tags: postsByTags,
+      locations: postsByLocation
+    }
+
+    return JSON.parse(JSON.stringify(queriedPosts))
   } catch (error) {
     handleError(error)
   }

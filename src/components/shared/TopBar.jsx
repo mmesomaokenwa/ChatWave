@@ -3,7 +3,6 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import LogoutButton from './LogoutButton'
 import { useSession } from 'next-auth/react'
 import MobileNav from './MobileNav'
 
@@ -26,7 +25,7 @@ const TopBar = () => {
           <h1 className="text-2xl font-bold">ChatWave</h1>
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/profile">
+          <Link href={`/profile/${user?.id}`}>
             <Image
               className="size-8 rounded-full"
               src={

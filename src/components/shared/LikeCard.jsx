@@ -10,11 +10,12 @@ import {
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
+import FollowButton from './FollowButton';
 
 const LikeCard = ({ like, userId }) => {
   return (
-    <Card className="flex items-center justify-between">
-      <CardHeader className="p-3">
+    <Card className="flex items-center justify-between border-0">
+      <CardHeader className="p-4">
         <Link
           href={`/profile/${like?._id}`}
           className="flex items-center gap-4"
@@ -33,8 +34,8 @@ const LikeCard = ({ like, userId }) => {
           </div>
         </Link>
       </CardHeader>
-      <CardFooter className="p-3">
-        {like?._id !== userId && <Button variant="accent">Follow</Button>}
+      <CardFooter className="p-4">
+        {like?._id !== userId && <FollowButton userId={like?._id} />}
       </CardFooter>
     </Card>
   );

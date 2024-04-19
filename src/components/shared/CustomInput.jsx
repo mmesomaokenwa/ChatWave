@@ -28,7 +28,7 @@ const CustomInput = ({ field, label, placeholder, type, isTextArea, error }) => 
               type={type}
               className="bg-gray-100 dark:bg-gray-700 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               placeholder={placeholder}
-              {...field}
+                {...field}
             />
           )}
         </div>

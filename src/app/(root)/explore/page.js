@@ -1,18 +1,21 @@
 import LoadMore from '@/components/shared/LoadMore';
 import PostCardList from '@/components/shared/PostCardList';
 import Search from '@/components/shared/Search';
-import { getInfiniteScrollPosts } from '@/lib/mongodb/actions/post.actions';
-import Image from 'next/image';
+import SearchResultsLists from '@/components/shared/SearchResultsLists';
+import { getInfiniteScrollPosts, searchForPosts } from '@/lib/mongodb/actions/post.actions';
+import { searchForUsers } from '@/lib/mongodb/actions/user.actions';
 import React from 'react'
 
-const Explore = async ({ searchParams }) => {
-  const [{ posts }, searchResults] = await Promise.all([
-    getInfiniteScrollPosts({ page: 1, limit: 10 }),
-    null
+const Explore = async ({ searchParams: { query } }) => {
+  const [{ posts }, searchedUsers, searchedPosts] = await Promise.all([
+    getInfiniteScrollPosts({ page: 1, limit: 12 }),
+    searchForUsers(query),
+    searchForPosts(query)
   ])
 
-  const showSearchResults = searchResults?.length > 0;
-  const showPosts = posts?.length > 0 && !showSearchResults;
+  console.log({ searchedUsers, searchedPosts })
+
+  const showPosts = posts?.length > 0 && !query;
   return (
     <div className="flex flex-col flex-1 items-center overflow-y-scroll py-6 px-4 md:p-14 custom-scrollbar">
       <div className="max-w-5xl flex flex-col items-center w-full gap-6 md:gap-9">
@@ -22,18 +25,19 @@ const Explore = async ({ searchParams }) => {
         <Search />
         <div className="w-full">
           {showPosts && (
-            <PostCardList title="Popular Posts" posts={posts} showFilter spanFullWidth />
+            <>
+              <PostCardList
+                title="Popular Posts"
+                posts={posts}
+                showFilter
+                className={"!p-0"}
+              />
+              <LoadMore />
+            </>
           )}
-          {showSearchResults && (
-            <ul className="w-full flex flex-col gap-8">
-              {searchResults?.map((post) => (
-                <li className="w-full" key={post._id}>
-                  <PostCard post={post} />
-                </li>
-              ))}
-            </ul>
+          {query && (
+            <SearchResultsLists title={`Search Results for ${query}`} searchedUsers={searchedUsers} searchedPosts={searchedPosts} />
           )}
-          <LoadMore />
         </div>
       </div>
     </div>

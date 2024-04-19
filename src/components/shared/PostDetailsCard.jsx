@@ -15,7 +15,7 @@ const PostDetailsCard = ({ post, userId }) => {
       <div className="w-full lg:w-1/2 hidden lg:flex">
         <CardCarousel postMedia={post?.media} className={"grow"} />
       </div>
-      <Card className="w-full lg:w-1/2">
+      <Card className="w-full lg:w-1/2 border-0">
         <CardHeader className="flex-row gap-4 p-4">
           <PostProfileImage post={post} />
           <div>
@@ -33,7 +33,7 @@ const PostDetailsCard = ({ post, userId }) => {
         <CardFooter className="p-4 pt-0">
           <PostControls post={post} />
         </CardFooter>
-        <div className="w-full p-4 flex justify-between">
+        <div className="w-full p-4 flex justify-between border-b-2">
           <ViewLikes likes={post.likes} userId={userId} />
           <ViewComments comments={post.comments} />
         </div>

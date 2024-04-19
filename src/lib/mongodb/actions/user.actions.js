@@ -89,3 +89,25 @@ export const getUserById = async (id) => {
     handleError(error)
   }
 }
+
+export const searchForUsers = async (query) => {
+  if (!query) return
+  try {
+    await connectToDatabase()
+
+    const queriedUsers = await User.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { username: { $regex: query, $options: "i" } },
+      ]
+    })
+
+    if (!queriedUsers) throw new Error('User not found')
+
+    console.log(queriedUsers)
+
+    return queriedUsers.map((u) => JSON.parse(JSON.stringify(u._doc)))
+  } catch (error) {
+    handleError(error)
+  }
+}

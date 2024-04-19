@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import qs from "query-string";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs) {
@@ -95,12 +96,32 @@ export const checkIsLiked = (likeList, userId) => {
   return likeList?.includes(userId);
 };
 
-export const generateRandomSizes = (count) => {
-  const sizes = [];
-  for (let i = 0; i < count; i++) {
-    // const width = Math.floor(Math.random() * (400 - 200) + 200); // Random width between 200 and 400 pixels
-    const height = Math.floor(Math.random() * (500 - 300) + 300); // Random height between 150 and 300 pixels
-    sizes.push(height);
-  }
-  return sizes;
-};
+export function formUrlQuery({ params, key, value }) {
+  const currentUrl = qs.parse(params);
+
+  currentUrl[key] = value;
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
+}
+
+export function removeKeysFromQuery({ params, keysToRemove }) {
+  const currentUrl = qs.parse(params);
+
+  keysToRemove.forEach((key) => {
+    delete currentUrl[key];
+  });
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  );
+}

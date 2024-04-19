@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 const CommentCard = ({ comment }) => {
   return (
-    <Card>
+    <Card className="border-0">
       <Link href={`/profile/${comment?.user?._id}`}>
         <CardHeader className="flex-row items-start gap-4 p-4 space-y-0">
           <Image

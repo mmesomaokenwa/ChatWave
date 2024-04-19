@@ -4,9 +4,7 @@ import "./globals.css";
 import SocketProvider from "@/providers/SocketProvider";
 import { Toaster } from "@/components/ui/toaster";
 import AuthProvider from "@/providers/AuthProvider";
-import { getServerSession } from "next-auth";
-import authOptions from "@/lib/authOptions";
-import { redirect } from "next/navigation";
+import QueryProvider from "@/providers/QueryProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,7 +27,9 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <SocketProvider>
             <ThemeProvider>
-              {children}
+              <QueryProvider>
+                {children}
+              </QueryProvider>
               <Toaster />
             </ThemeProvider>
           </SocketProvider>
