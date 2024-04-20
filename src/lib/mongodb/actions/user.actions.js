@@ -78,11 +78,14 @@ export const getUserById = async (id) => {
   try {
     await connectToDatabase()
 
-    const user = await User.findById(id)
+    const user = await User.findById(id).populate([
+      "followers",
+      "following",
+      "posts",
+      "savedPosts",
+    ]);
 
     if (!user) throw new Error('User not found')
-    
-    user.populate(["followers", "following", "posts", "savedPosts"]);
 
     return JSON.parse(JSON.stringify(user._doc))
   } catch (error) {

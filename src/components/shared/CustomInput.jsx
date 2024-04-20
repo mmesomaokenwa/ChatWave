@@ -10,7 +10,7 @@ const CustomInput = ({ field, label, placeholder, type, isTextArea, error }) => 
       {typeof label === "string" && <FormLabel>{label}</FormLabel>}
       <FormControl className="w-full rounded-lg">
         <div
-          className={`flex items-center justify-between px-4 bg-gray-100 dark:bg-gray-700
+          className={`flex items-center justify-between px-4 bg-gray-100 dark:bg-gray-900
           focus-within:ring-2 focus-within:ring-accent ${
             error && "ring-2 ring-red-500 focus-within:ring-red-500"
           } ${isTextArea ? "" : "h-[3rem]"}`}
@@ -19,14 +19,14 @@ const CustomInput = ({ field, label, placeholder, type, isTextArea, error }) => 
           {isTextArea ? (
             <Textarea
               type={type}
-              className="bg-gray-100 dark:bg-gray-700 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="bg-gray-100 dark:bg-gray-900 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               placeholder={placeholder}
               {...field}
             />
           ) : (
             <Input
               type={type}
-              className="bg-gray-100 dark:bg-gray-700 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="bg-gray-100 dark:bg-gray-900 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               placeholder={placeholder}
                 {...field}
             />

@@ -78,12 +78,12 @@ const SearchResultsTab = ({ searchedPosts, searchedUsers }) => {
         <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
           {showPosts
             ? posts?.length === 0 ? (
-              <p className="">No results found</p>
+              <p className="col-span-2 text-center">No results found</p>
             )
             : posts?.map((post, index) => (
             <PostPreviewCard key={index} post={post} />
           )) : searchedUsers?.length === 0 ? (
-            <p className="">No results found</p>
+            <p className="col-span-2 text-center">No results found</p>
           ) : searchedUsers?.map((user, index) => (
             <UserPreviewCard key={index} user={user} />
           ))}

@@ -8,6 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import Image from 'next/image';
+import ViewFollowers from './ViewFollowers';
+import ViewFollowing from './ViewFollowing';
+import { Button, buttonVariants } from '../ui/button';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import FollowButton from './FollowButton';
 
 const ProfileCard = ({ user, sessionUser }) => {
   return (
@@ -19,17 +25,65 @@ const ProfileCard = ({ user, sessionUser }) => {
         height={80}
         className="rounded-full"
       />
-      <div>
-        <CardHeader className="p-0">
-          <CardTitle>{user?.name}</CardTitle>
-          <CardDescription>@{user?.username}</CardDescription>
+      <div className="w-full flex flex-col gap-4 relative">
+        <CardHeader className="flex-row items-center justify-between p-0">
+          <div>
+            <CardTitle>{user?.name}</CardTitle>
+            <CardDescription>@{user?.username}</CardDescription>
+          </div>
+          <div className="flex gap-3 absolute lg:relative right-0 -top-20 lg:top-0">
+            {user?._id === sessionUser?.id ? (
+              <Link
+                href={"/edit-profile"}
+                className={cn(buttonVariants({ variant: "ghost" }))}
+              >
+                <Image
+                  src={"/assets/edit.svg"}
+                  alt="edit profile"
+                  width={20}
+                  height={20}
+                  className="mr-2"
+                />
+                Edit Profile
+              </Link>
+            ) : (
+              <>
+                <FollowButton userId={user?._id} />
+                <Link
+                  href={`/chat/${user?._id}`}
+                  className={cn(buttonVariants({ variant: "default" }))}
+                >
+                  {/* <Image
+                    src={"/assets/edit.svg"}
+                    alt="edit profile"
+                    width={20}
+                    height={20}
+                    className="mr-2"
+                  /> */}
+                  Message
+                </Link>
+              </>
+            )}
+          </div>
         </CardHeader>
-        <CardContent className="p-0">
-          <p>Card Content</p>
+        <CardContent className="flex flex-col gap-2 p-0">
+          <div className="flex gap-4">
+            <p className="flex flex-col">
+              <span className="text-accent">{user?.posts?.length}</span>
+              <span>Posts</span>
+            </p>
+            <ViewFollowers
+              followers={user?.followers}
+              isCurrentUser={user?._id === sessionUser?.id}
+            />
+            <ViewFollowing
+              following={user?.following}
+              isCurrentUser={user?._id === sessionUser?.id}
+            />
+          </div>
+          <p>{user?.bio}</p>
         </CardContent>
-        <CardFooter className="p-0">
-          <p>Card Footer</p>
-        </CardFooter>
+        <CardFooter className="p-0"></CardFooter>
       </div>
     </Card>
   );
