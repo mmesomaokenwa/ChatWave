@@ -17,13 +17,13 @@ import FollowButton from './FollowButton';
 
 const ProfileCard = ({ user, sessionUser }) => {
   return (
-    <Card className="w-full flex flex-col lg:flex-row gap-4 p-0 border-0">
+    <Card className="w-full flex flex-col lg:flex-row lg:items-start gap-4 p-0 border-0">
       <Image
         src={user?.profileImage || "/assets/profile-placeholder.svg"}
         alt={user?.username}
         width={80}
         height={80}
-        className="rounded-full"
+        className="rounded-full lg:size-40"
       />
       <div className="w-full flex flex-col gap-4 relative">
         <CardHeader className="flex-row items-center justify-between p-0">
@@ -42,7 +42,7 @@ const ProfileCard = ({ user, sessionUser }) => {
                   alt="edit profile"
                   width={20}
                   height={20}
-                  className="mr-2"
+                  className="mr-2 invert brightness-50"
                 />
                 Edit Profile
               </Link>
@@ -54,8 +54,8 @@ const ProfileCard = ({ user, sessionUser }) => {
                   className={cn(buttonVariants({ variant: "default" }))}
                 >
                   {/* <Image
-                    src={"/assets/edit.svg"}
-                    alt="edit profile"
+                    src={"/assets/chat.svg"}
+                    alt="message"
                     width={20}
                     height={20}
                     className="mr-2"
@@ -68,7 +68,7 @@ const ProfileCard = ({ user, sessionUser }) => {
         </CardHeader>
         <CardContent className="flex flex-col gap-2 p-0">
           <div className="flex gap-4">
-            <p className="flex flex-col">
+            <p className="flex flex-col font-medium">
               <span className="text-accent">{user?.posts?.length}</span>
               <span>Posts</span>
             </p>
@@ -81,7 +81,7 @@ const ProfileCard = ({ user, sessionUser }) => {
               isCurrentUser={user?._id === sessionUser?.id}
             />
           </div>
-          <p>{user?.bio}</p>
+          <p className="text-sm">{user?.bio}</p>
         </CardContent>
         <CardFooter className="p-0"></CardFooter>
       </div>

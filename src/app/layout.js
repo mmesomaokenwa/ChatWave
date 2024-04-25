@@ -29,8 +29,8 @@ export default function RootLayout({ children }) {
             <ThemeProvider>
               <QueryProvider>
                 {children}
+                <Toaster />
               </QueryProvider>
-              <Toaster />
             </ThemeProvider>
           </SocketProvider>
         </AuthProvider>

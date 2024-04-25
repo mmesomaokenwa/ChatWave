@@ -82,6 +82,47 @@ export const formatDateString = (dateString) => {
   return `${formattedDate} at ${time}`;
 }
 
+export const formatChatDate = (d) => {
+  const date = new Date(d);
+  const today = new Date();
+  const yesterday = new Date(today - 24 * 60 * 60 * 1000);
+  const time = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  if (date.toDateString() === today.toDateString()) {
+    return `Today, ${time}`;
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return `Yesterday, ${time}`;
+  } else if (
+    date >=
+      new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - today.getDay()
+      ) &&
+    date <=
+      new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - today.getDay() + 6
+      )
+  ) {
+    return `${date.toLocaleDateString("en-US", {
+      weekday: "long",
+    })}, ${time}`;
+  } else {
+    const fullDate = `${date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })}, ${date.getFullYear()}`;
+    return `${fullDate}, ${time}`;
+  }
+};
+
+
 export const formatNumber = (number) => {
   if (number > 999 && number < 1000000) {
     return (number / 1000).toFixed(1) + "K";

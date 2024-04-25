@@ -1,8 +1,15 @@
+import Image from 'next/image'
 import React from 'react'
 
-const Loader = () => {
+const Loader = ({ width, height, className }) => {
   return (
-    <div>Loader</div>
+    <Image
+      src="/assets/loader.svg"
+      alt="loader"
+      width={width}
+      height={height}
+      className={className}
+    />
   )
 }
 

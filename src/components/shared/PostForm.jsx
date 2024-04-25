@@ -18,6 +18,7 @@ import { useSession } from 'next-auth/react';
 import { revalidatePath } from 'next/cache';
 import { useToast } from '../ui/use-toast';
 import { useRouter } from 'next/navigation';
+import Loader from './Loader';
 
 const PostForm = ({ post, action }) => {
   const form = useForm({
@@ -202,7 +203,7 @@ const PostForm = ({ post, action }) => {
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting
-              ? 'Submitting'
+              ? <Loader width={20} height={20} />
               : action === 'create'
                 ? 'Create Post'
                 : 'Update Post'

@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib"
 import User from "../models/user.model"
 import { handleError } from "@/lib/utils"
 import { hash, compare } from 'bcrypt'
+import { revalidatePath } from "next/cache"
 
 
 export const createUser = async (user) => {
@@ -55,7 +56,7 @@ export const loginUser = async (user) => {
   }
 }
 
-export const updateUser = async (user) => {
+export const updateUser = async ({ user, path }) => {
   try {
     await connectToDatabase()
 
@@ -66,6 +67,9 @@ export const updateUser = async (user) => {
     if (!updatedUser) throw new Error('User update failed')
 
     const { password, ...others } = updatedUser._doc
+
+    if (typeof path === "string") revalidatePath(path);
+    else path.forEach((path) => revalidatePath(path));
 
     return JSON.parse(JSON.stringify(others))
   } catch (error) {
@@ -87,7 +91,9 @@ export const getUserById = async (id) => {
 
     if (!user) throw new Error('User not found')
 
-    return JSON.parse(JSON.stringify(user._doc))
+    const { password, ...others } = user._doc
+
+    return JSON.parse(JSON.stringify(others))
   } catch (error) {
     handleError(error)
   }

@@ -25,6 +25,7 @@ const LikeCard = ({ like, userId }) => {
             alt={like?.username}
             width={40}
             height={40}
+            className="rounded-full"
           />
           <div>
             <CardTitle className="font-bold text-sm lg:text-[16px]">

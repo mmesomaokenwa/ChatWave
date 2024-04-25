@@ -10,7 +10,7 @@ const TopBar = () => {
   const { data: session } = useSession();
   const user = session?.user;
   return (
-    <header className="sticky top-0 z-50 md:hidden bg-gray-200 dark:bg-slate-800 w-full">
+    <header className="sticky top-0 z-50 md:hidden bg-gray-100 dark:bg-slate-900 w-full">
       <div className="flex justify-between items-center p-5">
         <Link
           href="/"

@@ -2,8 +2,10 @@
 
 import { connectToDatabase } from "@/lib"
 import Chat from "../models/chat.model"
+import { revalidatePath } from "next/cache"
+import { handleError } from "@/lib/utils"
 
-export const createMessage = async (req) => {
+export const createMessage = async ({ req, path }) => {
   try {
     await connectToDatabase()
 
@@ -11,7 +13,15 @@ export const createMessage = async (req) => {
 
     if (!newMessage) throw new Error('Could not send message')
 
-    return JSON.parse(JSON.stringify(newMessage._doc))
+    const message = await Chat.findOne({ _id: newMessage._doc._id }).populate({
+      path: 'sender receiver',
+      select: 'name username profileImage'
+    })
+
+    if (typeof path === 'string') revalidatePath(path)
+    else path.map(p => revalidatePath(p))
+
+    return JSON.parse(JSON.stringify(message._doc))
   } catch (err) {
     handleError(err)
   }
@@ -69,7 +79,7 @@ export const getAllMessagesByUserID = async (id) => {
     // add isOwned property to each message indicating whether it was sent by the current user or not
     Object.values(chatGroups).map((group) => {
       group.forEach((message) => {
-        if (message.sender._id === id) {
+        if (message.sender._id.toString() === id) {
           message.isOwned = true
         } else {
           message.isOwned = false
@@ -83,8 +93,9 @@ export const getAllMessagesByUserID = async (id) => {
   }
 }
 
-export const getMessagesByRoomId = async (roomId, userId) => {
+export const getMessagesByRoomId = async ({ roomId, userId }) => {
   try {
+    console.log(roomId, userId)
     await connectToDatabase()
     const result = await Chat.find({ roomId })
       .populate(["sender", "receiver"])
@@ -93,7 +104,7 @@ export const getMessagesByRoomId = async (roomId, userId) => {
     if (!result) throw new Error('Messages not found')
 
     result.forEach((message) => {
-      if (message._doc.sender._id === userId) {
+      if (message._doc.sender._id.toString() === userId) {
         message._doc.isOwned = true
       } else {
         message._doc.isOwned = false

@@ -14,7 +14,7 @@ const PostTopControls = ({ post, addDeleteBtn }) => {
         href={`/update-post/${post?._id}`}
         className={cn(buttonVariants({ variant: "ghost" }))}
       >
-        <Image src="/assets/edit.svg" alt="edit" width={25} height={25} />
+        <Image src="/assets/edit.svg" alt="edit" width={25} height={25} className={addDeleteBtn ? "invert brightness-50" : ""} />
       </Link>
       {addDeleteBtn && (
         <DeleteDialog postId={post?._id} />

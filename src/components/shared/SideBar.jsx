@@ -13,9 +13,12 @@ const SideBar = () => {
   const user = session?.user;
   const pathname = usePathname();
 
-  const isActive = (link) => pathname === link;
+  const isActive = (link) => {
+    if (link === '/') return pathname === link;
+    return pathname.startsWith(link);
+  }
   return (
-    <nav className="hidden md:flex px-6 py-10 flex-col justify-between min-w-[270px] bg-gray-200 dark:bg-slate-800">
+    <nav className="hidden md:flex px-6 py-10 flex-col justify-between min-w-[270px] bg-gray-100 dark:bg-slate-900">
       <div className="flex flex-col gap-11">
         <Link href="/" className="flex items-center gap-4">
           <Image src="/assets/favicon.ico" alt="Logo" height={35} width={35} />

@@ -14,45 +14,79 @@ app.prepare().then(() => {
   const server = express();
   const httpServer = createServer(server);
 
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+    },
+    allowEIO3: true,
+    transports: ["websocket"],
+    allowRequest: (req) => {
+      return true; // Allow all requests for now
+    },
+    
+  });
 
   const users = {};
 
   io.on("connection", (socket) => {
     const username = socket.handshake.query.username;
+    const roomIds = socket.handshake.query.roomIds;
+
+    // if (!username || !Array.isArray(roomIds)) {
+    //   return socket.disconnect();
+    // }
 
     if (username) {
       users[username] = socket.id;
     }
-    console.log(`User connected: ${username}`);
+
+    io.emit('online', Object.keys(users));
+
+    console.log(`User connected: ${username}${users[username] ? ` (${users[username]})` : ""}`);
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");
+      delete users[username];
+      io.emit('online', Object.keys(users));
     });
 
-    socket.on("sendMessage", ({ sender, recipient, message }) => {
-      const recipientSocketId = users[recipient._id];
+    socket.on("message", ({ sender, receiver, message, roomId }) => {
+      console.log("message", { sender, receiver, message, roomId });
+      const recipientSocketId = users[receiver.username];
       if (recipientSocketId) {
-        io.to(recipientSocketId).emit("receiveMessage", { sender, message });
+        io.to(recipientSocketId).emit("message", { sender, message }, (err, res) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log(res);
+          }
+        });
       }
     });
 
+    // socket.on('receiveMessage', ({ sender, message }) => {
+    //   io.to(users[sender.username]).emit('receiveMessage', { sender, message });
+    // })
+
     socket.on("typing", (data) => {
-      socket.broadcast.emit("typing", data);
+      io.to(users[data.username]).emit("typing", data);
 
       console.log(data);
     });
 
     socket.on("stopTyping", (data) => {
-      socket.broadcast.emit("stopTyping", data);
+      io.to(users[data.username]).emit("stopTyping", data);
     });
 
-    socket.on("joinRoom", (username) => {
-      socket.join(users[username]);
+    socket.on("joinRoom", (newRoomId) => {
+      socket.join([...roomIds]);
+      if (newRoomId) {
+        socket.join(newRoomId);
+      }
     });
 
-    socket.on("leaveRoom", (username) => {
-      socket.leave(users[username]);
+    socket.on("leaveRoom", () => {
+      socket.leave([...roomIds]);
     });
   });
 

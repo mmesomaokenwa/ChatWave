@@ -23,6 +23,7 @@ const CommentCard = ({ comment }) => {
             alt={comment?.user?.username}
             width={40}
             height={40}
+            className="rounded-full"
           />
           <div className="flex items-center gap-2">
             <CardTitle className="text-sm lg:text-[16px]">

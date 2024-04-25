@@ -14,7 +14,7 @@ import UserPreviewCard from './UserPreviewCard';
 const ViewFollowers = ({followers, isCurrentUser}) => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="flex flex-col">
+      <AlertDialogTrigger className="flex flex-col font-medium">
         <span className="text-accent">{followers?.length}</span>
         <span>Followers</span>
       </AlertDialogTrigger>

@@ -8,13 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getServerSession } from 'next-auth';
-import { cn, formatDateString, timePast } from '@/lib/utils';
-import { buttonVariants } from '../ui/button';
+import { formatDateString, timePast } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import authOptions from '@/lib/authOptions';
 import CardCarousel from './CardCarousel';
-import PostFooter, { PostCaptionAndTags } from './PostFooter';
+import { PostCaptionAndTags } from './PostFooter';
 import PostTopControls from './PostTopControls';
 import PostControls from './PostControls';
 
@@ -24,7 +23,7 @@ const PostCard = async ({ post }) => {
 
   return (
     <Card>
-      <Link href={`/posts/${post._id}`}>
+      {/* <Link href={`/posts/${post._id}`}> */}
         <CardHeader className="flex-row gap-4 p-4">
           <PostProfileImage post={post} />
           <div>
@@ -35,7 +34,7 @@ const PostCard = async ({ post }) => {
             <PostTopControls post={post} />
           )}
         </CardHeader>
-      </Link>
+      {/* </Link> */}
       <CardContent className="px-4 flex flex-col gap-3">
         <PostCaptionAndTags post={post} />
         <CardCarousel postMedia={post.media} />

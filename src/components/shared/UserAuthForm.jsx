@@ -15,15 +15,14 @@ import {
 
 import { cn } from "@/lib/utils";
 import CustomInput from "./CustomInput";
-import { useSocket } from "@/providers/SocketProvider";
 import { createUser } from "@/lib/mongodb/actions/user.actions";
 import { useToast } from "../ui/use-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Loader from "./Loader";
 
 export default function UserAuthForm({ className, mode }) {
-  const { connect: socketConnect } = useSocket();
   const router = useRouter();
   const { toast } = useToast();
   const { data: session } = useSession();
@@ -94,7 +93,6 @@ export default function UserAuthForm({ className, mode }) {
           if (signedInUser.error) {
             throw new Error(signedInUser.error);
           } else {
-            socketConnect(createdUser.username);
             toast({
               title: "Success",
               description: "Account created successfully",
@@ -129,7 +127,6 @@ export default function UserAuthForm({ className, mode }) {
           throw new Error(signedInUser.error);
         } else {
           console.log(session)
-          socketConnect(session?.user?.username);
           router.push("/");
         }
       } catch (error) {
@@ -224,9 +221,13 @@ export default function UserAuthForm({ className, mode }) {
             size="lg"
             disabled={form.formState.isSubmitting}
           >
-            {mode === "signup"
+            {!form.formState.isSubmitting
+              ? mode === "signup"
               ? "Sign Up"
-              : mode === "login" && "Sign In"}
+                : mode === "login"
+                  ? "Sign In"
+                  : null
+                : <Loader width={20} height={20} />}
           </Button>
         </form>
       </Form>

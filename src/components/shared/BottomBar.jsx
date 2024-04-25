@@ -8,9 +8,12 @@ import Image from 'next/image';
 const BottomBar = () => {
   const pathname = usePathname();
 
-  const isActive = (link) => pathname === link;
+  const isActive = (link) => {
+    if (link === '/') return pathname === link;
+    return pathname.startsWith(link);
+  }
   return (
-    <nav className="z-50 flex justify-between w-full sticky bottom-0 rounded-t-[20px] bg-gray-200 dark:bg-slate-800 px-4 py-2 md:hidden">
+    <nav className="z-50 flex justify-between w-full sticky bottom-0 rounded-t-[20px] bg-gray-100 dark:bg-slate-900 px-4 py-2 md:hidden">
       {bottombarLinks.map((link, index) => {
         const active = isActive(link.route);
         const isChat = link.label === "Chats";

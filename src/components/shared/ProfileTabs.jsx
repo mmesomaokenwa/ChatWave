@@ -14,8 +14,8 @@ const profileTabs = [
     value: "reels",
   },
   {
-    name: "Saved",
-    value: "saved",
+    name: "Tagged",
+    value: "tagged",
   }
 ]
 
@@ -28,31 +28,32 @@ const ProfileTabs = ({ user }) => {
   return (
     <Tabs
       defaultValue={selected}
-      className="lg:w-[400px] w-full"
+      className="w-full"
       onValueChange={(value) => handleSelect(value)}
     >
-      <TabsList className="w-full justify-between overflow-x-auto">
+      <TabsList className="lg:w-[400px] w-full justify-between overflow-x-auto">
         {profileTabs.map((tab) => (
-          <TabsTrigger key={tab.value} value={tab.value} className='grow'>
+          <TabsTrigger key={tab.value} value={tab.value} className="grow">
             {tab.name}
           </TabsTrigger>
         ))}
       </TabsList>
       <TabsContent value={selected}>
         <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
-          {selected === 'posts'
-            ? user?.posts?.length === 0
-            ? <p className="col-span-2 text-center">No Posts Found</p>
-            : user?.posts?.map((post, index) => (
-              <PostPreviewCard key={index} post={post} />
-            ))
-            : null
-          }
-          {selected === 'reels' && (
-            <p className="col-span-2 text-center">Reels</p>
+          {selected === "posts" ? (
+            user?.posts?.length === 0 ? (
+              <p className="col-span-2 lg:col-span-3 text-center">No Posts Found</p>
+            ) : (
+              user?.posts?.map((post, index) => (
+                <PostPreviewCard key={index} post={post} />
+              ))
+            )
+          ) : null}
+          {selected === "reels" && (
+            <p className="col-span-2 lg:col-span-3 text-center">Reels</p>
           )}
-          {selected === 'saved' && (
-            <p className="col-span-2 text-center">Saved</p>
+          {selected === "tagged" && (
+            <p className="col-span-2 lg:col-span-3 text-center">Tagged</p>
           )}
         </div>
       </TabsContent>

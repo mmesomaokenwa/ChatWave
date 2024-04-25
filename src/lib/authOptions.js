@@ -18,7 +18,6 @@ const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log(credentials);
         const data = await loginUser(credentials);
         if (!data) return null;
 
@@ -28,19 +27,26 @@ const authOptions = {
           email: data.email,
           profileImage: data.profileImage,
           username: data.username,
+          bio: data.bio,
         };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.user = user;
+    async jwt({ token, user, session, trigger }) {
+      if (trigger === "update" && session?.user) {
+        token.user = session.user;
+      } else if (user) {
+        token.user = user
       }
       return token;
     },
-    async session({ session, token }) {
-      session.user = token.user;
+    async session({ session, token, trigger, newSession }) {
+      if (trigger === "update" && newSession?.user) {
+        session.user = newSession.user
+      } else {
+        session.user = token.user;
+      }
       return session;
     },
   },

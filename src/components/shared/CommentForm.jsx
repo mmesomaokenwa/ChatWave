@@ -66,6 +66,7 @@ const CommentForm = ({ setComments, profileImage, userId, postId, className }) =
                     alt="comment"
                     width={35}
                     height={35}
+                    className="rounded-full"
                   />
                   <Input
                     placeholder="Write a comment..."
@@ -80,9 +81,14 @@ const CommentForm = ({ setComments, profileImage, userId, postId, className }) =
         />
         <Button type="submit" size="sm" variant="ghost">
           {form.formState.isSubmitting ? (
-            <Loader />
+            <Loader width={20} height={20} />
           ) : (
-            <Image src="/assets/send.svg" alt="send" width={23} height={23} />
+              <Image
+                src="/assets/send.svg" alt="send"
+                width={23}
+                height={23}
+                className={!form.formState.isDirty && 'invert brightness-50'}
+              />
           )}
         </Button>
       </form>
