@@ -169,12 +169,13 @@ export function removeKeysFromQuery({ params, keysToRemove }) {
 }
 
 const replaceLinksInParagraph = (text) => {
-  const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
   return text.replace(urlRegex, (url) => {
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        {url}
-      </a>
+      `<a href="${url}" target="_blank" rel="noopener noreferrer">
+        ${url}
+      </a>`
     );
   });
 }
@@ -186,7 +187,6 @@ export const formatText = (text) => {
       return <br key={index} />;
     }
     const formattedParagraph = replaceLinksInParagraph(paragraph);
-    // console.log(Object.entries(formattedParagraph))
-    return <p key={index}>{formattedParagraph}</p>;
+    return <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph.toString() }}/>;
   });
 };
