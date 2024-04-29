@@ -102,6 +102,7 @@ function dispatch(action) {
 }
 
 function toast({
+  image,
   ...props
 }) {
   const id = genId()
@@ -109,7 +110,7 @@ function toast({
   const update = (props) =>
     dispatch({
       type: "UPDATE_TOAST",
-      toast: { ...props, id },
+      toast: { ...props, image, id },
     })
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
 
@@ -117,6 +118,7 @@ function toast({
     type: "ADD_TOAST",
     toast: {
       ...props,
+      image,
       id,
       open: true,
       onOpenChange: (open) => {

@@ -1,4 +1,7 @@
+'use server'
+
 import mongoose from "mongoose";
+import { revalidatePath } from "next/cache";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -23,3 +26,11 @@ export async function connectToDatabase() {
 
   return cached.conn;
 }
+
+export const revalidate = (path) => {
+  if (typeof path === "string") {
+    revalidatePath(path);
+  } else {
+    path.map((p) => revalidatePath(p));
+  }
+};

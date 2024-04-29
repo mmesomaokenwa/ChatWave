@@ -96,8 +96,6 @@ export default function UserAuthForm({ className, mode }) {
             toast({
               title: "Success",
               description: "Account created successfully",
-              variant: "success",
-              status: "success",
               duration: 3000,
             })
             router.push("/");
@@ -108,7 +106,6 @@ export default function UserAuthForm({ className, mode }) {
           title: "Error",
           description: error.message,
           variant: "destructive",
-          status: "error",
           duration: 3000
         })
       }
@@ -126,7 +123,11 @@ export default function UserAuthForm({ className, mode }) {
         if (signedInUser.error) {
           throw new Error(signedInUser.error);
         } else {
-          console.log(session)
+          toast({
+            title: "Success",
+            description: "Logged in successfully",
+            duration: 3000,
+          })
           router.push("/");
         }
       } catch (error) {
@@ -134,7 +135,6 @@ export default function UserAuthForm({ className, mode }) {
           title: "Error",
           description: error.message,
           variant: "destructive",
-          status: "error",
           duration: 3000,
         })
       }

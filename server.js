@@ -16,66 +16,61 @@ app.prepare().then(() => {
 
   const io = new Server(httpServer, {
     cors: {
-      origin: "*",
+      origin: "https://chatwave-pro.vercel.app",
+      methods: ["GET", "POST"],
     },
-    allowEIO3: true,
-    transports: ["websocket"],
-    allowRequest: (req) => {
-      return true; // Allow all requests for now
-    },
-    
+    connectionStateRecovery: {
+      // ignoreKeepAlives: false,
+      // maxInterval: 10000,
+      // maxReconnectionDelay: 5000,
+      // reconnectionDelayGrowFactor: 1.5,
+    }
   });
 
   const users = {};
 
   io.on("connection", (socket) => {
-    const username = socket.handshake.query.username;
+    const userId = socket.handshake.query.userId;
     const roomIds = socket.handshake.query.roomIds;
 
-    // if (!username || !Array.isArray(roomIds)) {
+    // if (!userId || !Array.isArray(roomIds)) {
     //   return socket.disconnect();
     // }
 
-    if (username) {
-      users[username] = socket.id;
+    if (userId) {
+      users[userId] = socket.id;
     }
 
     io.emit('online', Object.keys(users));
 
-    console.log(`User connected: ${username}${users[username] ? ` (${users[username]})` : ""}`);
+    console.log(`User connected: ${userId}${users[userId] ? ` (${users[userId]})` : ""}`);
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");
-      delete users[username];
+      delete users[userId];
       io.emit('online', Object.keys(users));
     });
 
-    socket.on("message", ({ sender, receiver, message, roomId }) => {
-      console.log("message", { sender, receiver, message, roomId });
-      const recipientSocketId = users[receiver.username];
+    socket.on("message", (data) => {
+      const { receiver } = data;
+      console.log(data)
+      const recipientSocketId = users[receiver._id?.toString()];
       if (recipientSocketId) {
-        io.to(recipientSocketId).emit("message", { sender, message }, (err, res) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(res);
-          }
-        });
+        io.to(recipientSocketId).emit("message", data);
       }
     });
 
-    // socket.on('receiveMessage', ({ sender, message }) => {
-    //   io.to(users[sender.username]).emit('receiveMessage', { sender, message });
-    // })
-
     socket.on("typing", (data) => {
-      io.to(users[data.username]).emit("typing", data);
-
-      console.log(data);
+      const recipientSocketId = users[data.receiverId];
+      
+      if (recipientSocketId) {
+        io.to(recipientSocketId).emit("typing", data);
+        console.log(data)
+      }
     });
 
     socket.on("stopTyping", (data) => {
-      io.to(users[data.username]).emit("stopTyping", data);
+      io.to(users[data._id]).emit("stopTyping", data);
     });
 
     socket.on("joinRoom", (newRoomId) => {
@@ -97,15 +92,5 @@ app.prepare().then(() => {
   httpServer.listen(3000, (err) => {
     if (err) throw err;
     console.log("Server started on port 3000");
-
-    // try {
-    //   await mongoose.connect(MONGODB_URI, {
-    //     dbName: "chatwave",
-    //     bufferCommands: false,
-    //   });
-    //   console.log("Connected to the database");
-    // } catch (error) {
-    //   throw error;
-    // }
   });
 });

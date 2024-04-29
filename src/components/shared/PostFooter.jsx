@@ -42,7 +42,7 @@ export const PostCaptionAndTags = ({ post }) => {
           {post.tags?.map((tag, index) => (
             <Link
               key={index}
-              href={`/tag/${tag}`}
+              href={`/explore?query=${tag}&tab=tags`}
               className={cn(
                 badgeVariants({ variant: "secondary" }),
                 `border-0 p-[.6rem] dark:bg-light-dark dark:text-light ${

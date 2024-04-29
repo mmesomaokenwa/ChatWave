@@ -6,10 +6,10 @@ import { getServerSession } from 'next-auth'
 import React from 'react'
 
 const Profile = async ({ params: { userId } }) => {
-  const sessionUser = await getServerSession(authOptions).then(res => res?.user)
-  
-  const user = await getUserById(userId)
-  console.log({ user })
+  const [sessionUser, user] = await Promise.all([
+    getServerSession(authOptions).then(res => res?.user),
+    getUserById(userId)
+  ])
   return (
     <div className="flex flex-1">
       <div className="flex flex-col flex-1 items-center gap overflow-y-scroll py-8 px-5 md:px-8 lg:p-14 relative">

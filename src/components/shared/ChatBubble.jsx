@@ -1,11 +1,12 @@
 import { formatChatDate } from '@/lib/utils';
 import Image from 'next/image';
-import React from 'react'
+import React, { forwardRef } from 'react'
 import OptionsPopup from './OptionsPopup';
 
-const ChatBubble = ({ message, isLastMessage, isOwned, className }) => {
+const ChatBubble = forwardRef(({ message, isLastMessage, isOwned, className }, ref) => {
   return (
     <div
+      ref={ref}
       className={`flex flex-col my-2 ${
         isOwned ? "justify-end" : "justify-start"
       }`}
@@ -15,13 +16,13 @@ const ChatBubble = ({ message, isLastMessage, isOwned, className }) => {
           isOwned ? "flex-row-reverse" : "flex-row"
         }`}
       >
-        <Image
+        {/* <Image
           src={message.sender.profileImage || "/assets/profile-placeholder.svg"}
           alt={message.sender.name}
           className="size-8 md:size-10 rounded-full self-start"
           width={45}
           height={45}
-        />
+        /> */}
         <div
           className={`px-4 py-2 max-w-sm ${
             isOwned
@@ -34,10 +35,12 @@ const ChatBubble = ({ message, isLastMessage, isOwned, className }) => {
         <OptionsPopup message={message} />
       </div>
       {isLastMessage && (
-        <div className={`text-sm text-muted-foreground ${isOwned ? "text-right" : "text-left"}`}>{formatChatDate(message.createdAt)}</div>
+        <div className={`text-sm text-muted-foreground ${isOwned ? "text-right" : "text-left"}`}>
+          {message.isSending ? "Sending..." : formatChatDate(message.createdAt)}
+        </div>
       )}
     </div>
   );
-}
+})
 
 export default ChatBubble

@@ -25,10 +25,10 @@ const chatSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  roomId: {
-    type: String,
-    required: true
-  }
+  // roomId: {
+  //   type: String,
+  //   required: true
+  // }
 })
 
 const Chat = models.Chat || model('Chat', chatSchema);

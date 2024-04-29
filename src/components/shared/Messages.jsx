@@ -1,19 +1,36 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import ChatBubble from './ChatBubble';
 import MessageForm from './MessageForm';
+import { useMessage } from '@/providers/MessageProvider';
+import IsTyping from './IsTyping';
 
 const Messages = ({ chatRoom, roomId, sessionUser }) => {
-  const [messages, setMessages] = useState([]);
+  const { chatRoomMessages, setChatRoomMessages, typingUsers } = useMessage();
+  const isTyping = useMemo(() => typingUsers.includes(roomId), [typingUsers, roomId])
+
+  const lastMessageRef = useRef(null);
+  const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
+
+  useEffect(() => {
+    if (chatRoom) {
+      setChatRoomMessages(chatRoom);
+      setIsScrolledToBottom(true);
+    }
+  }, [chatRoom]);
+
+  useEffect(() => {
+    if (isScrolledToBottom) {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatRoomMessages])
   return (
     <>
-      <div
-        id="messages"
-        className="flex flex-col-reverse gap-2 w-full grow overflow-y-scroll"
-      >
-        {chatRoom &&
-          chatRoom.map((message, index) => {
+      <div className="flex flex-col-reverse w-full grow overflow-y-scroll">
+        {isTyping && <IsTyping size="lg" />}
+        {chatRoomMessages &&
+          chatRoomMessages.map((message, index) => {
             const isLastMessage = index === 0;
             return (
               <ChatBubble
@@ -21,20 +38,13 @@ const Messages = ({ chatRoom, roomId, sessionUser }) => {
                 message={message}
                 isLastMessage={isLastMessage}
                 isOwned={message.isOwned}
+                ref={isLastMessage ? lastMessageRef : null}
               />
             );
           })}
       </div>
       <div className="sticky bottom-20 md:bottom-0 w-full">
-        <MessageForm
-          roomId={roomId}
-          senderId={sessionUser?.id}
-          receiverId={
-            chatRoom[0]?.isOwned
-              ? chatRoom[0]?.receiver?._id
-              : chatRoom[0]?.sender?._id
-          }
-        />
+        <MessageForm roomId={roomId} sender={sessionUser} />
       </div>
     </>
   );

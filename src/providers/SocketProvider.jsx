@@ -4,9 +4,17 @@ import { useToast } from "@/components/ui/use-toast";
 import { createContext, useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { useSession } from "next-auth/react";
+import { useParams, useRouter } from "next/navigation";
+import { useMessage } from "./MessageProvider";
 
 const SocketContext = createContext({
   socket: null,
+  onlineUsers: [],
+  isOnline: false,
+  setOnlineUsers: () => { },
+  setIsOnline: () => { },
+  joinRoom: () => { },
+  leaveRoom: () => { },
   connect: () => { },
   disconnect: () => { },
   on: () => { },
@@ -18,6 +26,9 @@ const SocketProvider = ({ children }) => {
   const user = session?.user;
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isOnline, setIsOnline] = useState(false);
+  const [isOnlineTimeout, setIsOnlineTimeout] = useState(null);
+  const [isOnlineInterval, setIsOnlineInterval] = useState(null);
 
   const { toast } = useToast();
 
@@ -25,9 +36,13 @@ const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user?.id) { 
       const newSocket = io({
+        path: 'https://chatwave-2.0.vercel.app',
         query: {
-          username: user?.username,
+          userId: user.id,
         },
+        auth: {
+          offset: undefined
+        }
       });
       setSocket(newSocket);
 
@@ -54,17 +69,6 @@ const SocketProvider = ({ children }) => {
         //   duration: 2000
         // })
         console.log("Disconnected from the server");
-      });
-
-      newSocket.on("message", ({ sender, message }) => {
-        console.log("receiveMessage", { sender, message });
-        toast({
-          title: `Message from ${sender.username}`,
-          description: message,
-          variant: "info",
-          duration: 5000,
-          // onClick: () => newSocket.emit("stopTyping", { sender, roomId: sender.roomId }),
-        });
       });
 
       return () => {

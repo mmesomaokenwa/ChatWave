@@ -66,10 +66,17 @@ export const getAllMessagesByUserID = async (id) => {
 
     if (!messages) throw new Error('Messages not found')
 
-    // arrange messages into groups by roomId
+    // arrange messages into groups by conversations
     const chatGroups = {}
     messages.forEach((message) => {
-      const { roomId } = message._doc
+      const { sender, receiver } = message._doc
+      let roomId;
+      
+      if (id === sender._id.toString()) {
+        roomId = receiver._id.toString()
+      } else {
+        roomId = sender._id.toString()
+      }
       if (!chatGroups[roomId]) {
         chatGroups[roomId] = []
       }
@@ -97,7 +104,18 @@ export const getMessagesByRoomId = async ({ roomId, userId }) => {
   try {
     console.log(roomId, userId)
     await connectToDatabase()
-    const result = await Chat.find({ roomId })
+    const result = await Chat.find({
+      $or: [{
+        $and: [
+          { sender: userId },
+          { receiver: roomId }
+        ]
+      }, {
+        $and: [
+          { sender: roomId },
+          { receiver: userId }
+        ]
+    }] })
       .populate(["sender", "receiver"])
       .sort({ createdAt: -1 })
     

@@ -6,8 +6,10 @@ import { getServerSession } from 'next-auth';
 import React from 'react'
 
 const PostDetails = async ({ params: { postId } }) => {
-  const user = await getServerSession(authOptions).then(res => res?.user)
-  const { post, relatedPosts } = await getPostById(postId);
+  const [user, { post, relatedPosts }] = await Promise.all([
+    getServerSession(authOptions).then(res => res?.user),
+    getPostById(postId)
+  ])
   return (
     <div className="flex flex-1">
       <div className="flex flex-col flex-1 items-center overflow-y-scroll py-8 px-0 md:px-8 lg:p-14">

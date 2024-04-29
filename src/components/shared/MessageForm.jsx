@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Image from 'next/image';
-import { v4 as uuidv4 } from 'uuid'
 import { createMessage } from '@/lib/mongodb/actions/chat.actions';
 import { useSocket } from '@/providers/SocketProvider';
+import { useMessage } from '@/providers/MessageProvider';
 
-const MessageForm = ({ roomId, senderId, receiverId }) => {
+const MessageForm = ({ roomId, sender }) => {
   const form = useForm({
     defaultValues: {
       message: "",
@@ -23,16 +23,33 @@ const MessageForm = ({ roomId, senderId, receiverId }) => {
   })
 
   const { emit } = useSocket()
+  const { setChatRoomMessages } = useMessage()
 
   const onSubmit = async (data) => {
     try {
       const { message } = data;
       const messageData = {
-        sender: senderId,
-        receiver: receiverId,
-        roomId: roomId || uuidv4(),
+        sender: sender?.id,
+        receiver: roomId,
         message,
       }
+
+      const optimisticMessage = {
+        sender: {
+          _id: sender?.id,
+          ...sender,
+        },
+        receiver: {
+          _id: roomId
+        },
+        message,
+        isOwned: true,
+        isSending: true,
+      }
+
+      form.reset()
+
+      setChatRoomMessages((prev) => [optimisticMessage, ...prev]);
 
       const sentMessage = await createMessage({
         req: messageData,
@@ -43,7 +60,7 @@ const MessageForm = ({ roomId, senderId, receiverId }) => {
 
       emit('message', sentMessage)
     } catch (error) {
-      
+      console.log({ error })
     }
   }
   return (
@@ -57,6 +74,12 @@ const MessageForm = ({ roomId, senderId, receiverId }) => {
               <FormControl>
                 <Input
                   placeholder="Type a message" {...field}
+                  onKeyPress={() => emit('typing', {
+                    senderId: sender?.id,
+                    receiverId: roomId,
+                    isTyping: true
+                  })}
+                  autoComplete="off"
                   className="w-full py-3 px-4 border-none text-black dark:text-white rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </FormControl>

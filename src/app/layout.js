@@ -5,6 +5,7 @@ import SocketProvider from "@/providers/SocketProvider";
 import { Toaster } from "@/components/ui/toaster";
 import AuthProvider from "@/providers/AuthProvider";
 import QueryProvider from "@/providers/QueryProvider";
+import MessageProvider from "@/providers/MessageProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,12 +27,14 @@ export default function RootLayout({ children }) {
       <body className={poppins.className}>
         <AuthProvider>
           <SocketProvider>
+            <MessageProvider>
             <ThemeProvider>
               <QueryProvider>
                 {children}
                 <Toaster />
               </QueryProvider>
-            </ThemeProvider>
+              </ThemeProvider>
+            </MessageProvider>
           </SocketProvider>
         </AuthProvider>
       </body>
