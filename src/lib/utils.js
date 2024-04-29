@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import Link from "next/link";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge"
 
@@ -166,3 +167,26 @@ export function removeKeysFromQuery({ params, keysToRemove }) {
     { skipNull: true }
   );
 }
+
+const replaceLinksInParagraph = (text) => {
+  const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  return text.replace(urlRegex, (url) => {
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer">
+        {url}
+      </a>
+    );
+  });
+}
+
+export const formatText = (text) => {
+  const paragraphs = text.split("\n");
+  return paragraphs.map((paragraph, index) => {
+    if (paragraph === "") {
+      return <br key={index} />;
+    }
+    const formattedParagraph = replaceLinksInParagraph(paragraph);
+    // console.log(Object.entries(formattedParagraph))
+    return <p key={index}>{formattedParagraph}</p>;
+  });
+};

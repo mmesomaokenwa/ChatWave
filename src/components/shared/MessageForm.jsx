@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { createMessage } from '@/lib/mongodb/actions/chat.actions';
 import { useSocket } from '@/providers/SocketProvider';
 import { useMessage } from '@/providers/MessageProvider';
+import { Textarea } from '../ui/textarea';
 
 const MessageForm = ({ roomId, sender }) => {
   const form = useForm({
@@ -28,6 +29,8 @@ const MessageForm = ({ roomId, sender }) => {
   const onSubmit = async (data) => {
     try {
       const { message } = data;
+      if (!message || !message.trim()) return
+      console.log(message)
       const messageData = {
         sender: sender?.id,
         receiver: roomId,
@@ -63,24 +66,32 @@ const MessageForm = ({ roomId, sender }) => {
       console.log({ error })
     }
   }
+
+  const handleKeyPress = () => {
+    emit("typing", {
+      senderId: sender?.id,
+      receiverId: roomId,
+      isTyping: true,
+    });
+  };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex bg-white dark:bg-black rounded-lg shadow-md overflow-hidden">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full flex bg-white dark:bg-black rounded-lg shadow-md overflow-hidden"
+      >
         <FormField
           control={form.control}
           name="message"
           render={({ field }) => (
             <FormItem className="w-full flex gap-2 items-center">
               <FormControl>
-                <Input
-                  placeholder="Type a message" {...field}
-                  onKeyPress={() => emit('typing', {
-                    senderId: sender?.id,
-                    receiverId: roomId,
-                    isTyping: true
-                  })}
-                  autoComplete="off"
-                  className="w-full py-3 px-4 border-none text-black dark:text-white rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                <Textarea
+                  placeholder="Type a message"
+                  {...field}
+                  onKeyPress={handleKeyPress}
+                  className="w-full min-h-5 py-3 px-4 border-none text-black dark:text-white rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
+                  rows={1}
                 />
               </FormControl>
             </FormItem>
@@ -88,7 +99,8 @@ const MessageForm = ({ roomId, sender }) => {
         />
         <Button
           type="submit"
-          variant="ghost" className='bg-yellow-500 hover:bg-yellow-500/90'
+          variant="ghost"
+          className="bg-yellow-500 hover:bg-yellow-500/90"
           disabled={form.formState.isSubmitting || !form.formState.isDirty}
         >
           <Image

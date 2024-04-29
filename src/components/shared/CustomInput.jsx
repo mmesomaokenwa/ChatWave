@@ -13,13 +13,13 @@ const CustomInput = ({ field, label, placeholder, type, isTextArea, error }) => 
           className={`flex items-center justify-between px-4 bg-gray-100 dark:bg-gray-900
           focus-within:ring-2 focus-within:ring-accent ${
             error && "ring-2 ring-red-500 focus-within:ring-red-500"
-          } ${isTextArea ? "" : "h-[3rem]"}`}
+          } ${isTextArea ? "" : "min-h-[3rem]"}`}
         >
           {typeof label !== "string" && <FormLabel>{label}</FormLabel>}
           {isTextArea ? (
             <Textarea
               type={type}
-              className="bg-gray-100 dark:bg-gray-900 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="bg-gray-100 dark:bg-gray-900 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[3rem]"
               placeholder={placeholder}
               {...field}
             />

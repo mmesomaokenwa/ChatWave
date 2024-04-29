@@ -1,4 +1,4 @@
-import { formatChatDate } from '@/lib/utils';
+import { formatChatDate, formatText } from '@/lib/utils';
 import Image from 'next/image';
 import React, { forwardRef } from 'react'
 import OptionsPopup from './OptionsPopup';
@@ -30,7 +30,7 @@ const ChatBubble = forwardRef(({ message, isLastMessage, isOwned, className }, r
               : "dark:bg-gray-800 bg-gray-200 rounded-r-xl rounded-tl-xl"
           }`}
         >
-          <p>{message.message}</p>
+          <div>{formatText(message.message)}</div>
         </div>
         <OptionsPopup message={message} />
       </div>
