@@ -36,7 +36,7 @@ const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user?.id) { 
       const newSocket = io({
-        path: 'https://chatwave-2.0.vercel.app',
+        path: 'https://chatwave-pro.vercel.app',
         query: {
           userId: user.id,
         },
