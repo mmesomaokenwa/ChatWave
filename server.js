@@ -24,7 +24,7 @@ app.prepare().then(() => {
       // maxInterval: 10000,
       // maxReconnectionDelay: 5000,
       // reconnectionDelayGrowFactor: 1.5,
-    }
+    },
   });
 
   const users = {};

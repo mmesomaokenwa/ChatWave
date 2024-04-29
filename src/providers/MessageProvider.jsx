@@ -60,6 +60,8 @@ const MessageProvider = ({ children }) => {
           setChatRoomMessages((prev) => [data, ...prev]);
         }
 
+        setTypingUsers((prev) => prev.filter((id) => id !== roomId));
+
         revalidate(`/chat/${roomId}`)
   
         toast({

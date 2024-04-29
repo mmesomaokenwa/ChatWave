@@ -29,7 +29,7 @@ const PostControls = ({ post }) => {
 
   useEffect(() => {
     if (likes) setLiked(checkIsLiked(likes, user?.id))
-  }, [likes])
+  }, [likes, user?.id])
 
   const handleLike = () => {
     try {
