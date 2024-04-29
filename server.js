@@ -16,7 +16,7 @@ app.prepare().then(() => {
 
   const io = new Server(httpServer, {
     cors: {
-      origin: "https://chatwave-pro.vercel.app",
+      origin: dev ? "http://localhost:3000" : "https://chatwave-pro.vercel.app",
       methods: ["GET", "POST"],
     },
     connectionStateRecovery: {
