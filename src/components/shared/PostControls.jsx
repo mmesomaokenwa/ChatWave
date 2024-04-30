@@ -1,33 +1,41 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from '../ui/button'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
-import { checkIsLiked, formatNumber } from '@/lib/utils'
+import { checkIsLiked, checkIsSaved, formatNumber } from '@/lib/utils'
 import { useInView } from 'react-intersection-observer'
 import CommentForm from './CommentForm'
 import { likePost, savePost } from '@/lib/mongodb/actions/post.actions'
+import { useSocket } from '@/providers/SocketProvider'
 
-const PostControls = ({ post }) => {
+const PostControls = ({ post, isTopPost }) => {
   const { data: session } = useSession()
   const user = session?.user
+  const { emit } = useSocket()
 
   const { ref, inView } = useInView({
     threshold: 1,
     triggerOnce: true
   })
 
-  const [likes, setLikes] = useState(post.likes.map((like) => like?._id) || [])
+  const isLiked = useMemo(() => checkIsLiked(post.likes, user?.id), [post.likes, user?.id])
+  const isSaved = useMemo(() => checkIsSaved(post.saves, user?.id), [post.saves, user?.id])
   const [comments, setComments] = useState(post.comments)
   const [saves, setSaves] = useState(post.saves)
   const [shares, setShares] = useState(post.shares)
-  const [liked, setLiked] = useState(checkIsLiked(likes, user?.id))
-  const [saved, setSaved] = useState(post.saves.find((save) => save?._id?.toString() === user?.id?.toString()) ? true : false)
-
+  const [likes, setLikes] = useState(post.likes)
+  const [liked, setLiked] = useState(false)
+  const [saved, setSaved] = useState(false)
+  
   useEffect(() => {
-    if (likes) setLiked(checkIsLiked(likes, user?.id))
-  }, [likes, user?.id])
+    setLiked(isLiked)
+  }, [isLiked])
+  
+  useEffect(() => {
+    setSaved(isSaved)
+  }, [isSaved])
 
   const handleLike = () => {
     try {
@@ -35,7 +43,7 @@ const PostControls = ({ post }) => {
 
       if (liked) {
         setLiked(false)
-        setLikes(prev => prev.filter((like) => like?.toString() !== user?.id?.toString()))
+        setLikes(prev => prev.filter((like) => like !== user?.id))
         isLiked = false
       } else {
         setLiked(true)
@@ -51,6 +59,12 @@ const PostControls = ({ post }) => {
           `/posts/${post._id}`,
           '/'
         ]
+      })
+
+      if (isLiked && user?.id !== post.creator._id) emit('likePost', {
+        postId: post._id,
+        userId: user?.id,
+        creatorId: post.creator._id,
       })
     } catch (error) {
       console.log(error)

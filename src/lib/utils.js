@@ -138,6 +138,10 @@ export const checkIsLiked = (likeList, userId) => {
   return likeList?.includes(userId);
 };
 
+export const checkIsSaved = (saveList, userId) => {
+  return saveList?.includes(userId);
+}
+
 export function formUrlQuery({ params, key, value }) {
   const currentUrl = qs.parse(params);
 

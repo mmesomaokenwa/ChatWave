@@ -53,7 +53,6 @@ app.prepare().then(() => {
 
     socket.on("message", (data) => {
       const { receiver } = data;
-      console.log(data)
       const recipientSocketId = users[receiver._id?.toString()];
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("message", data);
@@ -65,7 +64,6 @@ app.prepare().then(() => {
       
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("typing", data);
-        console.log(data)
       }
     });
 
@@ -83,6 +81,11 @@ app.prepare().then(() => {
     socket.on("leaveRoom", () => {
       socket.leave([...roomIds]);
     });
+
+    socket.on("likePost", (data) => {
+      console.log(data)
+      io.to(users[data.creatorId]).emit("likePost", data);
+    })
   });
 
   server.all("*", (req, res) => {
