@@ -13,8 +13,6 @@ const PostControls = ({ post }) => {
   const { data: session } = useSession()
   const user = session?.user
 
-  console.log(user)
-
   const { ref, inView } = useInView({
     threshold: 1,
     triggerOnce: true

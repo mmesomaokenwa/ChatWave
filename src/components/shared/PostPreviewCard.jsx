@@ -13,7 +13,7 @@ import Link from 'next/link';
 const PostPreviewCard = ({ post }) => {
   return (
     <Link href={`/posts/${post._id}`}>
-      <Card className="overflow-hidden rounded-2xl h-[175px]">
+      <Card className="overflow-hidden rounded-2xl h-[200px]">
         <CardContent className="p-0 relative">
           {post?.media[0]?.type === "image" ? (
             <Image
@@ -21,7 +21,7 @@ const PostPreviewCard = ({ post }) => {
               alt={post.media[0].url}
               width={500}
               height={500}
-              className='object-cover'
+              className='h-[200px] object-cover'
             />
           ) : (
             <video
@@ -29,7 +29,7 @@ const PostPreviewCard = ({ post }) => {
               loop
               playsInline
               muted
-              className="w-full h-full object-cover"
+              className="h-[200px] object-cover"
             >
               <source src={post.media[0].url} type="video/mp4" />
             </video>

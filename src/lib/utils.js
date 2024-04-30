@@ -169,24 +169,31 @@ export function removeKeysFromQuery({ params, keysToRemove }) {
 }
 
 const replaceLinksInParagraph = (text) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  // Regular expression to find URLs
+  const urlRegex =
+    /\b((?:https?|ftp):\/\/(?:\S+(?::\S*)?@)?(?:(?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}(?::\d{2,5})?(?:\/[^\s]*)?)/g;
+  
+  const parts = text.split(urlRegex); // Split text by URLs
 
-  return text.replace(urlRegex, (url) => {
-    return (
-      `<a href="${url}" target="_blank" rel="noopener noreferrer">
-        ${url}
-      </a>`
-    );
-  });
+  // Iterate through the parts and transform URLs into <a> tags
+  return parts.map((part, index) =>
+    urlRegex.test(part) ? (
+      <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="hover:underline">
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  );
 }
 
 export const formatText = (text) => {
   const paragraphs = text.split("\n");
   return paragraphs.map((paragraph, index) => {
-    if (paragraph === "") {
+    if (paragraph === "" && index !== paragraphs.length - 1) {
       return <br key={index} />;
     }
     const formattedParagraph = replaceLinksInParagraph(paragraph);
-    return <p key={index} dangerouslySetInnerHTML={{ __html: formattedParagraph.toString() }}/>;
+    return <p key={index} className="break-words">{formattedParagraph}</p>;;
   });
 };

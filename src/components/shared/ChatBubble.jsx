@@ -1,9 +1,10 @@
 import { formatChatDate, formatText } from '@/lib/utils';
 import Image from 'next/image';
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useMemo } from 'react'
 import OptionsPopup from './OptionsPopup';
 
 const ChatBubble = forwardRef(({ message, isLastMessage, isOwned, className }, ref) => {
+  const formattedMessage = useMemo(() => formatText(message.message), [message.message])
   return (
     <div
       ref={ref}
@@ -24,13 +25,13 @@ const ChatBubble = forwardRef(({ message, isLastMessage, isOwned, className }, r
           height={45}
         /> */}
         <div
-          className={`px-4 py-2 max-w-sm ${
+          className={`px-4 py-2 max-w-[50%] ${
             isOwned
               ? "bg-accent text-white rounded-l-xl rounded-tr-xl"
               : "dark:bg-gray-800 bg-gray-200 rounded-r-xl rounded-tl-xl"
           }`}
         >
-          <div>{formatText(message.message)}</div>
+          <div>{formattedMessage}</div>
         </div>
         <OptionsPopup message={message} />
       </div>

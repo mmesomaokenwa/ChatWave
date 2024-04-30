@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { CardFooter } from '../ui/card';
 import { badgeVariants } from "@/components/ui/badge";
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn, formatText } from '@/lib/utils';
 import PostControls from './PostControls';
 
 const PostFooter = ({ post }) => {
@@ -19,11 +19,12 @@ export default PostFooter
 
 export const PostCaptionAndTags = ({ post }) => {
   const [show, setShow] = useState(false);
+  const formattedCaption = useMemo(() => formatText(post?.caption), [post?.caption]);
 
   return (
     <>
       {post.caption && (
-        <p
+        <div
           className={cn(
             `w-full text-sm lg:text-[16px] font-medium ${
               !show ? "line-clamp-3" : ""
@@ -34,8 +35,8 @@ export const PostCaptionAndTags = ({ post }) => {
             setShow(!show);
           }}
         >
-          {post.caption}
-        </p>
+          {formattedCaption}
+        </div>
       )}
       {post.tags && (
         <ul className={cn("w-full flex gap-2 justify-end")}>
