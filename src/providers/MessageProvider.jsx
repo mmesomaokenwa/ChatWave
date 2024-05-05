@@ -8,9 +8,9 @@ import { useSession } from 'next-auth/react';
 import { revalidate } from '@/lib';
 
 const MessageContext = createContext({
-  chatRoomMessages: [],
+  chatRoomMessages: [{}],
   chatRooms: {},
-  typingUsers: [],
+  typingUsers: [''],
   setTypingUsers: () => { },
   setChatRooms: () => { },
   setChatRoomMessages: () => { },
@@ -24,12 +24,12 @@ const MessageProvider = ({ children }) => {
   const { toast } = useToast();
   const pathname = usePathname()
   const router = useRouter();
-  const { socket } = useSocket()
+  const { socket, on } = useSocket()
 
   useEffect(() => {
     let timeout;
     if (socket) { 
-      socket.on("typing", (data) => {
+      on("typing", (data) => {
         console.log("typing", data);
         setTypingUsers((prev) => {
           if (prev.includes(data.senderId)) {
@@ -46,7 +46,7 @@ const MessageProvider = ({ children }) => {
         }, 4000)
       });
 
-      socket.on("message", (data) => {
+      on("message", (data) => {
         const roomId = data.sender._id?.toString()
         setChatRooms((prev) => {
           if (prev[roomId]) { 

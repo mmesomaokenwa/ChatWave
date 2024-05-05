@@ -67,10 +67,6 @@ app.prepare().then(() => {
       }
     });
 
-    socket.on("stopTyping", (data) => {
-      io.to(users[data._id]).emit("stopTyping", data);
-    });
-
     socket.on("joinRoom", (newRoomId) => {
       socket.join([...roomIds]);
       if (newRoomId) {
@@ -83,8 +79,16 @@ app.prepare().then(() => {
     });
 
     socket.on("likePost", (data) => {
+      io.to(users[data.receiver?.toString()]).emit("likePost", data);
+    })
+
+    socket.on("commentPost", (data) => {
+      io.to(users[data.receiver?.toString()]).emit("commentPost", data);
+    })
+
+    socket.on("follow", (data) => {
       console.log(data)
-      io.to(users[data.creatorId]).emit("likePost", data);
+      io.to(users[data.receiver?.toString()]).emit("follow", data);
     })
   });
 

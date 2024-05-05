@@ -7,12 +7,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from '../ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 import FollowButton from './FollowButton';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/lib/authOptions';
 
-const LikeCard = ({ like, userId }) => {
+const LikeCard = async ({ like }) => {
+  const sessionUser = await getServerSession(authOptions).then(res => res?.user)
+
   return (
     <Card className="flex items-center justify-between border-0">
       <CardHeader className="p-4">
@@ -36,7 +39,7 @@ const LikeCard = ({ like, userId }) => {
         </Link>
       </CardHeader>
       <CardFooter className="p-4">
-        {like?._id !== userId && <FollowButton userId={like?._id} />}
+        {like?._id !== sessionUser?.id && <FollowButton userId={like?._id} sessionUser={sessionUser} followed={like?.followers?.includes(sessionUser?.id)} />}
       </CardFooter>
     </Card>
   );

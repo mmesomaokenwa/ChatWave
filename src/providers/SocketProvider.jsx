@@ -9,7 +9,7 @@ import { useMessage } from "./MessageProvider";
 
 const SocketContext = createContext({
   socket: null,
-  onlineUsers: [],
+  onlineUsers: [''],
   isOnline: false,
   setOnlineUsers: () => { },
   setIsOnline: () => { },
@@ -26,11 +26,6 @@ const SocketProvider = ({ children }) => {
   const user = session?.user;
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [isOnline, setIsOnline] = useState(false);
-  const [isOnlineTimeout, setIsOnlineTimeout] = useState(null);
-  const [isOnlineInterval, setIsOnlineInterval] = useState(null);
-
-  const { toast } = useToast();
 
   // Connect to the server when the component mounts
   useEffect(() => {
@@ -46,12 +41,6 @@ const SocketProvider = ({ children }) => {
       setSocket(newSocket);
 
       newSocket.on("connect", () => {
-        // toast({
-        //   title: "Connected",
-        //   description: "You are now connected to the server",
-        //   variant: "success",
-        //   duration: 2000
-        // })
         console.log("Connected to the server");
       });
 
@@ -61,12 +50,6 @@ const SocketProvider = ({ children }) => {
       })
 
       newSocket.on("disconnect", () => {
-        // toast({
-        //   title: "Disconnected",
-        //   description: "You have been disconnected from the server",
-        //   variant: "destructive",
-        //   duration: 2000
-        // })
         console.log("Disconnected from the server");
       });
 

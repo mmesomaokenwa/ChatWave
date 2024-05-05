@@ -28,6 +28,8 @@ const authOptions = {
           profileImage: data.profileImage,
           username: data.username,
           bio: data.bio,
+          followers: data.followers,
+          following: data.following,
         };
       },
     }),

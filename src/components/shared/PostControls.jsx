@@ -10,7 +10,7 @@ import CommentForm from './CommentForm'
 import { likePost, savePost } from '@/lib/mongodb/actions/post.actions'
 import { useSocket } from '@/providers/SocketProvider'
 
-const PostControls = ({ post, isTopPost }) => {
+const PostControls = ({ post }) => {
   const { data: session } = useSession()
   const user = session?.user
   const { emit } = useSocket()
@@ -20,14 +20,15 @@ const PostControls = ({ post, isTopPost }) => {
     triggerOnce: true
   })
 
-  const isLiked = useMemo(() => checkIsLiked(post.likes, user?.id), [post.likes, user?.id])
-  const isSaved = useMemo(() => checkIsSaved(post.saves, user?.id), [post.saves, user?.id])
   const [comments, setComments] = useState(post.comments)
   const [saves, setSaves] = useState(post.saves)
   const [shares, setShares] = useState(post.shares)
-  const [likes, setLikes] = useState(post.likes)
+  const [likes, setLikes] = useState(post.likes.map(like => like?._id?.toString() || like))
   const [liked, setLiked] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  const isLiked = useMemo(() => checkIsLiked(likes, user?.id), [likes, user?.id])
+  const isSaved = useMemo(() => checkIsSaved(saves, user?.id), [saves, user?.id])
   
   useEffect(() => {
     setLiked(isLiked)
@@ -55,16 +56,17 @@ const PostControls = ({ post, isTopPost }) => {
         postId: post._id,
         userId: user?.id,
         liked: isLiked,
+        creatorId: post.creator._id,
         path: [
           `/posts/${post._id}`,
           '/'
         ]
-      })
-
-      if (isLiked && user?.id !== post.creator._id) emit('likePost', {
-        postId: post._id,
-        userId: user?.id,
-        creatorId: post.creator._id,
+      }).then(({notification}) => {
+        if (notification) emit("likePost", {
+          ...notification,
+          sender: user,
+          post
+        });
       })
     } catch (error) {
       console.log(error)
@@ -142,9 +144,8 @@ const PostControls = ({ post, isTopPost }) => {
       </div>
       <CommentForm
         setComments={setComments}
-        profileImage={user?.profileImage}
-        userId={user?.id}
-        postId={post._id}
+        user={user}
+        postId={post}
         className={`my-4 mt-2 hidden opacity-0 h-0 transition-all ${
           inView && "!flex opacity-100 h-full"
         }`}

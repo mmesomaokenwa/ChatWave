@@ -5,6 +5,8 @@ import Post from "../models/post.model"
 import User from "../models/user.model"
 import { revalidatePath } from "next/cache"
 import { handleError } from "@/lib/utils"
+import Notification from "../models/notification.model"
+import { createNotification, getNotificationById } from "./notification.action"
 
 export const createPost = async ({ post, creatorId, path }) => {
   try {
@@ -70,8 +72,8 @@ export const getPostById = async (id) => {
 
     const post = await Post.findById(id)
       .populate('creator', ['name', 'username', 'profileImage', '_id'])
-      .populate('likes', ['name', 'username', 'profileImage', '_id'])
-      .populate('comments.user', ['name', 'username', 'profileImage', '_id']);
+      .populate('likes', ['name', 'username', 'profileImage', '_id', 'followers', 'following'])
+      .populate('comments.user', ['name', 'username', 'profileImage', '_id', 'followers', 'following']);
 
     if (!post) throw new Error('Post not found')
 
@@ -175,18 +177,27 @@ export const getPostsByTags = async ({ tagsArray }) => {
   }
 }
 
-export const likePost = async ({ postId, userId, liked, path }) => {
+export const likePost = async ({ postId, userId, creatorId, liked, path }) => {
   try {
     await connectToDatabase()
     
     let likedPost;
+    let notification;
 
     if (liked) {
-      likedPost = await Post.findOneAndUpdate(
-        { _id: postId },
-        { $addToSet: { likes: userId } },
-        { new: true }
-      )
+      [likedPost, notification] = await Promise.all([
+        Post.findOneAndUpdate(
+          { _id: postId },
+          { $addToSet: { likes: userId } },
+          { new: true }
+        ),
+        createNotification({
+          sender: userId,
+          receiver: creatorId,
+          type: "likePost",
+          post: postId,
+        })
+      ]);
     } else {
       likedPost = await Post.findOneAndUpdate(
         { _id: postId },
@@ -200,7 +211,10 @@ export const likePost = async ({ postId, userId, liked, path }) => {
     if (typeof path === "string") revalidatePath(path)
     else path.forEach((path) => revalidatePath(path))
 
-    return JSON.parse(JSON.stringify(likedPost))
+    return JSON.parse(JSON.stringify({
+      likedPost,
+      notification
+    }))
   } catch (error) {
     handleError(error)
   }
@@ -240,22 +254,36 @@ export const savePost = async ({ postId, userId, path }) => {
   }
 }
 
-export const commentPost = async ({ postId, userId, comment, path }) => {
+export const commentPost = async ({ postId, userId, creatorId, comment, path }) => {
   try {
     await connectToDatabase()
 
-    const commentedPost = await Post.findOneAndUpdate(
-      { _id: postId },
-      { $addToSet: { comments: { comment, user: userId } } },
-      { new: true }
-    )
+    const [commentedPost, notification] = await Promise.all([
+      Post.findOneAndUpdate(
+        { _id: postId },
+        { $addToSet: { comments: { comment, user: userId } } },
+        { new: true }
+      ),
+      createNotification({
+        sender: userId,
+        receiver: creatorId,
+        type: "commentPost",
+        post: postId,
+        comment
+      })
+    ]);
 
     if (!commentedPost) throw new Error('Post not found')
 
     if (typeof path === "string") revalidatePath(path)
     else path.forEach((path) => revalidatePath(path))
 
-    return JSON.parse(JSON.stringify(commentedPost.comments[commentedPost.comments.length - 1]))
+    return JSON.parse(
+      JSON.stringify({
+        comment: commentedPost.comments[commentedPost.comments.length - 1],
+        notification
+      })
+    );
   } catch (error) {
     handleError(error)
   }

@@ -34,7 +34,7 @@ const PostDetailsCard = ({ post, userId }) => {
           <PostControls post={post} />
         </CardFooter>
         <div className="w-full p-4 flex justify-between border-b-2">
-          <ViewLikes likes={post.likes} userId={userId} />
+          <ViewLikes likes={post.likes} />
           <ViewComments comments={post.comments} />
         </div>
       </Card>

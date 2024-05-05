@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import LikeCard from './LikeCard';
 
-const ViewLikes = ({ likes, userId }) => {
+const ViewLikes = ({ likes }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger className='text-sm'>View Likes</AlertDialogTrigger>
@@ -35,7 +35,7 @@ const ViewLikes = ({ likes, userId }) => {
         {likes?.length > 0 && (
           <div className="flex flex-col gap-0 overflow-y-scroll h-full grow">
             {likes?.reverse().map((like, index) => (
-              <LikeCard key={index} like={like} userId={userId} />
+              <LikeCard key={index} like={like} />
             ))}
           </div>
         )}

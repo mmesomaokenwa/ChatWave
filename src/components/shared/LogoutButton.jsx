@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-const LogoutButton = ({ showText }) => {
+const LogoutButton = ({ variant = 'ghost', className }) => {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -15,12 +15,18 @@ const LogoutButton = ({ showText }) => {
   }
   return (
     <Button
-      variant="ghost"
-      className={`${showText && "flex justify-start gap-3"}`}
+      variant={variant}
+      className={className}
       onClick={handleLogout}
     >
-      <Image src="/assets/logout.svg" alt="logout" height={25} width={25} />
-      {showText && <p>Logout</p>}
+      <Image
+        src="/assets/logout.svg"
+        alt="logout"
+        height={25}
+        width={25}
+        className={variant === 'destructive' && 'invert brightness-0'}
+      />
+      <p>Logout</p>
     </Button>
   );
 }

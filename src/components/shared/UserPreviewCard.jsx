@@ -13,11 +13,13 @@ import Link from 'next/link';
 
 const UserPreviewCard = ({ user }) => {
   const { data: session } = useSession()
-  const { user: sessionUser } = session || {}
-  console.log({ user, session })
+  const sessionUser = session?.user
   return (
-    <Link href={`/profile/${user?._id}`}>
-      <Card className="flex flex-col items-center justify-between p-4 border-0">
+    <Card className="flex flex-col items-center justify-between p-4 border-0">
+      <Link
+        href={`/profile/${user?._id}`}
+        className="flex flex-col items-center justify-between"
+      >
         <Image
           src={user?.profileImage || "/assets/profile-placeholder.svg"}
           alt={user?.username}
@@ -31,15 +33,19 @@ const UserPreviewCard = ({ user }) => {
           </CardTitle>
           <CardDescription>@{user?.username}</CardDescription>
         </CardHeader>
-        <CardFooter className="p-0">
-          {user?._id !== sessionUser?.id ? (
-            <FollowButton userId={user?._id} />
-          ) : (
-            <p>You</p>
-          )}
-        </CardFooter>
-      </Card>
-    </Link>
+      </Link>
+      <CardFooter className="p-0">
+        {user?._id !== sessionUser?.id ? (
+          <FollowButton
+            userId={user?._id}
+            sessionUser={sessionUser}
+            followed={user?.followers.includes(sessionUser?.id)}
+          />
+        ) : (
+          <p>You</p>
+        )}
+      </CardFooter>
+    </Card>
   );
 }
 

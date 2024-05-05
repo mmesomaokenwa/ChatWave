@@ -16,6 +16,7 @@ import CardCarousel from './CardCarousel';
 import { PostCaptionAndTags } from './PostFooter';
 import PostTopControls from './PostTopControls';
 import PostControls from './PostControls';
+import PostCardWrapper from './PostCardWrapper';
 
 const PostCard = async ({ post }) => {
   const session = await getServerSession(authOptions);
@@ -23,7 +24,7 @@ const PostCard = async ({ post }) => {
 
   return (
     <Card>
-      {/* <Link href={`/posts/${post._id}`}> */}
+      <PostCardWrapper postId={post._id}>
         <CardHeader className="flex-row gap-4 p-4">
           <PostProfileImage post={post} />
           <div>
@@ -34,7 +35,7 @@ const PostCard = async ({ post }) => {
             <PostTopControls post={post} />
           )}
         </CardHeader>
-      {/* </Link> */}
+      </PostCardWrapper>
       <CardContent className="px-4 flex flex-col gap-3">
         <PostCaptionAndTags post={post} />
         <CardCarousel postMedia={post.media} />

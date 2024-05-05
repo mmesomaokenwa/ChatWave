@@ -14,13 +14,16 @@ import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { commentPost } from '@/lib/mongodb/actions/post.actions';
 import Loader from './Loader';
+import { useSocket } from '@/providers/SocketProvider';
 
-const CommentForm = ({ setComments, profileImage, userId, postId, className }) => {
+const CommentForm = ({ setComments, user, post, className }) => {
   const form = useForm({
     defaultValues: {
       comment: "",
     },
   })
+
+  const { emit } = useSocket()
 
   form.register('comment', {
     required: 'Comment is required',
@@ -30,17 +33,22 @@ const CommentForm = ({ setComments, profileImage, userId, postId, className }) =
   const onSubmit = async (data) => {
     const { comment } = data
     try { 
-      const commentData = await commentPost({
+      const { comment: commentData, notification } = await commentPost({
         comment,
-        userId,
-        postId,
+        userId: user?.id,
+        postId: post._id,
+        creatorId: post.creator._id,
         path: [
-          `/posts/${postId}`,
+          `/posts/${post._id}`,
           '/'
         ]
       })
 
-      if (!commentData) return
+      if (notification) emit('commentPost', {
+        ...notification,
+        sender: user,
+        post
+      })
 
       form.reset()
       setComments(prev => [...prev, commentData])
@@ -62,7 +70,7 @@ const CommentForm = ({ setComments, profileImage, userId, postId, className }) =
               <FormControl>
                 <div className="flex items-center">
                   <Image
-                    src={profileImage || "/assets/profile-placeholder.svg"}
+                    src={user?.profileImage || "/assets/profile-placeholder.svg"}
                     alt="comment"
                     width={35}
                     height={35}

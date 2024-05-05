@@ -10,7 +10,7 @@ import {
 import Image from 'next/image';
 import ViewFollowers from './ViewFollowers';
 import ViewFollowing from './ViewFollowing';
-import { Button, buttonVariants } from '../ui/button';
+import { buttonVariants } from '../ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import FollowButton from './FollowButton';
@@ -48,7 +48,11 @@ const ProfileCard = ({ user, sessionUser }) => {
               </Link>
             ) : (
               <>
-                <FollowButton userId={user?._id} />
+                <FollowButton
+                  userId={user?._id}
+                  sessionUser={sessionUser}
+                  followed={user?.followers?.find(follower => follower?._id === sessionUser?.id) ? true : false}
+                />
                 <Link
                   href={`/chat/${user?._id}`}
                   className={cn(buttonVariants({ variant: "default" }))}

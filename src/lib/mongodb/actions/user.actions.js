@@ -5,6 +5,7 @@ import User from "../models/user.model"
 import { handleError } from "@/lib/utils"
 import { hash, compare } from 'bcrypt'
 import { revalidatePath } from "next/cache"
+import { createNotification } from "./notification.action"
 
 
 export const createUser = async (user) => {
@@ -77,6 +78,62 @@ export const updateUser = async ({ user, path }) => {
   }
 }
 
+export const followUser = async ({ userId, currentUserId, isFollowed, path }) => {
+  try {
+    await connectToDatabase()
+
+    let updatedUser;
+    let currentUser;
+    let notification;
+
+    if (isFollowed) {
+      [updatedUser, currentUser, notification] = await Promise.all([
+        User.findOneAndUpdate(
+          { _id: userId },
+          { $addToSet: { followers: currentUserId } },
+          { new: true }
+        ),
+        User.findOneAndUpdate(
+          { _id: currentUserId },
+          { $addToSet: { following: userId } },
+          { new: true }
+        ),
+        createNotification({
+          sender: currentUserId,
+          receiver: userId,
+          type: "follow",
+        }),
+      ]);
+    } else {
+      [updatedUser, currentUser] = await Promise.all([
+        User.findOneAndUpdate(
+        { _id: userId },
+        { $pull: { followers: currentUserId } },
+        { new: true }
+        ),
+        User.findOneAndUpdate(
+          { _id: currentUserId },
+          { $pull: { following: userId } },
+          { new: true }
+        )
+      ])
+    }
+
+    if (!updatedUser) throw new Error('User not found')
+
+    if (typeof path === "string") revalidatePath(path)
+    else path.forEach((path) => revalidatePath(path))
+
+    return JSON.parse(JSON.stringify({
+      updatedUser,
+      currentUser,
+      notification
+    }))
+  } catch (error) {
+    handleError(error)
+  }
+}
+
 // Get a single user by their ID. Private route.
 export const getUserById = async (id) => {
   try {
@@ -112,8 +169,6 @@ export const searchForUsers = async (query) => {
     })
 
     if (!queriedUsers) throw new Error('User not found')
-
-    console.log(queriedUsers)
 
     return queriedUsers.map((u) => JSON.parse(JSON.stringify(u._doc)))
   } catch (error) {

@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -10,11 +12,41 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import UserPreviewCard from "./UserPreviewCard";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils';
 
-const ViewFollowing = ({following, isCurrentUser}) => {
+const ViewFollowing = ({ following, isCurrentUser }) => {
+  const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter()
+
+  useEffect(() => {
+    if (searchParams.get("showFollowing")) setOpen(true)
+    else setOpen(false)
+  }, [searchParams]);
+
+  const onOpenChange = () => {
+    if (open) {
+      const newUrl = removeKeysFromQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["showFollowing"],
+      });
+
+      router.push(newUrl, { scroll: false });
+      setOpen(false);
+    } else {
+      const newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "showFollowing",
+        value: "true",
+      });
+      router.push(newUrl, { scroll: false });
+      setOpen(true);
+    }
+  };
   return (
-    <AlertDialog>
-      <AlertDialogTrigger className="flex flex-col font-medium">
+    <AlertDialog open={open}>
+      <AlertDialogTrigger className="flex flex-col font-medium" onClick={onOpenChange}>
         <span className="text-accent">{following?.length}</span>
         <span>Following</span>
       </AlertDialogTrigger>
@@ -47,7 +79,7 @@ const ViewFollowing = ({following, isCurrentUser}) => {
           </div>
         )}
         <AlertDialogFooter className={"!mt-auto"}>
-          <AlertDialogCancel>Go Back</AlertDialogCancel>
+          <AlertDialogCancel onClick={onOpenChange}>Go Back</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
