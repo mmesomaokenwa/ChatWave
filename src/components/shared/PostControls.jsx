@@ -9,6 +9,7 @@ import { useInView } from 'react-intersection-observer'
 import CommentForm from './CommentForm'
 import { likePost, savePost } from '@/lib/mongodb/actions/post.actions'
 import { useSocket } from '@/providers/SocketProvider'
+import ShareDrawer from './ShareDrawer'
 
 const PostControls = ({ post }) => {
   const { data: session } = useSession()
@@ -125,14 +126,7 @@ const PostControls = ({ post }) => {
             <p className="text-sm font-medium -ml-2">{formatNumber(comments.length)}</p>
           )}
         </div>
-        <div className="flex items-center">
-          <Button variant="ghost" size="sm">
-            <Image src="/assets/share.svg" alt="share" width={23} height={23} />
-          </Button>
-          {shares.length > 0 && (
-            <p className="text-sm font-medium -ml-2">{formatNumber(shares.length)}</p>
-          )}
-        </div>
+        <ShareDrawer shares={shares} postId={post?._id} />
         <Button variant="ghost" size="sm" onClick={handleSave} className="ml-auto">
           <Image
             src={saved ? "/assets/saved.svg" : "/assets/save.svg"}

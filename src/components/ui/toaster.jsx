@@ -16,7 +16,7 @@ export function Toaster() {
 
   return (
     (<ToastProvider>
-      {toasts.map(function ({ id, title, description, action, image, ...props }) {
+      {toasts.map(function ({ id, title, description, action, image, icon, ...props }) {
         return (
           <Toast key={id} {...props}>
             <div className="w-full flex items-center gap-2">
@@ -29,6 +29,7 @@ export function Toaster() {
                   height={30}
                 />
               )}
+              {icon ? icon : null}
               <div className="w-full grid gap-1">
                 {title && <ToastTitle>{title}</ToastTitle>}
                 {description && (
