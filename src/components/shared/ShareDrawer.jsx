@@ -14,6 +14,7 @@ import { formatNumber } from '@/lib/utils';
 import Image from 'next/image';
 import { Link, MessageCircle, Share } from 'lucide-react';
 import { useToast } from '../ui/use-toast';
+import ShareForm from './ShareForm';
 
 const shareLinks = [
   {
@@ -62,17 +63,17 @@ const DirectMessageDrawer = ({ Link }) => {
   const [open, setOpen] = useState(false)
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger className='flex justify-center gap-2'>
+      <DrawerTrigger className="flex justify-center gap-2">
         <MessageCircle />
         Send as Direct Message
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="!h-[700px]">
         <DrawerHeader>
           <DrawerTitle>Send To</DrawerTitle>
           <DrawerDescription>Select users to send to.</DrawerDescription>
         </DrawerHeader>
+        <ShareForm setOpen={setOpen} />
         <DrawerFooter>
-          <Button>Send</Button>
           <DrawerClose>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>
