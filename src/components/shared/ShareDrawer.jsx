@@ -15,6 +15,9 @@ import Image from 'next/image';
 import { Link, MessageCircle, Share } from 'lucide-react';
 import { useToast } from '../ui/use-toast';
 import ShareForm from './ShareForm';
+import { useMostMessagedUsers } from '@/lib/react-query/queries';
+import { useSession } from 'next-auth/react';
+import { createMessage } from '@/lib/mongodb/actions/chat.actions';
 
 const shareLinks = [
   {
@@ -61,6 +64,7 @@ const ShareLinks = () => {
 
 const DirectMessageDrawer = ({ Link }) => {
   const [open, setOpen] = useState(false)
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger className="flex justify-center gap-2">
@@ -75,7 +79,7 @@ const DirectMessageDrawer = ({ Link }) => {
         <ShareForm setOpen={setOpen} />
         <DrawerFooter>
           <DrawerClose>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" className="w-full rounded-full">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -85,11 +89,15 @@ const DirectMessageDrawer = ({ Link }) => {
 
 const ShareDrawer = ({ shares, postId }) => {
   const [open, setOpen] = useState(false)
-
   const { toast } = useToast()
+  const { data: session } = useSession()
+  const userId = session?.user?.id
+  const { data: users } = useMostMessagedUsers({ userId, limit: 10 })
 
   const copyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/posts/${postId}`)
+
+    setOpen(false)
 
     toast({
       description: "Link Copied to Clipboard",
@@ -102,11 +110,34 @@ const ShareDrawer = ({ shares, postId }) => {
     //share via various means
     
   }
+
+  const wait = () => {
+    return new Promise((resolve) => setTimeout(resolve, 2000));
+  };
+
+  const sendMessage = (receiver) => {
+    // createMessage({
+    //   req: {
+    //     sender: userId,
+    //     receiver,
+    //     message
+    //   }
+    // })
+    setOpen(false);
+    wait().then(() =>
+      toast({
+        // description: 'Post Shared Successfully',
+        description: "Feature Coming Soon",
+        duration: 3000,
+        icon: <MessageCircle />,
+      })
+    );
+  }
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger className="flex items-center">
         {/* <Button variant="ghost" size="sm"> */}
-          <Image src="/assets/share.svg" alt="share" width={23} height={23} />
+        <Image src="/assets/share.svg" alt="share" width={23} height={23} />
         {/* </Button> */}
         {shares.length > 0 && (
           <p className="text-sm font-medium -ml-2">
@@ -120,13 +151,23 @@ const ShareDrawer = ({ shares, postId }) => {
           <DrawerDescription></DrawerDescription>
           <div className="flex gap-4">
             <div className="flex flex-col items-center">
-              <Button variant="outline" className="rounded-full" size="lg" onClick={copyLink}>
+              <Button
+                variant="outline"
+                className="rounded-full"
+                size="lg"
+                onClick={copyLink}
+              >
                 <Link />
               </Button>
               <span className="ml-2">Copy Link</span>
             </div>
             <div className="flex flex-col items-center">
-              <Button variant="outline" className="rounded-full" size="lg" onClick={shareVia}>
+              <Button
+                variant="outline"
+                className="rounded-full"
+                size="lg"
+                onClick={shareVia}
+              >
                 <Share />
               </Button>
               <span className="ml-2">Share Via</span>
@@ -135,21 +176,26 @@ const ShareDrawer = ({ shares, postId }) => {
         </DrawerHeader>
         <DrawerFooter>
           <p className="w-full text-center">Share with</p>
-          <div className="w-full flex items-center gap-2 overflow-x-auto">
-            {shares.map((share, index) => (
-              <Image
-                key={index}
-                src={share}
-                alt="share"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
+          <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar">
+            {users?.map((user) => (
+              <div className='flex flex-col items-center gap-2 w-[100px]' onClick={() => sendMessage(user._id)}>
+                <Image
+                  key={user._id}
+                  src={user.profileImage || "/assets/profile-placeholder.svg"}
+                  alt={user.name}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <p className="text-sm line-clamp-1">{user.name}</p>
+              </div>
             ))}
           </div>
           <DirectMessageDrawer />
           <DrawerClose>
-            <Button variant="outline" className="w-full rounded-full">Cancel</Button>
+            <Button variant="outline" className="w-full rounded-full">
+              Cancel
+            </Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

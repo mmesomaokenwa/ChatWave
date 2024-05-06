@@ -75,6 +75,10 @@
     }
   }
 
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .fade_in {
     animation: fadeIn 0.5s forwards;
   }

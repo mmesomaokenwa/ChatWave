@@ -21,6 +21,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Loader from "./Loader";
+import { Check, X } from "lucide-react";
 
 export default function UserAuthForm({ className, mode }) {
   const router = useRouter();
@@ -94,19 +95,20 @@ export default function UserAuthForm({ className, mode }) {
             throw new Error(signedInUser.error);
           } else {
             toast({
-              title: "Success",
               description: "Account created successfully",
               duration: 3000,
+              icon: <Check />
             })
             router.push("/");
           }
         }
       } catch (error) {
         toast({
-          title: "Error",
+          // title: "Error",
           description: error.message,
           variant: "destructive",
-          duration: 3000
+          duration: 3000,
+          icon: <X />
         })
       }
     }
@@ -124,19 +126,20 @@ export default function UserAuthForm({ className, mode }) {
           throw new Error(signedInUser.error);
         } else {
           toast({
-            title: "Success",
             description: "Logged in successfully",
             duration: 3000,
-          })
+            icon: <Check />,
+          });
           router.push("/");
         }
       } catch (error) {
         toast({
-          title: "Error",
+          // title: "Error",
           description: error.message,
           variant: "destructive",
           duration: 3000,
-        })
+          icon: <X />,
+        });
       }
     }
   }

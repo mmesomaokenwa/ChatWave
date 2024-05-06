@@ -11,10 +11,13 @@ import {
 } from '../ui/card'
 import { Checkbox } from '../ui/checkbox'
 import Image from 'next/image'
+import { useToast } from '../ui/use-toast'
+import { MessageCircle } from 'lucide-react'
 
 const ShareForm = ({ setOpen }) => {
   const [users, setUsers] = useState([])
   const [selectUsers, setSelectedUsers] = useState([])
+  const {toast} = useToast()
 
   const handleCheckedChange = (userId) => {
     if (selectUsers.includes(userId)) {
@@ -27,12 +30,24 @@ const ShareForm = ({ setOpen }) => {
     }
   }
 
+  const wait = () => {
+    return new Promise(resolve => setTimeout(resolve, 2000))
+  }
+
   const handleSubmit = () => {
     console.log({ selectUsers })
     setOpen(false)
+    setSelectedUsers([])
+    setUsers([])
+    wait().then(() => toast({
+      // description: 'Post Shared Successfully',
+      description: 'Feature Coming Soon',
+      duration: 3000,
+      icon: <MessageCircle />
+    }))
   }
   return (
-    <div className='flex flex-col justify-between h-full'>
+    <div className='flex flex-col justify-between h-full px-4 gap-2'>
       <SearchUsers setUsers={setUsers} />
       <div className='flex flex-col overflow-y-auto h-full'>
         {users?.map((user) => (

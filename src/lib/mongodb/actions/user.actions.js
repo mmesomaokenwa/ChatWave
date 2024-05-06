@@ -6,6 +6,7 @@ import { handleError } from "@/lib/utils"
 import { hash, compare } from 'bcrypt'
 import { revalidatePath } from "next/cache"
 import { createNotification } from "./notification.action"
+import Chat from "../models/chat.model"
 
 
 export const createUser = async (user) => {
@@ -171,6 +172,45 @@ export const searchForUsers = async (query) => {
     if (!queriedUsers) throw new Error('User not found')
 
     return queriedUsers.map((u) => JSON.parse(JSON.stringify(u._doc)))
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const getMostMessagedUsers = async ({ userId, limit }) => {
+  try {
+    await connectToDatabase()
+    // Get the current user's messages
+    const messages = await Chat.find({ $or: [{ sender: userId }, { receiver: userId }] })
+      .populate({
+        path: 'sender receiver',
+        select: 'name username profileImage _id'
+      })
+
+    if (!messages) throw new Error('Messages not found')
+
+    // Group the messages
+    const groupedMessages = {};
+    messages.forEach(({ sender, receiver, message }) => {
+      let room;
+
+      if (userId === sender._id.toString()) {
+        room = receiver;
+      } else {
+        room = sender;
+      }
+      if (!groupedMessages[room?._id]) {
+        groupedMessages[room?._id] = {...room?._doc, messages: []};
+      }
+      groupedMessages[room?._id].messages.push(message);
+    });
+
+    // Sort the grouped messages by number of messages in descending order
+    const sortedMessages = Object.entries(groupedMessages).sort((a, b) => b[1].messages?.length - a[1].messages?.length)
+    // console.log({sortedMessages})
+
+    // Return the top `limit` users
+    return sortedMessages.slice(0, limit).map(([id, user]) => JSON.parse(JSON.stringify(user)))
   } catch (error) {
     handleError(error)
   }

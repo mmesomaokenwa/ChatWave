@@ -1,5 +1,6 @@
-import { useInfiniteQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { getInfiniteScrollPosts } from "../mongodb/actions/post.actions";
+import { getMostMessagedUsers } from "../mongodb/actions/user.actions";
 
 export const useInvalidate = (keys) => {
   const queryClient = useQueryClient();
@@ -18,7 +19,7 @@ export const useInfiniteScrollPosts = () => {
       return allPages.length + 1;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
-    cacheTime: Infinity,
+    // cacheTime: Infinity,
   });
 }
 
@@ -34,6 +35,18 @@ export const useInfiniteHomePosts = () => {
       return allPages.length + 1;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
-    cacheTime: Infinity,
+    // cacheTime: Infinity,
+  });
+}
+
+export const useMostMessagedUsers = ({userId, limit}) => {
+  return useQuery({
+    queryKey: ["most-messaged-users", userId],
+    queryFn: async () => {
+      const users = await getMostMessagedUsers({ userId, limit });
+      return users;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: !!userId
   });
 }
