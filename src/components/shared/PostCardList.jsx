@@ -1,6 +1,6 @@
 import React from 'react'
 import PostPreviewCard from './PostPreviewCard'
-import Image from 'next/image';
+import PostCardListFilter from './PostCardListFilter';
 
 const PostCardList = ({ title, posts, showFilter, className }) => {
   return (
@@ -8,23 +8,17 @@ const PostCardList = ({ title, posts, showFilter, className }) => {
       {title && (
         <div className="w-full flex items-center justify-between py-4">
           <h3 className="text-xl font-semibold">{title}</h3>
-          {showFilter && (
-            <div className="flex items-center gap-4">
-              <p className="text-sm lg:text-base font-medium">View All</p>
-              <Image
-                src="/assets/filter.svg"
-                alt="filter"
-                width={20}
-                height={20}
-              />
-            </div>
-          )}
+          {showFilter && <PostCardListFilter />}
         </div>
       )}
       <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts?.map((post, index) => (
-          <PostPreviewCard key={index} post={post} />
-        ))}
+        {posts?.length < 1 ? (
+          <p className="col-span-2 lg:col-span-3 text-center mt-4">No posts under this category</p>
+        ) : (
+          posts?.map((post, index) => (
+            <PostPreviewCard key={index} post={post} />
+          ))
+        )}
       </div>
     </div>
   );

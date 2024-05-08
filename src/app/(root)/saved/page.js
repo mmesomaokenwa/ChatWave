@@ -1,13 +1,16 @@
 import PostPreviewCard from '@/components/shared/PostPreviewCard';
+import SavedPostFilter from '@/components/shared/SavedPostFilter';
 import authOptions from '@/lib/authOptions';
 import { getSavedPostsByUserId } from '@/lib/mongodb/actions/post.actions';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import React from 'react'
 
-const SavedPosts = async () => {
+const SavedPosts = async ({ searchParams: { by } }) => {
   const user = await getServerSession(authOptions).then(res => res?.user)
-  const savedPosts = await getSavedPostsByUserId({ userId: user?.id });
+  const posts = await getSavedPostsByUserId({ userId: user?.id });
+
+  const savedPosts = by === 'oldest' ? posts?.reverse() : posts
   return (
     <div className="flex flex-1">
       <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll py-8 px-5 md:px-8 lg:p-14">
@@ -21,12 +24,9 @@ const SavedPosts = async () => {
           />
           <h2 className="text-3xl md:text-2xl font-bold">Saved Posts</h2>
         </div>
-        <div className="w-full flex gap-2 justify-end">
-          <p className="text-sm lg:text-base font-medium">View All</p>
-          <Image src="/assets/filter.svg" alt="filter" width={20} height={20} />
-        </div>
+        <SavedPostFilter />
         <div className="w-full grid lg:grid-cols-3 grid-cols-2 gap-4">
-          {savedPosts?.reverse().map((save) => (
+          {savedPosts?.map((save) => (
             <PostPreviewCard
               key={save._id}
               post={save}

@@ -2,20 +2,13 @@ import LoadMore from '@/components/shared/LoadMore';
 import PostCardList from '@/components/shared/PostCardList';
 import Search from '@/components/shared/Search';
 import SearchResultsLists from '@/components/shared/SearchResultsLists';
-import { getInfiniteScrollPosts, searchForPosts } from '@/lib/mongodb/actions/post.actions';
-import { searchForUsers } from '@/lib/mongodb/actions/user.actions';
+import { getInfiniteScrollPosts } from '@/lib/mongodb/actions/post.actions';
 import React from 'react'
 
-const Explore = async ({ searchParams: { query } }) => {
-  const [{ posts }, searchedUsers, searchedPosts] = await Promise.all([
-    getInfiniteScrollPosts({ page: 1, limit: 12 }),
-    searchForUsers(query),
-    searchForPosts(query)
-  ])
+const Explore = async ({ searchParams: { query, date } }) => {
+  const postPromise = getInfiniteScrollPosts({ page: 1, limit: 12, timeline: date })
+  const posts = await postPromise
 
-  console.log({ searchedUsers, searchedPosts })
-
-  const showPosts = posts?.length > 0 && !query;
   return (
     <div className="flex flex-col flex-1 items-center overflow-y-scroll py-6 px-4 md:p-14 custom-scrollbar">
       <div className="max-w-5xl flex flex-col items-center w-full gap-6 md:gap-9">
@@ -24,7 +17,12 @@ const Explore = async ({ searchParams: { query } }) => {
         </h2>
         <Search />
         <div className="w-full">
-          {showPosts && (
+          {query ? (
+            <SearchResultsLists
+              title={`Search Results for ${query}`}
+              query={query}
+            />
+          ) : (
             <>
               <PostCardList
                 title="Popular Posts"
@@ -32,11 +30,8 @@ const Explore = async ({ searchParams: { query } }) => {
                 showFilter
                 className={"!p-0"}
               />
-              <LoadMore />
+              <LoadMore timeline={date} showPostIndicator={posts?.length > 0} />
             </>
-          )}
-          {query && (
-            <SearchResultsLists title={`Search Results for ${query}`} searchedUsers={searchedUsers} searchedPosts={searchedPosts} />
           )}
         </div>
       </div>

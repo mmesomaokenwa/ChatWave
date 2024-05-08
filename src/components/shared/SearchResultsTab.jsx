@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import PostPreviewCard from './PostPreviewCard';
 import UserPreviewCard from './UserPreviewCard';
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils';
+import { useSearchPosts, useSearchUsers } from '@/lib/react-query/queries';
+import Loader from './Loader';
 
 const searchTabs = [
   {
@@ -26,13 +28,20 @@ const searchTabs = [
   }
 ]
 
-const SearchResultsTab = ({ searchedPosts, searchedUsers }) => {
+const SearchResultsTab = ({ query }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [selected, setSelected] = useState(searchParams.get("tab") || searchTabs[0].value)
+  const { data: posts, isLoading: isLoadingPosts } = useSearchPosts({
+    query,
+    tab: selected,
+  })
+  const { data: users, isLoading: isLoadingUsers } = useSearchUsers({
+    query,
+    tab: selected,
+  })
 
   const showPosts = selected !== 'accounts'
-  const posts = selected === 'tags' ? searchedPosts?.tags : selected === 'locations' ? searchedPosts?.locations : searchedPosts?.captions
 
   useEffect(() => {
     if (searchParams.has("tab")) {
@@ -76,17 +85,32 @@ const SearchResultsTab = ({ searchedPosts, searchedUsers }) => {
       </TabsList>
       <TabsContent value={selected}>
         <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
-          {showPosts
-            ? posts?.length === 0 ? (
-              <p className="col-span-2 text-center">No results found</p>
+          {showPosts ? (
+            isLoadingPosts ? (
+              <div className="col-span-2 lg:col-span-3">
+                <Loader width={30} height={30} className={'mx-auto mt-8'} />
+              </div>
+            ) : posts?.length === 0 ? (
+              <p className="col-span-2 lg:col-span-3 text-center">No results found</p>
+            ) : (
+              posts?.map((post, index) => (
+                <PostPreviewCard key={index} post={post} />
+              ))
             )
-            : posts?.map((post, index) => (
-            <PostPreviewCard key={index} post={post} />
-          )) : searchedUsers?.length === 0 ? (
-            <p className="col-span-2 text-center">No results found</p>
-          ) : searchedUsers?.map((user, index) => (
-            <UserPreviewCard key={index} user={user} />
-          ))}
+          ) : null}
+          {!showPosts ? (
+            isLoadingUsers ? (
+              <div className="col-span-2 lg:col-span-3">
+                <Loader width={30} height={30} className={'mx-auto mt-8'} />
+              </div>
+            ) : users?.length === 0 ? (
+              <p className="col-span-2 lg:col-span-3 text-center">No results found</p>
+            ) : (
+              users?.map((user, index) => (
+                <UserPreviewCard key={index} user={user} />
+              ))
+            )
+          ) : null}
         </div>
       </TabsContent>
     </Tabs>

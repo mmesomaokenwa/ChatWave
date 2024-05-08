@@ -1,12 +1,10 @@
 import HomeLoadMore from "@/components/shared/HomeLoadMore";
 import PostCard from "@/components/shared/PostCard";
-import { getAllPosts, getInfiniteScrollPosts } from "@/lib/mongodb/actions/post.actions";
+import { getInfiniteHomePosts } from "@/lib/mongodb/actions/post.actions";
 
 export default async function Home() {
-  const { posts: recentPosts } = await getInfiniteScrollPosts({
-    page: 1,
-    limit: 10
-  });
+  const postPromis = getInfiniteHomePosts({ page: 1, limit: 10 })
+  const recentPosts = await postPromis
   return (
     <div className="flex flex-1">
       <div

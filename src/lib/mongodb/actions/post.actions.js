@@ -114,26 +114,93 @@ export const getAllPosts = async () => {
   }
 }
 
+export const getInfiniteHomePosts = async({
+  page = 1,
+  limit = 10
+}) => {
+  try {
+    await connectToDatabase()
+
+    const startIndex = (page - 1) * limit;
+
+    const posts = await Post.find()
+      .sort({ createdAt: "desc" })
+      .skip(startIndex)
+      .limit(limit)
+      .populate("creator", ["name", "username", "profileImage", "_id"]);
+    
+    return JSON.parse(JSON.stringify(posts));
+  } catch (error) {
+    handleError(error)
+  }
+}
+
 export const getInfiniteScrollPosts = async ({
   page = 1,
   limit = 10,
+  timeline = 'view all'
 }) => {
   try {
     await connectToDatabase();
 
+    let posts, startDate, endDate;
     const startIndex = (page - 1) * limit;
-    const totalPosts = await Post.countDocuments();
 
-    const posts = await Post.find()
-      .skip(startIndex)
-      .limit(limit)
-      .sort([['createdAt', 'desc']])
-      .populate('creator', ['name', 'username', 'profileImage', '_id']);
+    switch (timeline) {
+      case "today":
+        startDate = new Date();
+        startDate.setHours(0, 0, 0, 0); // Start of today
+        endDate = new Date();
+        endDate.setHours(23, 59, 59, 999); // End of today
+        break;
+      case "yesterday":
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 1); // Yesterday
+        startDate.setHours(0, 0, 0, 0); // Start of yesterday
+        endDate = new Date();
+        endDate.setDate(endDate.getDate() - 1); // Yesterday
+        endDate.setHours(23, 59, 59, 999); // End of yesterday
+        break;
+      case "last week":
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7); // 7 days ago
+        startDate.setHours(0, 0, 0, 0); // Start of 7 days ago
+        endDate = new Date();
+        endDate.setHours(23, 59, 59, 999); // End of today
+        break;
+      case "last month":
+        startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1); // 1 month ago
+        startDate.setHours(0, 0, 0, 0); // Start of 1 month ago
+        endDate = new Date();
+        endDate.setHours(23, 59, 59, 999); // End of today
+        break;
+      case "last year":
+        startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1); // 1 year ago
+        startDate.setHours(0, 0, 0, 0); // Start of 1 year ago
+        endDate = new Date();
+        endDate.setHours(23, 59, 59, 999); // End of today
+        break;
+      default:
+        break
+    }
 
-    return {
-      posts: posts?.map((p) => JSON.parse(JSON.stringify(p._doc))),
-      totalPosts,
-    };
+    if (timeline === 'view all') {
+      posts = await Post.find()
+        .sort({ createdAt: 'desc' })
+        .skip(startIndex)
+        .limit(limit)
+        .populate('creator', ['name', 'username', 'profileImage', '_id']);
+    } else {
+      posts = await Post.find({ createdAt: { $gte: startDate, $lte: endDate} })
+        .sort({ createdAt: 'desc' })
+        .skip(startIndex)
+        .limit(limit)
+        .populate('creator', ['name', 'username', 'profileImage', '_id']);
+    }
+
+    return JSON.parse(JSON.stringify(posts))
   } catch (err) {
     console.error(err);
     throw new Error(err);
@@ -147,7 +214,7 @@ export const getSavedPostsByUserId = async ({ userId }) => {
     const user = await User.findOne({ _id: userId })
       .populate('savedPosts')
 
-    return user?._doc?.savedPosts
+    return JSON.parse(JSON.stringify(user?._doc?.savedPosts?.reverse()));
   } catch (error) {
     handleError(error)
   }
@@ -289,21 +356,19 @@ export const commentPost = async ({ postId, userId, creatorId, comment, path }) 
   }
 }
 
-export const searchForPosts = async (query) => {
+export const searchForPosts = async ({ query, tab }) => {
   if (!query) return
   try {
     await connectToDatabase()
 
-    const [postsByCaption, postsByTags, postsByLocation] = await Promise.all([
-      Post.find({ caption: { $regex: query, $options: "i" } }).sort({ createdAt: "desc" }),
-      Post.find({ tags: { $in: query } }).sort({ createdAt: "desc" }),
-      Post.find({ location: { $regex: query, $options: "i" } }).sort({ createdAt: "desc" }),
-    ]);
-
-    const queriedPosts = {
-      captions: postsByCaption,
-      tags: postsByTags,
-      locations: postsByLocation
+    let queriedPosts;
+      
+    if (tab === 'captions') {
+      queriedPosts = await Post.find({ caption: { $regex: query, $options: "i" } }).sort({ createdAt: "desc" })
+    } else if (tab === 'tags') {
+      queriedPosts = await Post.find({ tags: { $in: query } }).sort({ createdAt: "desc" })
+    } else if (tab === 'locations') {
+      queriedPosts = await Post.find({ location: { $regex: query, $options: "i" } }).sort({ createdAt: "desc" })
     }
 
     return JSON.parse(JSON.stringify(queriedPosts))

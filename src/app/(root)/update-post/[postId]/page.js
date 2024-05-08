@@ -4,7 +4,8 @@ import PostForm from "@/components/shared/PostForm";
 import { getPostById } from "@/lib/mongodb/actions/post.actions";
 
 const UpdatePost = async ({ params: { postId } }) => {
-  const post = await getPostById(postId);
+  const postPromise = getPostById(postId);
+  const post = await postPromise
   return (
     <main className="flex flex-1">
       <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll py-8 px-5 md:px-8 lg:p-14">
