@@ -40,7 +40,7 @@ const SideBar = () => {
           ))}
         </ul>
       </div>
-      <LogoutButton className={"flex justify-start gap-3"} />
+      <LogoutButton className="flex justify-start gap-3" />
     </nav>
   );
 }

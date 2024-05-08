@@ -36,10 +36,10 @@ const CommentForm = ({ setComments, user, post, className }) => {
       const { comment: commentData, notification } = await commentPost({
         comment,
         userId: user?.id,
-        postId: post._id,
-        creatorId: post.creator._id,
+        postId: post?._id,
+        creatorId: post?.creator?._id,
         path: [
-          `/posts/${post._id}`,
+          `/posts/${post?._id}`,
           '/'
         ]
       })

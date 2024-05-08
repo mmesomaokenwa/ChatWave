@@ -43,14 +43,17 @@ export const updateMessage = async (req) => {
   }
 }
 
-export const deleteMessage = async (id) => {
+export const deleteMessage = async ({ id, path }) => {
   try {
     await connectToDatabase();
     const result = await Chat.deleteOne({ _id: id });
 
     if (!result) throw new Error("Failed to delete message");
 
-    return JSON.parse(JSON.stringify(result._doc));
+    if (typeof path === "string") revalidatePath(path)
+    else path.forEach((path) => revalidatePath(path))
+
+    return JSON.parse(JSON.stringify(result));
   } catch (error) {
     handleError(error);
   }

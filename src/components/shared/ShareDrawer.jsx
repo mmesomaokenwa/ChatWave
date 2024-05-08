@@ -12,12 +12,13 @@ import {
 import { Button } from '../ui/button';
 import { formatNumber } from '@/lib/utils';
 import Image from 'next/image';
-import { Link, MessageCircle, Share } from 'lucide-react';
+import { Link, MessageCircle, Share, X } from 'lucide-react';
 import { useToast } from '../ui/use-toast';
 import ShareForm from './ShareForm';
 import { useMostMessagedUsers } from '@/lib/react-query/queries';
 import { useSession } from 'next-auth/react';
 import { createMessage } from '@/lib/mongodb/actions/chat.actions';
+import { useSocket } from '@/providers/SocketProvider';
 
 const shareLinks = [
   {
@@ -93,6 +94,7 @@ const ShareDrawer = ({ shares, postId }) => {
   const { data: session } = useSession()
   const userId = session?.user?.id
   const { data: users } = useMostMessagedUsers({ userId, limit: 10 })
+  const { emit } = useSocket()
 
   const copyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/posts/${postId}`)
@@ -107,38 +109,43 @@ const ShareDrawer = ({ shares, postId }) => {
   }
 
   const shareVia = () => {
-    //share via various means
+    //share via various means. To be implemented soon
     
   }
 
-  const wait = () => {
-    return new Promise((resolve) => setTimeout(resolve, 2000));
-  };
-
   const sendMessage = (receiver) => {
-    // createMessage({
-    //   req: {
-    //     sender: userId,
-    //     receiver,
-    //     message
-    //   }
-    // })
-    setOpen(false);
-    wait().then(() =>
-      toast({
-        // description: 'Post Shared Successfully',
-        description: "Feature Coming Soon",
-        duration: 3000,
-        icon: <MessageCircle />,
+    setOpen(false)
+    createMessage({
+      req: {
+        sender: userId,
+        receiver,
+        message: `${window.location.origin}/posts/${postId}`,
+      },
+      path: `/chat/${receiver}`,
+    })
+      .then((res) => {
+        if (res) {
+          emit("message", res);
+          toast({
+            description: "Post Shared Successfully",
+            duration: 3000,
+            icon: <MessageCircle />,
+          });
+        }
       })
-    );
+      .catch((error) =>
+        toast({
+          description: error.message,
+          variant: "destructive",
+          duration: 3000,
+          icon: <X />,
+        })
+      );
   }
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger className="flex items-center">
-        {/* <Button variant="ghost" size="sm"> */}
         <Image src="/assets/share.svg" alt="share" width={23} height={23} />
-        {/* </Button> */}
         {shares.length > 0 && (
           <p className="text-sm font-medium -ml-2">
             {formatNumber(shares.length)}

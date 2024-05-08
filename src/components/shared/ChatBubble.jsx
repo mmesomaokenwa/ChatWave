@@ -25,7 +25,7 @@ const ChatBubble = forwardRef(({ message, isLastMessage, isOwned, className }, r
           height={45}
         /> */}
         <div
-          className={`px-4 py-2 max-w-[50%] ${
+          className={`px-4 py-2 max-w-[45%] ${
             isOwned
               ? "bg-accent text-white rounded-l-xl rounded-tr-xl"
               : "dark:bg-gray-800 bg-gray-200 rounded-r-xl rounded-tl-xl"
@@ -33,7 +33,7 @@ const ChatBubble = forwardRef(({ message, isLastMessage, isOwned, className }, r
         >
           <div>{formattedMessage}</div>
         </div>
-        <OptionsPopup message={message} />
+        <OptionsPopup message={message} isOwned={isOwned} />
       </div>
       {isLastMessage && (
         <div className={`text-sm text-muted-foreground ${isOwned ? "text-right" : "text-left"}`}>

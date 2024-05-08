@@ -16,7 +16,7 @@ const LogoutButton = ({ variant = 'ghost', className }) => {
   return (
     <Button
       variant={variant}
-      className={className ? className : undefined}
+      className={`${className}`}
       onClick={handleLogout}
     >
       <Image

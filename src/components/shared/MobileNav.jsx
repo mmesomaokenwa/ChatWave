@@ -83,7 +83,7 @@ const MobileNav = () => {
               <NavLink key={index} link={link} className={"!gap-2"} />
             ))}
             <DarkModeToggler />
-            <LogoutButton className={"flex gap-3"} variant="destructive" />
+            <LogoutButton className="flex gap-3" variant="destructive" />
           </SheetFooter>
         </SheetContent>
       </Sheet>

@@ -35,7 +35,9 @@ const ChatPreviewCard = ({ chat, roomId }) => {
             height={50}
             className="rounded-full object-cover"
           />
-          {isOnline && <div className="absolute top-0 right-1 w-3 h-3 rounded-full bg-green-500" />}
+          {isOnline && (
+            <div className="absolute top-0 right-1 w-3 h-3 rounded-full bg-green-500" />
+          )}
         </div>
         <div className="w-full space-y-2">
           <CardHeader className="gap-2 flex-row items-center space-y-0 p-0">
@@ -51,7 +53,7 @@ const ChatPreviewCard = ({ chat, roomId }) => {
               <IsTyping />
             ) : (
               <>
-                <p className="text-sm line-clamp-1 ">
+                <p className="text-sm line-clamp-1">
                   {chat.isOwned ? `You: ${chat?.message}` : `${chat?.message}`}
                 </p>
                 <p className="text-sm text-muted-foreground">
