@@ -57,7 +57,8 @@
       --accent: 256 81% 65%;
       --accent-foreground: 210 40% 98%;
 
-      --destructive: 0 62.8% 30.6%;
+      /* --destructive: 0 62.8% 30.6%; */
+      --destructive: 0 72% 51%;
       --destructive-foreground: 210 40% 98%;
 
       --border: 217.2 32.6% 17.5%;
@@ -101,4 +102,8 @@
     100% {
       opacity: 0;
     }
+  }
+
+  .a {
+    color: hsl(0, 72%, 51%);
   }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Drawer,
   DrawerClose,
@@ -9,6 +9,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from '../ui/button';
 import { formatNumber } from '@/lib/utils';
 import Image from 'next/image';
@@ -65,20 +76,35 @@ const ShareLinks = () => {
 
 const DirectMessageDrawer = ({ Link }) => {
   const [open, setOpen] = useState(false)
+  const [width, setWidth] = useState(0)
 
-  return (
+  useEffect(() => {
+    setWidth(window.innerWidth);
+
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const renderDrawer = width < 768
+
+  if (renderDrawer) return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger className="flex justify-center gap-2">
         <MessageCircle />
         Send as Direct Message
       </DrawerTrigger>
-      <DrawerContent className="!h-[700px]">
+      <DrawerContent className="!h-[700px] px-4">
         <DrawerHeader>
           <DrawerTitle>Send To</DrawerTitle>
           <DrawerDescription>Select users to send to.</DrawerDescription>
         </DrawerHeader>
         <ShareForm setOpen={setOpen} />
-        <DrawerFooter>
+        <DrawerFooter className={"px-0"}>
           <DrawerClose>
             <Button variant="outline" className="w-full rounded-full">Cancel</Button>
           </DrawerClose>
@@ -86,15 +112,49 @@ const DirectMessageDrawer = ({ Link }) => {
       </DrawerContent>
     </Drawer>
   );
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger className="flex justify-center gap-2">
+        <MessageCircle />
+        Send as Direct Message
+      </AlertDialogTrigger>
+      <AlertDialogContent className="!h-[500px] flex flex-col">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Send To</AlertDialogTitle>
+          <AlertDialogDescription>
+            Select users to send to.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <ShareForm setOpen={setOpen} />
+        <AlertDialogFooter className={"sm:flex-col"}>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
 
 const ShareDrawer = ({ shares, postId }) => {
   const [open, setOpen] = useState(false)
+  const [width, setWidth] = useState(0)
   const { toast } = useToast()
   const { data: session } = useSession()
   const userId = session?.user?.id
   const { data: users } = useMostMessagedUsers({ userId, limit: 10 })
   const { emit } = useSocket()
+
+  useEffect(() => {
+    setWidth(window.innerWidth)
+
+    const handleResize = () => {
+      setWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const copyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/posts/${postId}`)
@@ -108,9 +168,37 @@ const ShareDrawer = ({ shares, postId }) => {
     })
   }
 
-  const shareVia = () => {
+  const shareVia = async () => {
     //share via various means. To be implemented soon
-    
+    try {
+      setOpen(false)
+
+      const postLink = `${window.location.origin}/posts/${postId}`;
+
+      if (navigator.share) {
+        // Open the native share panel
+        await navigator.share({
+          title: document.title,
+          text: "Check out this post!",
+          url: postLink,
+        })
+      } else {
+        // If Web Share API is not supported, provide fallback option
+        toast({
+          description: "Your browser does not support the Web Share API. You can manually paste the post link to share.",
+          variant: "destructive",
+          duration: 3000,
+          icon: <X />,
+        });
+      }
+    } catch (error) {
+      toast({
+        description: "An error occurred while sharing the post. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+        icon: <X />,
+      });
+    }
   }
 
   const sendMessage = (receiver) => {
@@ -142,7 +230,10 @@ const ShareDrawer = ({ shares, postId }) => {
         })
       );
   }
-  return (
+
+  const renderDrawer = width < 768
+
+  if (renderDrawer) return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger className="flex items-center">
         <Image src="/assets/share.svg" alt="share" width={23} height={23} />
@@ -207,6 +298,72 @@ const ShareDrawer = ({ shares, postId }) => {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  );
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger className="flex items-center">
+        <Image src="/assets/share.svg" alt="share" width={23} height={23} />
+        {shares.length > 0 && (
+          <p className="text-sm font-medium -ml-2">
+            {formatNumber(shares.length)}
+          </p>
+        )}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Share Post</AlertDialogTitle>
+          <AlertDialogDescription></AlertDialogDescription>
+          <div className="flex gap-4">
+            <div className="flex flex-col items-center">
+              <Button
+                variant="outline"
+                className="rounded-full"
+                size="lg"
+                onClick={copyLink}
+              >
+                <Link />
+              </Button>
+              <span className="ml-2">Copy Link</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <Button
+                variant="outline"
+                className="rounded-full"
+                size="lg"
+                onClick={shareVia}
+              >
+                <Share />
+              </Button>
+              <span className="ml-2">Share Via</span>
+            </div>
+          </div>
+        </AlertDialogHeader>
+        <AlertDialogFooter className={"sm:flex-col"}>
+          <p className="w-full text-center">Share with</p>
+          <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar">
+            {users?.map((user) => (
+              <div
+                className="flex flex-col items-center gap-2 w-[100px]"
+                onClick={() => sendMessage(user._id)}
+              >
+                <Image
+                  key={user._id}
+                  src={user.profileImage || "/assets/profile-placeholder.svg"}
+                  alt={user.name}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <p className="text-sm line-clamp-1">{user.name}</p>
+              </div>
+            ))}
+          </div>
+          <DirectMessageDrawer />
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 

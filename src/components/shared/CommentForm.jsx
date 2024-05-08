@@ -60,7 +60,7 @@ const CommentForm = ({ setComments, user, post, className }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={`flex items-center w-full gap-2 ${className}`}
+        className={`flex items-center w-full gap-2 pl-2 py-1 rounded-full bg-gray-100 dark:bg-light-dark ${className}`}
       >
         <FormField
           control={form.control}
@@ -70,7 +70,9 @@ const CommentForm = ({ setComments, user, post, className }) => {
               <FormControl>
                 <div className="flex items-center">
                   <Image
-                    src={user?.profileImage || "/assets/profile-placeholder.svg"}
+                    src={
+                      user?.profileImage || "/assets/profile-placeholder.svg"
+                    }
                     alt="comment"
                     width={35}
                     height={35}
@@ -79,7 +81,7 @@ const CommentForm = ({ setComments, user, post, className }) => {
                   <Input
                     placeholder="Write a comment..."
                     {...field}
-                    className="w-full ring-0 ring-offset-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="w-full ring-0 ring-offset-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-gray-100 dark:bg-light-dark"
                   />
                 </div>
               </FormControl>
@@ -91,12 +93,13 @@ const CommentForm = ({ setComments, user, post, className }) => {
           {form.formState.isSubmitting ? (
             <Loader width={20} height={20} />
           ) : (
-              <Image
-                src="/assets/send.svg" alt="send"
-                width={23}
-                height={23}
-                className={!form.formState.isDirty && 'invert brightness-50'}
-              />
+            <Image
+              src="/assets/send.svg"
+              alt="send"
+              width={23}
+              height={23}
+              className={!form.formState.isDirty && "invert brightness-50"}
+            />
           )}
         </Button>
       </form>

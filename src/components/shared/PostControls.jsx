@@ -139,7 +139,7 @@ const PostControls = ({ post }) => {
       <CommentForm
         setComments={setComments}
         user={user}
-        postId={post}
+        post={post}
         className={`my-4 mt-2 hidden opacity-0 h-0 transition-all ${
           inView && "!flex opacity-100 h-full"
         }`}

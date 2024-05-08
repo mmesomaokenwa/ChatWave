@@ -5,12 +5,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import MobileNav from './MobileNav'
+import { Separator } from "@/components/ui/separator"
 
 const TopBar = () => {
   const { data: session } = useSession();
   const user = session?.user;
   return (
-    <header className="sticky top-0 z-50 md:hidden bg-gray-100 dark:bg-slate-900 w-full">
+    <header className="sticky top-0 z-50 md:hidden w-full bg-gray-100 dark:bg-light-dark">
       <div className="flex justify-between items-center p-5">
         <Link
           href="/"
@@ -39,6 +40,7 @@ const TopBar = () => {
           <MobileNav />
         </div>
       </div>
+      <Separator />
     </header>
   );
 }

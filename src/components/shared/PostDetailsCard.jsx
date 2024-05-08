@@ -11,11 +11,11 @@ import ViewComments from './ViewComments';
 const PostDetailsCard = ({ post, userId }) => {
   const isOwner = userId === post.creator._id.toString();
   return (
-    <div className="w-full flex items-stretch flex-col lg:flex-row">
-      <div className="w-full lg:w-1/2 hidden lg:flex">
+    <div className="w-full flex flex-col h-min lg:flex-row">
+      <div className="w-full grow lg:w-1/2 hidden lg:flex">
         <CardCarousel postMedia={post?.media} className={"grow"} />
       </div>
-      <Card className="w-full lg:w-1/2 border-0">
+      <Card className="w-full h-full lg:w-1/2 border-0">
         <CardHeader className="flex-row gap-4 p-4">
           <PostProfileImage post={post} />
           <div>
@@ -33,7 +33,7 @@ const PostDetailsCard = ({ post, userId }) => {
         <CardFooter className="p-4 pt-0">
           <PostControls post={post} />
         </CardFooter>
-        <div className="w-full p-4 flex justify-between border-b-2">
+        <div className="w-full p-4 flex justify-between mt-auto border-b-2 lg:border-b-0">
           <ViewLikes likes={post.likes} />
           <ViewComments comments={post.comments} />
         </div>

@@ -1,10 +1,9 @@
 'use server'
 
-import { connectToDatabase } from "@/lib"
+import { connectToDatabase, revalidate } from "@/lib"
 import User from "../models/user.model"
 import { handleError } from "@/lib/utils"
 import { hash, compare } from 'bcrypt'
-import { revalidatePath } from "next/cache"
 import { createNotification } from "./notification.action"
 import Chat from "../models/chat.model"
 
@@ -70,8 +69,7 @@ export const updateUser = async ({ user, path }) => {
 
     const { password, ...others } = updatedUser._doc
 
-    if (typeof path === "string") revalidatePath(path);
-    else path.forEach((path) => revalidatePath(path));
+    revalidate(path)
 
     return JSON.parse(JSON.stringify(others))
   } catch (error) {
@@ -122,8 +120,7 @@ export const followUser = async ({ userId, currentUserId, isFollowed, path }) =>
 
     if (!updatedUser) throw new Error('User not found')
 
-    if (typeof path === "string") revalidatePath(path)
-    else path.forEach((path) => revalidatePath(path))
+    revalidate(path)
 
     return JSON.parse(JSON.stringify({
       updatedUser,

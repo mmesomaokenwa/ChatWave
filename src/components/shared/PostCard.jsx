@@ -23,7 +23,7 @@ const PostCard = async ({ post }) => {
   const user = session?.user
 
   return (
-    <Card>
+    <Card className="border-x-0 md:border-2">
       <PostCardWrapper postId={post._id}>
         <CardHeader className="flex-row gap-4 p-4">
           <PostProfileImage post={post} />

@@ -1,6 +1,6 @@
 'use server'
 
-import { connectToDatabase } from "@/lib"
+import { connectToDatabase, revalidate } from "@/lib"
 import Post from "../models/post.model"
 import User from "../models/user.model"
 import { revalidatePath } from "next/cache"
@@ -248,35 +248,37 @@ export const likePost = async ({ postId, userId, creatorId, liked, path }) => {
   try {
     await connectToDatabase()
     
-    let likedPost;
-    let notification;
+    let likedPromise;
+    let notificationPromise = null
 
     if (liked) {
-      [likedPost, notification] = await Promise.all([
-        Post.findOneAndUpdate(
-          { _id: postId },
-          { $addToSet: { likes: userId } },
-          { new: true }
-        ),
-        createNotification({
+      likedPromise = Post.findOneAndUpdate(
+        { _id: postId },
+        { $addToSet: { likes: userId } },
+        { new: true }
+      );
+
+      if (userId !== creatorId) {
+        notificationPromise = createNotification({
           sender: userId,
           receiver: creatorId,
           type: "likePost",
           post: postId,
-        })
-      ]);
+        });
+      };
     } else {
-      likedPost = await Post.findOneAndUpdate(
+      likedPromise = Post.findOneAndUpdate(
         { _id: postId },
         { $pull: { likes: userId } },
         { new: true }
       )
     }
 
+    const [likedPost, notification] = await Promise.all([likedPromise, notificationPromise])
+
     if (!likedPost) throw new Error('Post not found')
 
-    if (typeof path === "string") revalidatePath(path)
-    else path.forEach((path) => revalidatePath(path))
+    revalidate(path)
 
     return JSON.parse(JSON.stringify({
       likedPost,
@@ -309,8 +311,7 @@ export const savePost = async ({ postId, userId, path }) => {
     }
     await Promise.all([user.save(), savedPost.save()])
 
-    if (typeof path === "string") revalidatePath(path)
-    else path.map((p) => revalidatePath(p))
+    revalidate(path)
 
     return { 
       user: JSON.parse(JSON.stringify(user._doc)), 
@@ -325,25 +326,30 @@ export const commentPost = async ({ postId, userId, creatorId, comment, path }) 
   try {
     await connectToDatabase()
 
-    const [commentedPost, notification] = await Promise.all([
-      Post.findOneAndUpdate(
-        { _id: postId },
-        { $addToSet: { comments: { comment, user: userId } } },
-        { new: true }
-      ),
-      createNotification({
+    let commentPromise;
+    let notificationPromise = null
+
+    commentPromise = Post.findOneAndUpdate(
+      { _id: postId },
+      { $addToSet: { comments: { comment, user: userId } } },
+      { new: true }
+    );
+
+    if (userId !== creatorId) {
+      notificationPromise = createNotification({
         sender: userId,
         receiver: creatorId,
         type: "commentPost",
         post: postId,
-        comment
-      })
-    ]);
+        comment,
+      });
+    }
+
+    const [commentedPost, notification] = await Promise.all([commentPromise, notificationPromise]);
 
     if (!commentedPost) throw new Error('Post not found')
 
-    if (typeof path === "string") revalidatePath(path)
-    else path.forEach((path) => revalidatePath(path))
+    revalidate(path)
 
     return JSON.parse(
       JSON.stringify({

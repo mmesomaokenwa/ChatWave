@@ -1,8 +1,7 @@
 'use server'
 
-import { connectToDatabase } from "@/lib"
+import { connectToDatabase, revalidate } from "@/lib"
 import Chat from "../models/chat.model"
-import { revalidatePath } from "next/cache"
 import { handleError } from "@/lib/utils"
 
 export const createMessage = async ({ req, path }) => {
@@ -18,8 +17,7 @@ export const createMessage = async ({ req, path }) => {
       select: 'name username profileImage'
     })
 
-    if (typeof path === 'string') revalidatePath(path)
-    else path.map(p => revalidatePath(p))
+    revalidate(path)
 
     return JSON.parse(JSON.stringify(message._doc))
   } catch (err) {
@@ -50,8 +48,7 @@ export const deleteMessage = async ({ id, path }) => {
 
     if (!result) throw new Error("Failed to delete message");
 
-    if (typeof path === "string") revalidatePath(path)
-    else path.forEach((path) => revalidatePath(path))
+    revalidate(path)
 
     return JSON.parse(JSON.stringify(result));
   } catch (error) {

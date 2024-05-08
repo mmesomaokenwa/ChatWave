@@ -47,7 +47,7 @@ const ShareForm = ({ setOpen }) => {
     }))
   }
   return (
-    <div className='flex flex-col justify-between h-full px-4 gap-2'>
+    <div className='flex flex-col justify-between h-full gap-2'>
       <SearchUsers setUsers={setUsers} />
       <div className='flex flex-col overflow-y-auto h-full'>
         {users?.map((user) => (
@@ -76,7 +76,7 @@ const ShareForm = ({ setOpen }) => {
           </Card>
         ))}
       </div>
-      <Button className="w-full" disabled={selectUsers.length < 1} onClick={handleSubmit}>
+      <Button className="w-full" variant="accent" disabled={selectUsers.length < 1} onClick={handleSubmit}>
         Send
       </Button>
     </div>

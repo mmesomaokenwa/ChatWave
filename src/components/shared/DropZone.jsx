@@ -35,7 +35,7 @@ const DropZone = ({ setValue, valueName, post }) => {
   return (
     <div
       {...getRootProps()}
-      className={`flex flex-col items-center justify-center bg-gray-200 dark:bg-slate-900 rounded-lg ${
+      className={`flex flex-col items-center justify-center bg-gray-200 dark:bg-light-dark rounded-lg ${
         isDragActive && "ring-2 ring-accent"
       } ${isDragReject && "ring-2 ring-red-500"}`}
     >

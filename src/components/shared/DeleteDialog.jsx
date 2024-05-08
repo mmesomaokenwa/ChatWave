@@ -54,6 +54,7 @@ const DeleteDialog = ({ postId }) => {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
+            variant="destructive"
           >
             Continue
           </AlertDialogAction>

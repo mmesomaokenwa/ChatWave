@@ -18,6 +18,15 @@ export const getNotifications = async (userId) => {
   try {
     await connectToDatabase()
     const notifications = await Notification.find({ receiver: userId })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'sender',
+        select: 'name username profileImage followers _id'
+      })
+      .populate({
+        path: 'post',
+        select: 'caption media _id'
+      })
     return JSON.parse(JSON.stringify(notifications));
   } catch (error) {
     handleError(error);
