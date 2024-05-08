@@ -276,9 +276,12 @@ const ShareDrawer = ({ shares, postId }) => {
           <p className="w-full text-center">Share with</p>
           <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar">
             {users?.map((user) => (
-              <div className='flex flex-col items-center gap-2 w-[100px]' onClick={() => sendMessage(user._id)}>
+              <div
+                key={user._id}
+                className="flex flex-col items-center gap-2 w-[100px]"
+                onClick={() => sendMessage(user._id)}
+              >
                 <Image
-                  key={user._id}
                   src={user.profileImage || "/assets/profile-placeholder.svg"}
                   alt={user.name}
                   width={40}
@@ -344,11 +347,11 @@ const ShareDrawer = ({ shares, postId }) => {
           <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar">
             {users?.map((user) => (
               <div
+                key={user._id}
                 className="flex flex-col items-center gap-2 w-[100px]"
                 onClick={() => sendMessage(user._id)}
               >
                 <Image
-                  key={user._id}
                   src={user.profileImage || "/assets/profile-placeholder.svg"}
                   alt={user.name}
                   width={40}
