@@ -25,18 +25,24 @@ const ChatBubble = forwardRef(({ message, isLastMessage, isOwned, className }, r
           height={45}
         /> */}
         <div
-          className={`px-4 py-2 max-w-[45%] ${
+          className={`px-4 py-2 max-w-[200px] ${
             isOwned
               ? "bg-accent text-white rounded-l-xl rounded-tr-xl"
               : "dark:bg-gray-800 bg-gray-200 rounded-r-xl rounded-tl-xl"
           }`}
         >
-          <div>{formattedMessage}</div>
+          <div className="flex flex-col break-words">
+            {formattedMessage}
+          </div>
         </div>
         <OptionsPopup message={message} isOwned={isOwned} />
       </div>
       {isLastMessage && (
-        <div className={`text-sm text-muted-foreground ${isOwned ? "text-right" : "text-left"}`}>
+        <div
+          className={`text-sm text-muted-foreground ${
+            isOwned ? "text-right" : "text-left"
+          }`}
+        >
           {message.isSending ? "Sending..." : formatChatDate(message.createdAt)}
         </div>
       )}

@@ -16,7 +16,7 @@ const ChatRoom = async ({ params: { roomId } }) => {
   ]);
 
   return (
-    <div className="flex flex-1 w-full">
+    <div className="flex flex-1">
       <div className="flex flex-col flex-1 items-center py-24 pt-2 px-5 md:px-8 lg:p-14">
         <ChatRoomInfo
           chatRoom={

@@ -19,6 +19,12 @@ const ChatPreviewCard = ({ chat, roomId }) => {
   const { onlineUsers } = useSocket()
   const isTyping = useMemo(() => typingUsers?.includes(roomId), [typingUsers, roomId])
   const isOnline = useMemo(() => onlineUsers?.includes(roomId), [onlineUsers, roomId])
+
+  const shortenText = (text) => {
+    if (text.length > 20) {
+      return text.slice(0, 20) + "...";
+    }
+  } 
   return (
     <Link href={`/chat/${roomId}`}>
       <Card className="w-full flex items-center gap-3 p-0 py-4 cursor-pointer border-0">
@@ -53,12 +59,14 @@ const ChatPreviewCard = ({ chat, roomId }) => {
               <IsTyping />
             ) : (
               <>
-                <p className="text-sm line-clamp-1">
-                  {chat.isOwned ? `You: ${chat?.message}` : `${chat?.message}`}
-                </p>
-                <p className="text-sm text-muted-foreground">
+                <div className="text-sm truncate">
+                  {chat.isOwned
+                    ? `You: ${shortenText(chat?.message)}`
+                    : `${shortenText(chat?.message)}`}
+                </div>
+                <div className="text-sm text-muted-foreground">
                   {formatChatDate(chat.createdAt)}
-                </p>
+                </div>
               </>
             )}
           </CardContent>
