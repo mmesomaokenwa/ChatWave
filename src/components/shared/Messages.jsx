@@ -37,7 +37,7 @@ const Messages = ({ chatRoom, roomId, sessionUser, isRead }) => {
   }, [chatRoomMessages])
   return (
     <>
-      <div className="flex flex-col-reverse w-full grow overflow-y-scroll">
+      <div className="flex flex-col-reverse w-full grow overflow-y-scroll custom-scrollbar">
         {isTyping && <IsTyping size="lg" />}
         {chatRoomMessages &&
           chatRoomMessages.map((message, index) => {

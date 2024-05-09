@@ -1,10 +1,10 @@
 'use client'
 
-import { Loader } from 'lucide-react';
 import React, { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer';
 import PostCardList from './PostCardList';
 import { useInfiniteScrollPosts } from '@/lib/react-query/queries';
+import Loader from './Loader';
 
 const LoadMore = ({timeline, showPostIndicator}) => {
   const { ref, inView } = useInView({
@@ -28,7 +28,7 @@ const LoadMore = ({timeline, showPostIndicator}) => {
         {!hasNextPage && showPostIndicator && (
           <p className="text-sm lg:text-base font-medium">No more posts</p>
         )}
-        {isFetchingNextPage && <Loader />}
+        {isFetchingNextPage && <Loader className={'size-5'} />}
       </div>
     </>
   );

@@ -88,7 +88,7 @@ const SearchResultsTab = ({ query }) => {
           {showPosts ? (
             isLoadingPosts ? (
               <div className="col-span-2 lg:col-span-3">
-                <Loader width={30} height={30} className={'mx-auto mt-8'} />
+                <Loader className={'mx-auto mt-12'} />
               </div>
             ) : posts?.length === 0 ? (
               <p className="col-span-2 lg:col-span-3 text-center">No results found</p>

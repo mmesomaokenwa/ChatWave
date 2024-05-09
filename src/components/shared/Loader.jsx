@@ -1,16 +1,14 @@
-import Image from 'next/image'
+import { cn } from '@/lib/utils'
 import React from 'react'
 
-const Loader = ({ width, height, className }) => {
+const Loader = ({ className }) => {
   return (
-    <Image
-      src="/assets/loader.svg"
-      alt="loader"
-      width={width}
-      height={height}
-      className={className}
+    <div
+      className={cn(
+        `size-10 rounded-full animate-spin duration-1000 border-2 border-black dark:border-white border-t-black/40 border-l-black/40 dark:border-t-white/40 dark:border-l-white/40 ${className}`
+      )}
     />
-  )
+  );
 }
 
 export default Loader

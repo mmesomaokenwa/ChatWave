@@ -230,7 +230,7 @@ export default function UserAuthForm({ className, mode }) {
                 : mode === "login"
                   ? "Sign In"
                   : null
-                : <Loader width={20} height={20} />}
+                : <Loader className={'size-5 border-t-white/40 border-l-white/40'} />}
           </Button>
         </form>
       </Form>

@@ -178,7 +178,7 @@ const PostForm = ({ post, action }) => {
           name="location"
           render={({ field }) => (
             <FormItem>
-              <CustomInput type={'text'} field={field} label="Location" />
+              <CustomInput type={"text"} field={field} label="Location" />
             </FormItem>
           )}
         />
@@ -188,26 +188,31 @@ const PostForm = ({ post, action }) => {
           render={({ field }) => (
             <FormItem>
               <CustomInput
-                type={'text'}
+                type={"text"}
                 field={field}
                 label="Add Tags (separated by comma ' , ')"
               />
             </FormItem>
           )}
         />
-        <div className='flex justify-end gap-4'>
+        <div className="flex justify-end gap-4">
           <Button type="button" variant="destructive">
             Cancel
           </Button>
-          <Button type="submit" variant="accent"
+          <Button
+            type="submit"
+            variant="accent"
             disabled={form.formState.isSubmitting}
           >
-            {form.formState.isSubmitting
-              ? <Loader width={20} height={20} />
-              : action === 'create'
-                ? 'Create Post'
-                : 'Update Post'
-            }
+            {form.formState.isSubmitting ? (
+              <Loader
+                className={"size-5 border-t-white/40 border-l-white/40"}
+              />
+            ) : action === "create" ? (
+              "Create Post"
+            ) : (
+              "Update Post"
+            )}
           </Button>
         </div>
       </form>

@@ -4,7 +4,7 @@ import { useInfiniteHomePosts } from '@/lib/react-query/queries'
 import React, { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 import PostCard from './PostCard'
-import { Loader } from 'lucide-react'
+import Loader from './Loader'
 
 const HomeLoadMore = () => {
   const [ref, inView] = useInView({
@@ -26,7 +26,7 @@ const HomeLoadMore = () => {
         {!hasNextPage && (
           <p className="text-sm lg:text-base font-medium">No more posts</p>
         )}
-        {isFetchingNextPage && <Loader />}
+        {isFetchingNextPage && <Loader className={'size-5'} />}
       </div>
     </>
   );

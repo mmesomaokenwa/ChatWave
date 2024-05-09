@@ -14,7 +14,7 @@ const Notifications = async () => {
   ]);
   return (
     <div className="flex flex-1">
-      <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll py-24 px-5 md:px-8 lg:p-14">
+      <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll custom-scrollbar py-24 px-5 md:px-8 lg:p-14">
         <div className="max-w-5xl w-full flex justify-start gap-3">
           <Image
             src="/assets/notifications.svg"
@@ -26,7 +26,11 @@ const Notifications = async () => {
           <h2 className="text-3xl md:text-2xl font-bold">Notifications</h2>
         </div>
         {/* <SavedPostFilter /> */}
-        <NotificationsList notifications={notifications} sessionUser={user} isSeen={isSeen} />
+        <NotificationsList
+          notifications={notifications}
+          sessionUser={user}
+          isSeen={isSeen}
+        />
       </div>
     </div>
   );

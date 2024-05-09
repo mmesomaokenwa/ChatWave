@@ -111,20 +111,13 @@ const ProfileForm = ({ user }) => {
       >
         <div className="flex items-center gap-2">
           <Image
-            src={
-              profileImage || "/assets/profile-placeholder.svg"
-            }
+            src={profileImage || "/assets/profile-placeholder.svg"}
             alt={user?.name}
             className="size-20 rounded-full"
             width={48}
             height={48}
           />
-          <Button
-            type="button"
-            variant="ghost"
-            size='sm'
-            onClick={selectImage}
-          >
+          <Button type="button" variant="ghost" size="sm" onClick={selectImage}>
             Change Profile Image
           </Button>
         </div>
@@ -188,11 +181,18 @@ const ProfileForm = ({ user }) => {
           <Button type="button" variant="destructive">
             Cancel
           </Button>
-          <Button type="submit" variant="accent" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
-            {form.formState.isSubmitting
-              ? <Loader width={20} height={20} />
-              : 'Update Profile'
-            }
+          <Button
+            type="submit"
+            variant="accent"
+            disabled={form.formState.isSubmitting || !form.formState.isDirty}
+          >
+            {form.formState.isSubmitting ? (
+              <Loader
+                className={"size-5 border-t-white/40 border-l-white/40"}
+              />
+            ) : (
+              "Update Profile"
+            )}
           </Button>
         </div>
       </form>

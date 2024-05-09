@@ -91,7 +91,7 @@ const CommentForm = ({ setComments, user, post, className }) => {
         />
         <Button type="submit" size="sm" variant="ghost">
           {form.formState.isSubmitting ? (
-            <Loader width={20} height={20} />
+            <Loader className={'size-5'} />
           ) : (
             <Image
               src="/assets/send.svg"
