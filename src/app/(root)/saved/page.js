@@ -13,7 +13,7 @@ const SavedPosts = async ({ searchParams: { by } }) => {
   const savedPosts = by === 'oldest' ? posts?.reverse() : posts
   return (
     <div className="flex flex-1">
-      <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll py-8 px-5 md:px-8 lg:p-14">
+      <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll py-24 px-5 md:px-8 lg:p-14">
         <div className="max-w-5xl w-full flex justify-start gap-3">
           <Image
             src="/assets/save.svg"

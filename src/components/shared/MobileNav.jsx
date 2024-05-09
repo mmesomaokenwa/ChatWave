@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -34,11 +34,14 @@ const mobileNav = [
 ]
 
 const MobileNav = () => {
+  const [open, setOpen] = useState(false)
   const { data: session } = useSession()
   const user = session?.user
+
+  const handleClose = () => setOpen(false)
   return (
     <div className="md:hidden">
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger className="flex items-center justify-center">
           <HiMiniBars3BottomRight className="text-3xl" />
         </SheetTrigger>
@@ -82,11 +85,11 @@ const MobileNav = () => {
           <Separator />
           <SheetFooter className="flex justify-between gap-4">
             {mobileNav.map((link, index) => (
-              <NavLink key={index} link={link} className={"!gap-2"} />
+              <NavLink key={index} link={link} className={"!gap-2"} callback={handleClose} />
             ))}
             <div className="flex flex-col gap-4 mt-52">
-              <DarkModeToggler />
-              <LogoutButton className="flex gap-3" variant="destructive" />
+              <DarkModeToggler callback={handleClose} />
+              <LogoutButton className="flex gap-3" variant="destructive" callback={handleClose} />
             </div>
           </SheetFooter>
         </SheetContent>

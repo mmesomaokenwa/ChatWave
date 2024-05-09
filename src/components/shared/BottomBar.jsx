@@ -10,7 +10,7 @@ const BottomBar = () => {
         <NavLink
           key={index}
           link={link}
-          className={"flex-col !gap-0 !py-0"}
+          className={"flex-col !gap-0 !py-0 text-sm"}
           isChat={link.label === "Chats"}
         />
       ))}

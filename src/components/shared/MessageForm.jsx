@@ -78,7 +78,7 @@ const MessageForm = ({ roomId, sender }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex bg-white dark:bg-black rounded-lg shadow-md overflow-hidden"
+        className="w-full flex bg-white dark:bg-black py-2 rounded-lg shadow-md overflow-hidden"
       >
         <FormField
           control={form.control}

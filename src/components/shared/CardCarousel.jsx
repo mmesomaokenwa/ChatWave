@@ -61,7 +61,7 @@ const CardCarousel = ({ postMedia, className}) => {
           ))}
         </CarouselContent>
       </Carousel>
-      <div className="flex justify-center gap-2 absolute top-[90%] right-0 left-0 z-50">
+      <div className="flex justify-center gap-2 absolute top-[90%] right-0 left-0 z-10">
         {count > 1 &&
           Array.from({ length: count }).map((file, index) => (
             <div

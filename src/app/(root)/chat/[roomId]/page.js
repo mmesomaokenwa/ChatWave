@@ -3,8 +3,6 @@ import Messages from '@/components/shared/Messages'
 import authOptions from '@/lib/authOptions'
 import { getMessagesByRoomId, markAllMessagesRead } from '@/lib/mongodb/actions/chat.actions'
 import { getServerSession } from 'next-auth'
-import Image from 'next/image'
-import Link from 'next/link'
 import React from 'react'
 
 const ChatRoom = async ({ params: { roomId } }) => {
@@ -19,7 +17,7 @@ const ChatRoom = async ({ params: { roomId } }) => {
 
   return (
     <div className="flex flex-1 w-full">
-      <div className="flex flex-col flex-1 items-center py-2 px-5 md:px-8 lg:p-14">
+      <div className="flex flex-col flex-1 items-center py-24 pt-2 px-5 md:px-8 lg:p-14">
         <ChatRoomInfo
           chatRoom={
             chatRoom[0]?.isOwned

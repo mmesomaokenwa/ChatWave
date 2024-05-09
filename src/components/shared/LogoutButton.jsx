@@ -6,11 +6,12 @@ import Image from 'next/image'
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-const LogoutButton = ({ variant = 'ghost', className }) => {
+const LogoutButton = ({ variant = 'ghost', className, callback }) => {
   const router = useRouter();
 
   const handleLogout = () => {
-    router.replace("/sign-in");
+    if (callback) callback()
+    router.replace("/sign-in")
     signOut({ callbackUrl: "/sign-in" })
   }
   return (

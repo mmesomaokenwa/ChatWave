@@ -7,7 +7,7 @@ import React from 'react'
 import NewNoticationsCount from './NewNoticationsCount';
 import NewMessagesCount from './NewMessagesCount';
 
-const NavLink = ({ link, className, isChat }) => {
+const NavLink = ({ link, className, isChat, callback }) => {
   const pathname = usePathname();
 
   const isActive = (link) => {
@@ -19,6 +19,7 @@ const NavLink = ({ link, className, isChat }) => {
   return (
     <Link
       href={link.route}
+      onClick={callback}
       className={`relative flex justify-between group p-3 rounded-lg hover:text-white hover:bg-accent transition ${
         active && "bg-accent"
       }`}

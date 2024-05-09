@@ -53,7 +53,7 @@ const Messages = ({ chatRoom, roomId, sessionUser, isRead }) => {
             );
           })}
       </div>
-      <div className="sticky bottom-20 md:bottom-0 w-full">
+      <div className="sticky bottom-0 w-full">
         <MessageForm roomId={roomId} sender={sessionUser} />
       </div>
     </>
