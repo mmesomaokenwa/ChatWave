@@ -1,13 +1,17 @@
-import NotificationCard from '@/components/shared/NotificationCard'
+import NotificationsList from '@/components/shared/NotificationsList'
 import authOptions from '@/lib/authOptions'
-import { getNotifications } from '@/lib/mongodb/actions/notification.action'
+import { markAllMessagesRead } from '@/lib/mongodb/actions/chat.actions'
+import { getNotifications, markAllNotificationsSeen } from '@/lib/mongodb/actions/notification.action'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import React from 'react'
 
 const Notifications = async () => {
   const user = await getServerSession(authOptions).then((res) => res?.user)
-  const notifications = await getNotifications(user?.id)
+  const [notifications, isSeen] = await Promise.all([
+    getNotifications(user?.id),
+    markAllNotificationsSeen(user?.id),
+  ]);
   return (
     <div className="flex flex-1">
       <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll py-8 px-5 md:px-8 lg:p-14">
@@ -22,11 +26,7 @@ const Notifications = async () => {
           <h2 className="text-3xl md:text-2xl font-bold">Notifications</h2>
         </div>
         {/* <SavedPostFilter /> */}
-        <div className="w-full flex flex-col gap-2">
-          {notifications?.map((notification) => (
-            <NotificationCard key={notification._id} notification={notification} sessionUser={user} />
-          ))}
-        </div>
+        <NotificationsList notifications={notifications} sessionUser={user} isSeen={isSeen} />
       </div>
     </div>
   );

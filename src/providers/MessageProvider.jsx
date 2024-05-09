@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useSocket } from './SocketProvider';
 import { useSession } from 'next-auth/react';
 import { revalidate } from '@/lib';
+import { getAllMessagesByUserID } from '@/lib/mongodb/actions/chat.actions';
 
 const MessageContext = createContext({
   chatRoomMessages: [{}],
@@ -25,6 +26,8 @@ const MessageProvider = ({ children }) => {
   const pathname = usePathname()
   const router = useRouter();
   const { socket, on } = useSocket()
+  const { data: session } = useSession()
+  const sessionUser = session?.user
 
   useEffect(() => {
     let timeout;
@@ -82,6 +85,12 @@ const MessageProvider = ({ children }) => {
       }
     }
   }, [socket])
+
+  useEffect(() => {
+    if (sessionUser?.id) {
+      getAllMessagesByUserID(sessionUser?.id).then((data) => setChatRooms(data))
+    }
+  }, [sessionUser?.id])
   
   const contextValue = {
     chatRoomMessages,

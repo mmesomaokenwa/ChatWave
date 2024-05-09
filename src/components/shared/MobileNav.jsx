@@ -18,6 +18,7 @@ import NavLink from './NavLink';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Separator } from '../ui/separator';
 
 const mobileNav = [
   {
@@ -41,14 +42,14 @@ const MobileNav = () => {
         <SheetTrigger className="flex items-center justify-center">
           <HiMiniBars3BottomRight className="text-3xl" />
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className="flex flex-col justify-between gap-4">
           <SheetHeader>
             <Image
               src={user?.profileImage || "/assets/profile-placeholder.svg"}
               alt="profile"
-              height={56}
-              width={56}
-              className="rounded-full mx-auto mt-4"
+              height={80}
+              width={80}
+              className="rounded-full mx-auto mt-6"
             />
             <SheetTitle>{user?.name}</SheetTitle>
             <SheetDescription className="!-mt-1">
@@ -57,7 +58,7 @@ const MobileNav = () => {
             <SheetDescription className="!mt-4 line-clamp-2">
               {user?.bio}
             </SheetDescription>
-            <SheetDescription className="flex justify-between gap-4 mt-4">
+            {/* <SheetDescription className="flex justify-between gap-4 mt-4">
               <Link
                 href={`/profile/${user?.id}?showFollowers=true`}
                 className="flex items-center gap-2 text-black dark:text-white"
@@ -76,14 +77,17 @@ const MobileNav = () => {
                 </span>{" "}
                 Following
               </Link>
-            </SheetDescription>
+            </SheetDescription> */}
           </SheetHeader>
-          <SheetFooter className="flex justify-between gap-4 mt-4">
+          <Separator />
+          <SheetFooter className="flex justify-between gap-4">
             {mobileNav.map((link, index) => (
               <NavLink key={index} link={link} className={"!gap-2"} />
             ))}
-            <DarkModeToggler />
-            <LogoutButton className="flex gap-3" variant="destructive" />
+            <div className="flex flex-col gap-4 mt-52">
+              <DarkModeToggler />
+              <LogoutButton className="flex gap-3" variant="destructive" />
+            </div>
           </SheetFooter>
         </SheetContent>
       </Sheet>

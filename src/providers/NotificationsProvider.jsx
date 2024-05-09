@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useSocket } from './SocketProvider'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { getNotifications } from '@/lib/mongodb/actions/notification.action'
 
 const NotificationsContext = createContext({
   notifications: [{}],
@@ -15,11 +17,13 @@ const NotificationsProvider = ({ children }) => {
   const { socket, on } = useSocket()
   const { toast } = useToast()
   const router = useRouter()
+  const { data: session } = useSession()
+  const sessionUser = session?.user
 
   useEffect(() => {
     if (socket) {
       on('likePost', data => {
-        setNotifications(prev => [...prev, data])
+        setNotifications(prev => [data, ...prev])
         toast({
           title: 'Post Liked',
           description: `${data?.sender?.name} liked your post`,
@@ -30,7 +34,7 @@ const NotificationsProvider = ({ children }) => {
       })
 
       on('commentPost', data => {
-        setNotifications(prev => [...prev, data])
+        setNotifications(prev => [data, ...prev])
         toast({
           title: 'Comment Added',
           description: 'Someone commented on your post',
@@ -41,7 +45,7 @@ const NotificationsProvider = ({ children }) => {
       })
 
       on('follow', data => {
-        setNotifications(prev => [...prev, data])
+        setNotifications(prev => [data, ...prev])
         toast({
           title: 'Followed',
           description: `${data?.sender?.name} followed you`,
@@ -58,6 +62,12 @@ const NotificationsProvider = ({ children }) => {
       }
     }
   }, [socket])
+
+  useEffect(() => {
+    if (sessionUser?.id) {
+      getNotifications(sessionUser?.id).then(res => setNotifications(res))
+    }
+  }, [sessionUser?.id])
 
 
   const value = {

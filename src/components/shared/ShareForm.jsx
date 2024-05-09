@@ -14,7 +14,7 @@ import Image from 'next/image'
 import { useToast } from '../ui/use-toast'
 import { MessageCircle } from 'lucide-react'
 
-const ShareForm = ({ setOpen }) => {
+const ShareForm = ({ setOpen, setParentOpen }) => {
   const [users, setUsers] = useState([])
   const [selectUsers, setSelectedUsers] = useState([])
   const {toast} = useToast()
@@ -37,6 +37,7 @@ const ShareForm = ({ setOpen }) => {
   const handleSubmit = () => {
     console.log({ selectUsers })
     setOpen(false)
+    setParentOpen(false)
     setSelectedUsers([])
     setUsers([])
     wait().then(() => toast({

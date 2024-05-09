@@ -102,7 +102,6 @@ export const getAllMessagesByUserID = async (id) => {
 
 export const getMessagesByRoomId = async ({ roomId, userId }) => {
   try {
-    console.log(roomId, userId)
     await connectToDatabase()
     const result = await Chat.find({
       $or: [{
@@ -132,5 +131,19 @@ export const getMessagesByRoomId = async ({ roomId, userId }) => {
     return JSON.parse(JSON.stringify(result))
   } catch (err) {
     handleError(err)
+  }
+}
+
+export const markAllMessagesRead = async ({ roomId, userId }) => {
+  try {
+    await connectToDatabase()
+
+    const read = await Chat.updateMany({
+      $and: [{sender: roomId}, {receiver: userId}]
+    }, { isRead: true })
+    
+    return JSON.parse(JSON.stringify(read))
+  } catch (error) {
+    handleError(error)
   }
 }

@@ -1,6 +1,6 @@
 'use server'
 
-import { connectToDatabase } from "@/lib"
+import { connectToDatabase, revalidate } from "@/lib"
 import Notification from "../models/notification.model"
 import { handleError } from "@/lib/utils"
 
@@ -58,5 +58,17 @@ export const getNotificationById = async (id) => {
     return JSON.parse(JSON.stringify(notification));
   } catch (error) {
     handleError(error);
+  }
+}
+
+export const markAllNotificationsSeen = async (id) => {
+  try {
+    await connectToDatabase()
+
+    const seen = await Notification.updateMany({ receiver: id }, { seen: true })
+
+    return JSON.parse(JSON.stringify(seen))
+  } catch (error) {
+    handleError(error)
   }
 }

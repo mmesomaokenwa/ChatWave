@@ -25,6 +25,10 @@ const notificationSchema = new Schema({
     type: Date,
     default: Date.now,
     required: true
+  },
+  seen: {
+    type: Boolean,
+    default: false
   }
 })
 
