@@ -32,7 +32,7 @@ const Search = () => {
       } else {
         newUrl = removeKeysFromQuery({
           params: searchParams.toString(),
-          keysToRemove: ["query"],
+          keysToRemove: ["query", "tab"],
         });
       }
 

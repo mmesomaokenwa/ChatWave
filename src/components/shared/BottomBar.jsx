@@ -2,6 +2,7 @@
 
 import { bottombarLinks } from '@/constants';
 import NavLink from './NavLink';
+import { Tabs, Tab } from '@nextui-org/react';
 
 const BottomBar = () => {
   return (
