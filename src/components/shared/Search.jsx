@@ -11,17 +11,11 @@ import CustomInput from './CustomInput';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils';
+import { Input } from '@nextui-org/react';
 
 const Search = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const form = useForm({
-    defaultValues: {
-      search: searchParams.get("query") || "",
-    },
-    mode: "onChange",
-  });
 
   const [query, setQuery] = useState(searchParams.get("query") || "");
 
@@ -48,28 +42,17 @@ const Search = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [query, searchParams, router]);
 
-  const onSubmit = (data) => {
-    console.log(data);
-  }
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-        <FormField
-          control={form.control}
-          name="search"
-          render={({ field }) => (
-            <FormItem>
-              <CustomInput
-                field={{...field, value: query, onChange: (e) => setQuery(e.target.value) }}
-                type={"text"}
-                placeholder={"Search"}
-                label={<Image src={"/assets/search.svg"} alt={"search"} width={20} height={20} />}
-              />
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
+    <Input
+      type={"text"}
+      placeholder={"Search"}
+      size=''
+      startContent={<Image src={"/assets/search.svg"} alt={"search"} width={20} height={20} />}
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      onClear={() => setQuery("")}
+      isClearable
+    />
   );
 }
 

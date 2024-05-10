@@ -1,24 +1,17 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import CustomInput from './CustomInput';
 import DropZone from './DropZone';
 import { createPost, updatePost } from '@/lib/mongodb/actions/post.actions';
 import { useUploadThing } from '@/lib/uploadthing';
 import { useSession } from 'next-auth/react';
-import { revalidatePath } from 'next/cache';
 import { useToast } from '../ui/use-toast';
 import { useRouter } from 'next/navigation';
 import Loader from './Loader';
+import { Input, Textarea } from '@nextui-org/react';
+import { Label } from '../ui/label';
 
 const PostForm = ({ post, action }) => {
   const form = useForm({
@@ -28,22 +21,37 @@ const PostForm = ({ post, action }) => {
       tags: post?.tags?.join(", ") || "",
       location: post?.location || "",
     },
+    mode: "all",
   });
 
+  const [captionLength, setCaptionLength] = useState(300 - (post?.caption?.length || 0));
   const router = useRouter();
   const { toast } = useToast();
   const { data: session } = useSession();
   const user = session?.user
   const { startUpload } = useUploadThing("imageUploader");
 
-  form.register('media', {
-    required: 'You need to upload at least one image or video',
-  })
-
-  form.register('caption', {
-    required: false,
-    validate: (value) => value.length <= 300 || "Caption must be less than 300 characters",
-  })
+  const register = {
+    caption: form.register("caption", {
+      required: false,
+      maxLength: {
+        value: 300,
+        message: "Caption must be less than 300 characters",
+      },
+      onChange: (e) => {
+        setCaptionLength(300 - e.target.value.length);
+      }
+    }),
+    media: form.register("media", {
+      required: "You need to upload at least one image or video",
+    }),
+    tags: form.register("tags", {
+      required: false,
+    }),
+    location: form.register("location", {
+      required: false,
+    }),
+  };
 
   const onSubmit = async (data) => {
     if (action === 'create') { 
@@ -143,80 +151,59 @@ const PostForm = ({ post, action }) => {
      }
   }
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-9 w-full max-w-5xl"
-      >
-        <FormField
-          control={form.control}
-          name="caption"
-          render={({ field }) => (
-            <FormItem>
-              <CustomInput field={field} label="Caption" isTextArea />
-            </FormItem>
-          )}
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="flex flex-col gap-9 w-full max-w-5xl"
+    >
+      <Textarea
+        label="Caption"
+        endContent={<p className="mt-auto text-sm">{captionLength}</p>}
+        {...register.caption}
+        isInvalid={form.formState.errors.caption}
+        errorMessage={form.formState.errors.caption?.message}
+        color={form.formState.errors.caption ? "danger" : "default"}
+      />
+      <div>
+        <Label className={form.formState.errors.media && "text-red-500"}>
+          Add Photos or Videos
+        </Label>
+        <DropZone
+          setValue={form.setValue}
+          valueName="media"
+          post={post}
+          error={form.formState.errors.media}
         />
-        <FormField
-          control={form.control}
-          name="media"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Add Photos or Videos</FormLabel>
-              <FormControl>
-                <DropZone
-                  setValue={form.setValue}
-                  valueName="media"
-                  post={post}
-                />
-              </FormControl>
-            </FormItem>
+        {form.formState.errors.media && (
+          <p className="text-red-500 text-xs">
+            {form.formState.errors.media.message}
+          </p>
+        )}
+      </div>
+      <Input type={"text"} label="Location" {...register.location} />
+      <Input
+        type={"text"}
+        label="Add Tags (separated by comma ' , ')"
+        {...register.tags}
+      />
+      <div className="flex justify-end gap-4">
+        <Button type="button" variant="destructive">
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="accent"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting ? (
+            <Loader className={"size-5 border-t-white/40 border-l-white/40"} />
+          ) : action === "create" ? (
+            "Create Post"
+          ) : (
+            "Update Post"
           )}
-        />
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <CustomInput type={"text"} field={field} label="Location" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <CustomInput
-                type={"text"}
-                field={field}
-                label="Add Tags (separated by comma ' , ')"
-              />
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="destructive">
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="accent"
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting ? (
-              <Loader
-                className={"size-5 border-t-white/40 border-l-white/40"}
-              />
-            ) : action === "create" ? (
-              "Create Post"
-            ) : (
-              "Update Post"
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
+        </Button>
+      </div>
+    </form>
   );
 }
 

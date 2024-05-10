@@ -1,9 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { useTheme } from '@/providers/ThemeProvider';
+import { Switch } from '@nextui-org/react';
+import { Moon, Sun } from 'lucide-react';
 
 const DarkModeToggler = ({callback}) => {
   const { toggleTheme, theme } = useTheme()
@@ -13,17 +13,22 @@ const DarkModeToggler = ({callback}) => {
     toggleTheme()
   }
   return (
-    <div className="flex items-center gap-2 p-2">
-      <Switch
-        id="dark-mode-toggle"
-        ariaLabel="Dark Mode Toggle"
-        checked={theme === 'dark'}
-        onClick={handleToggle}
-      />
-      <Label htmlFor="dark-mode-toggle">
-        {theme === 'dark' ? 'Light' : 'Dark'} Mode
-      </Label>
-    </div>
+    <Switch
+      ariaLabel="Dark Mode Toggle"
+      isSelected={theme === "dark"}
+      onChange={handleToggle}
+      color="secondary"
+      size="md"
+      thumbIcon={({ isSelected, className }) =>
+        isSelected ? (
+          <Sun className={className} />
+        ) : (
+          <Moon className={className} />
+        )
+      }
+    >
+      {theme === "dark" ? "Dark" : "Light"} Mode
+    </Switch>
   );
 }
 

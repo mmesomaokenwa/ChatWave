@@ -2,19 +2,12 @@
 
 import React from 'react'
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { commentPost } from '@/lib/mongodb/actions/post.actions';
 import Loader from './Loader';
 import { useSocket } from '@/providers/SocketProvider';
+import { Input } from '@nextui-org/react';
 
 const CommentForm = ({ setComments, user, post, className }) => {
   const form = useForm({
@@ -25,8 +18,8 @@ const CommentForm = ({ setComments, user, post, className }) => {
 
   const { emit } = useSocket()
 
-  form.register('comment', {
-    required: 'Comment is required',
+  const register = form.register('comment', {
+    required: true,
     minLength: { value: 2, message: "Comment must be at least 1 character" },
   })
 
@@ -57,53 +50,48 @@ const CommentForm = ({ setComments, user, post, className }) => {
     }
   }
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={`flex items-center w-full gap-2 pl-2 py-1 rounded-full bg-gray-100 dark:bg-light-dark ${className}`}
-      >
-        <FormField
-          control={form.control}
-          name="comment"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <div className="flex items-center">
-                  <Image
-                    src={
-                      user?.profileImage || "/assets/profile-placeholder.svg"
-                    }
-                    alt="comment"
-                    width={35}
-                    height={35}
-                    className="rounded-full"
-                  />
-                  <Input
-                    placeholder="Write a comment..."
-                    {...field}
-                    className="w-full ring-0 ring-offset-0 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-gray-100 dark:bg-light-dark"
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" size="sm" variant="ghost">
-          {form.formState.isSubmitting ? (
-            <Loader className={'size-5'} />
-          ) : (
-            <Image
-              src="/assets/send.svg"
-              alt="send"
-              width={23}
-              height={23}
-              className={!form.formState.isDirty && "invert brightness-50"}
-            />
-          )}
-        </Button>
-      </form>
-    </Form>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className={`flex items-center w-full ${className}`}
+    >
+      <Input
+        placeholder="Write a comment..."
+        size="lg"
+        radius="full"
+        startContent={
+          <Image
+            src={user?.profileImage || "/assets/profile-placeholder.svg"}
+            alt="comment"
+            width={35}
+            height={35}
+            className="rounded-full -ml-2"
+          />
+        }
+        endContent={
+          <Button
+            type="submit"
+            size="sm"
+            variant="ghost"
+            className="rounded-full"
+          >
+            {form.formState.isSubmitting ? (
+              <Loader className={"size-5"} />
+            ) : (
+              <Image
+                src="/assets/send.svg"
+                alt="send"
+                width={23}
+                height={23}
+                className={!form.formState.isDirty && "invert brightness-50"}
+              />
+            )}
+          </Button>
+        }
+        {...register}
+        isInvalid={form.formState.errors.comment}
+        color={form.formState.errors.comment ? "danger" : "default"}
+      />
+    </form>
   );
 };
 

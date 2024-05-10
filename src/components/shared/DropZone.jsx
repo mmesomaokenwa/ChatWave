@@ -4,9 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import CardCarousel from "./CardCarousel";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 
-const DropZone = ({ setValue, valueName, post }) => {
+const DropZone = ({ setValue, valueName, post, error }) => {
   const [postMedia, setPostMedia] = useState([]);
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -35,17 +36,18 @@ const DropZone = ({ setValue, valueName, post }) => {
   return (
     <div
       {...getRootProps()}
-      className={`flex flex-col items-center justify-center bg-gray-200 dark:bg-light-dark rounded-lg ${
-        isDragActive && "ring-2 ring-accent"
-      } ${isDragReject && "ring-2 ring-red-500"}`}
+      className={cn(
+        `flex flex-col items-center justify-center bg-default-100 hover:bg-default transition rounded-lg ${
+          error && "bg-danger-50 hover:bg-danger-100"
+        } ${isDragActive && "ring-2 ring-accent"} ${
+          isDragReject && "ring-2 ring-red-500"
+        }`
+      )}
     >
       <input {...getInputProps()} className="cursor-pointer" />
       {postMedia?.length > 0 ? (
         <>
-          <CardCarousel
-            postMedia={postMedia}
-            className="h-80 lg:h-[612px]"
-          />
+          <CardCarousel postMedia={postMedia} className="h-80 lg:h-[612px]" />
           <p className="text-gray text-sm mb-2">
             Click to change or drag and drop
           </p>

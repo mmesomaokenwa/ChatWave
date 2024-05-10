@@ -3,18 +3,11 @@
 import React from 'react'
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import Image from 'next/image';
 import { createMessage } from '@/lib/mongodb/actions/chat.actions';
 import { useSocket } from '@/providers/SocketProvider';
 import { useMessage } from '@/providers/MessageProvider';
-import { Textarea } from '../ui/textarea';
+import { Textarea } from '@nextui-org/react';
 
 const MessageForm = ({ roomId, sender }) => {
   const form = useForm({
@@ -30,7 +23,7 @@ const MessageForm = ({ roomId, sender }) => {
     try {
       const { message } = data;
       if (!message || !message.trim()) return
-      console.log(message)
+  
       const messageData = {
         sender: sender?.id,
         receiver: roomId,
@@ -75,44 +68,34 @@ const MessageForm = ({ roomId, sender }) => {
     });
   };
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex bg-white dark:bg-black py-2 rounded-lg shadow-md overflow-hidden"
-      >
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem className="w-full flex gap-2 items-center">
-              <FormControl>
-                <Textarea
-                  placeholder="Type a message"
-                  {...field}
-                  onKeyPress={handleKeyPress}
-                  className="w-full min-h-5 py-3 px-4 border-none text-black dark:text-white rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0"
-                  rows={1}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          variant="ghost"
-          className="bg-yellow-500 hover:bg-yellow-500/90"
-          disabled={form.formState.isSubmitting || !form.formState.isDirty}
-        >
-          <Image
-            src="/assets/send.svg"
-            alt="send"
-            width={20}
-            height={20}
-            className="invert brightness-200"
-          />
-        </Button>
-      </form>
-    </Form>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="w-full flex bg-white dark:bg-black py-2 rounded-lg shadow-md overflow-hidden"
+    >
+      <Textarea
+        placeholder="Type a message..."
+        minRows={1}
+        maxRows={3}
+        onKeyPress={handleKeyPress}
+        endContent={
+          <Button
+            type="submit"
+            variant="ghost"
+            className="bg-yellow-500 hover:bg-yellow-500/90"
+            disabled={form.formState.isSubmitting || !form.formState.isDirty}
+          >
+            <Image
+              src="/assets/send.svg"
+              alt="send"
+              width={20}
+              height={20}
+              className="invert brightness-200"
+            />
+          </Button>
+        }
+        {...form.register("message")}
+      />
+    </form>
   );
 }
 
