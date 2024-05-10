@@ -6,27 +6,19 @@ import { MdEmail } from "react-icons/md";
 import { FaKey } from "react-icons/fa";
 import { IoCalendarNumber } from "react-icons/io5";
 import { useForm } from "react-hook-form";
-
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormField,
-} from "@/components/ui/form";
-
 import { cn } from "@/lib/utils";
-import CustomInput from "./CustomInput";
 import { createUser } from "@/lib/mongodb/actions/user.actions";
 import { useToast } from "../ui/use-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import Loader from "./Loader";
 import { Check, X } from "lucide-react";
+import { Input } from "@nextui-org/react";
 
 export default function UserAuthForm({ className, mode }) {
   const router = useRouter();
   const { toast } = useToast();
-  const { data: session } = useSession();
   
   const form = useForm({
     defaultValues: {
@@ -39,42 +31,38 @@ export default function UserAuthForm({ className, mode }) {
     mode: 'all'
   });
 
-  let registers;
+  let register;
 
   if (mode === "signup") {
-    registers = [
-      [
-        form.register("name", {
-          required: "Name is required",
-        }),
-        form.register("username", {
-          required: "Username is required",
-        }),
-        form.register("email", {
-          required: "Email is required",
-          pattern: /^\S+@\S+$/i || "Please enter a valid email",
-        }),
-        form.register("password", { required: "Password is required" }),
-        form.register("confirmPassword", {
-          required: "Confirm Password is required",
-          valueAsNumber: true, // the value will be sent to the server as a number
-          validate: {
-            isEqualToPassword: (value) =>
-              value === form.watch("password") || "Passwords do not match",
-          },
-        }),
-      ],
-    ];
+    register = {
+      name: form.register("name", {
+        required: "Name is required",
+      }),
+      username: form.register("username", {
+        required: "Username is required",
+      }),
+      email: form.register("email", {
+        required: "Email is required",
+        pattern: /^\S+@\S+$/i || "Please enter a valid email",
+      }),
+      password: form.register("password", { required: "Password is required" }),
+      confirmPassword: form.register("confirmPassword", {
+        required: "Confirm Password is required",
+        valueAsNumber: true, // the value will be sent to the server as a number
+        validate: {
+          isEqualToPassword: (value) =>
+            value === form.watch("password") || "Passwords do not match",
+        },
+      }),
+    }    
   } else if (mode === "login") {
-    registers = [
-      [
-        form.register("email", {
-          required: "Email is required",
-          pattern: /^\S+@\S+$/i || "Please enter a valid email",
-        }),
-        form.register("password", { required: "Password is required" }),
-      ],
-    ];
+    register = {
+      email: form.register("email", {
+        required: "Email is required",
+        pattern: /^\S+@\S+$/i || "Please enter a valid email",
+      }),
+      password: form.register("password", { required: "Password is required" }),
+    }
   }
 
   async function onSubmit(data) {
@@ -88,8 +76,6 @@ export default function UserAuthForm({ className, mode }) {
             password: data.password,
             redirect: false,
           });
-
-          console.log(signedInUser)
 
           if (signedInUser.error) {
             throw new Error(signedInUser.error);
@@ -114,7 +100,6 @@ export default function UserAuthForm({ className, mode }) {
     }
 
     if (mode === "login") {
-      console.log(data)
       try {
         const signedInUser = await signIn("credentials", {
           email: data.email,
@@ -146,94 +131,79 @@ export default function UserAuthForm({ className, mode }) {
 
   return (
     <div className={cn("form grid place-items-stretch gap-4", className)}>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-2">
-          {mode === "signup" && (
-            <>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <CustomInput
-                    field={field}
-                    type={"text"}
-                    placeholder={"Name"}
-                    label={<IoMdPerson className="w-6 h-6" />}
-                    error={form.formState.errors.name}
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <CustomInput
-                    field={field}
-                    type={"text"}
-                    placeholder={"Username"}
-                    label={<IoMdPerson className="w-6 h-6" />}
-                    error={form.formState.errors.username}
-                  />
-                )}
-              />
-            </>
-          )}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <CustomInput
-                field={field}
-                type={"email"}
-                placeholder={"Email"}
-                label={<MdEmail className="w-6 h-6" />}
-                error={form.formState.errors.email}
-              />
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <CustomInput
-                field={field}
-                type={"password"}
-                placeholder={"Password"}
-                label={<FaKey className="w-5 h-5" />}
-                error={form.formState.errors.password}
-              />
-            )}
-          />
-          {mode === "signup" && (
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <CustomInput
-                  field={field}
-                  type={"password"}
-                  placeholder={"Confirm Password"}
-                  label={<FaKey className="w-5 h-5" />}
-                  error={form.formState.errors.confirmPassword}
-                />
-              )}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-3">
+        {mode === "signup" && (
+          <>
+            <Input
+              type={"text"}
+              placeholder={"Name"}
+              size="lg"
+              startContent={<IoMdPerson className="w-6 h-6" />}
+              {...register.name}
+              isInvalid={form.formState.errors.name}
+              errorMessage={form.formState.errors.name?.message}
+              color={form.formState.errors.name ? "danger" : "default"}
             />
-          )}
-          <Button
-            variant="accent"
+            <Input
+              type={"text"}
+              placeholder={"Username"}
+              size="lg"
+              startContent={<IoMdPerson className="w-6 h-6" />}
+              {...register.username}
+              isInvalid={form.formState.errors.username}
+              errorMessage={form.formState.errors.username?.message}
+              color={form.formState.errors.username ? "danger" : "default"}
+            />
+          </>
+        )}
+        <Input
+          type={"email"}
+          placeholder={"Email"}
+          size="lg"
+          startContent={<MdEmail className="w-6 h-6" />}
+          {...register.email}
+          isInvalid={form.formState.errors.email}
+          errorMessage={form.formState.errors.email?.message}
+          color={form.formState.errors.email ? "danger" : "default"}
+        />
+        <Input
+          type={"password"}
+          placeholder={"Password"}
+          size="lg"
+          startContent={<FaKey className="w-5 h-5" />}
+          {...register.password}
+          isInvalid={form.formState.errors.password}
+          errorMessage={form.formState.errors.password?.message}
+          color={form.formState.errors.password ? "danger" : "default"}
+        />
+        {mode === "signup" && (
+          <Input
+            type={"password"}
+            placeholder={"Confirm Password"}
             size="lg"
-            disabled={form.formState.isSubmitting}
-          >
-            {!form.formState.isSubmitting
-              ? mode === "signup"
-              ? "Sign Up"
-                : mode === "login"
-                  ? "Sign In"
-                  : null
-                : <Loader className={'size-5 border-t-white/40 border-l-white/40'} />}
-          </Button>
-        </form>
-      </Form>
+            startContent={<FaKey className="w-5 h-5" />}
+            {...register.confirmPassword}
+            isInvalid={form.formState.errors.confirmPassword}
+            errorMessage={form.formState.errors.confirmPassword?.message}
+            color={form.formState.errors.confirmPassword ? "danger" : "default"}
+          />
+        )}
+        <Button
+          variant="accent"
+          size="lg"
+          disabled={form.formState.isSubmitting}
+        >
+          {!form.formState.isSubmitting ? (
+            mode === "signup" ? (
+              "Sign Up"
+            ) : mode === "login" ? (
+              "Sign In"
+            ) : null
+          ) : (
+            <Loader className={"size-5 border-t-white/40 border-l-white/40"} />
+          )}
+        </Button>
+      </form>
       {/* <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />

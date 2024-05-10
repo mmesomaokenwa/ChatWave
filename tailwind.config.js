@@ -1,3 +1,5 @@
+const { nextui } = require('@nextui-org/react');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -6,6 +8,7 @@ module.exports = {
     "./components/**/*.{js,jsx}",
     "./app/**/*.{js,jsx}",
     "./src/**/*.{js,jsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   prefix: "",
   theme: {
@@ -62,6 +65,7 @@ module.exports = {
           DEFAULT: "hsl(var(--light))",
           foreground: "hsl(var(--light-foreground))",
         },
+        focus: "hsl(var(--accent))",
         "light-dark": "hsl(0, 5%, 9%)",
       },
       borderRadius: {
@@ -88,5 +92,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), nextui()],
 };

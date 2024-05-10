@@ -7,6 +7,7 @@ import AuthProvider from "@/providers/AuthProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import MessageProvider from "@/providers/MessageProvider";
 import NotificationsProvider from "@/providers/NotificationsProvider";
+import UIProvider from "@/providers/UIProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,20 +27,22 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <AuthProvider>
-          <SocketProvider>
-            <MessageProvider>
-              <NotificationsProvider>
-                <ThemeProvider>
-                  <QueryProvider>
-                    {children}
-                    <Toaster />
-                  </QueryProvider>
-                </ThemeProvider>
-              </NotificationsProvider>
-            </MessageProvider>
-          </SocketProvider>
-        </AuthProvider>
+        <UIProvider>
+          <AuthProvider>
+            <SocketProvider>
+              <MessageProvider>
+                <NotificationsProvider>
+                  <ThemeProvider>
+                    <QueryProvider>
+                      {children}
+                      <Toaster />
+                    </QueryProvider>
+                  </ThemeProvider>
+                </NotificationsProvider>
+              </MessageProvider>
+            </SocketProvider>
+          </AuthProvider>
+        </UIProvider>
       </body>
     </html>
   );
