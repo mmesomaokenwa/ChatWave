@@ -29,6 +29,7 @@ import { useSession } from 'next-auth/react';
 import { createMessage } from '@/lib/mongodb/actions/chat.actions';
 import { useSocket } from '@/providers/SocketProvider';
 import DirectMessageDrawer from './DirectMessageDrawer';
+import { User } from '@nextui-org/react';
 
 const ShareDrawer = ({ shares, postId }) => {
   const [open, setOpen] = useState(false)
@@ -171,20 +172,16 @@ const ShareDrawer = ({ shares, postId }) => {
           <p className="w-full text-center">Share with</p>
           <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar">
             {users?.map((user) => (
-              <div
+              <User
                 key={user._id}
+                avatarProps={{
+                  src: user.profileImage || "/assets/profile-placeholder.svg",
+                  size: "md",
+                }}
+                name={user.name}
                 className="flex flex-col items-center gap-2 w-[100px]"
                 onClick={() => sendMessage(user._id)}
-              >
-                <Image
-                  src={user.profileImage || "/assets/profile-placeholder.svg"}
-                  alt={user.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-                <p className="text-sm line-clamp-1">{user.name}</p>
-              </div>
+              />
             ))}
           </div>
           <DirectMessageDrawer setParentOpen={setOpen} />
@@ -241,20 +238,16 @@ const ShareDrawer = ({ shares, postId }) => {
           <p className="w-full text-center">Share with</p>
           <div className="w-full flex items-center gap-2 overflow-x-auto no-scrollbar">
             {users?.map((user) => (
-              <div
+              <User
                 key={user._id}
+                avatarProps={{
+                  src: user.profileImage || "/assets/profile-placeholder.svg",
+                  size: "md",
+                }}
+                name={user.name}
                 className="flex flex-col items-center gap-2 w-[100px]"
                 onClick={() => sendMessage(user._id)}
-              >
-                <Image
-                  src={user.profileImage || "/assets/profile-placeholder.svg"}
-                  alt={user.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-                <p className="text-sm line-clamp-1">{user.name}</p>
-              </div>
+              />
             ))}
           </div>
           <DirectMessageDrawer setParentOpen={setOpen} />
