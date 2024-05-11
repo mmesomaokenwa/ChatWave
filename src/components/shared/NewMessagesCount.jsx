@@ -1,4 +1,5 @@
 import { useMessage } from '@/providers/MessageProvider'
+import { Chip } from '@nextui-org/react'
 import { useSession } from 'next-auth/react'
 import React, { useMemo } from 'react'
 
@@ -22,13 +23,17 @@ const NewMessagesCount = () => {
     return count
   }, [chatRooms])
   return (
-    <div
-      className={`flex items-center justify-center rounded-lg bg-destructive h-6 p-2 lg:p-4 ${
-        newChatRoomMessages === 0 && "hidden"
-      }`}
+    <Chip
+      color="danger"
+      classNames={{
+        base: `absolute md:relative right-0 ${
+          newChatRoomMessages === 0 && "hidden"
+        }`,
+        content: "text-xs font-bold text-white",
+      }}
     >
-      <p className="text-xs font-bold text-white">{newChatRoomMessages}</p>
-    </div>
+      {newChatRoomMessages}
+    </Chip>
   );
 }
 

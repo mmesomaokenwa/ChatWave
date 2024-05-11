@@ -1,4 +1,5 @@
 import { useNotifications } from '@/providers/NotificationsProvider';
+import { Chip } from '@nextui-org/react';
 import React, { useMemo } from 'react'
 
 const NewNoticationsCount = () => {
@@ -7,13 +8,15 @@ const NewNoticationsCount = () => {
   const newNotifications = useMemo(() => notifications?.filter((notification) => notification?.seen === false), [notifications])
 
   return (
-    <div
-      className={`flex items-center justify-center rounded-lg bg-destructive h-6 p-2 lg:p-4 ${
-        newNotifications?.length === 0 && "hidden"
-      }`}
+    <Chip
+      color='danger'
+      classNames={{
+        base: `${newNotifications?.length === 0 && "hidden"}`,
+        content: "text-xs font-bold text-white",
+      }}
     >
-      <p className="text-xs font-bold text-white">{newNotifications?.length}</p>
-    </div>
+      {newNotifications?.length}
+    </Chip>
   );
 }
 

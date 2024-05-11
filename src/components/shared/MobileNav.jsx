@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { Separator } from '../ui/separator';
 import { Tab, Tabs } from '@nextui-org/react';
 import { usePathname, useRouter } from 'next/navigation';
+import NavList from './NavList';
 
 const mobileNav = [
   {
@@ -41,30 +42,11 @@ const mobileNav = [
 ];
 
 const MobileNav = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [selected, setSelected] = useState(() => returnBasePathname());
   const [open, setOpen] = useState(false)
   const { data: session } = useSession()
   const user = session?.user
 
-  function returnBasePathname() {
-    if (pathname === "/") return "/";
-    return pathname;
-  }
-
-  const handleSelect = (value) => {
-    if (value !== mobileNav[0].route) router.push(value);
-    setSelected(value);
-  };
-
-  const isActive = (link) => {
-    // if (link === "/") return pathname === link;
-    // return pathname.startsWith(link);
-    return selected === link;
-  };
-
-  const handleClose = () => setOpen(false)
+  const handleClose = () => setOpen(false);
   return (
     <div className="md:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
@@ -110,44 +92,18 @@ const MobileNav = () => {
           </SheetHeader>
           <Separator />
           <SheetFooter className="flex justify-between gap-4">
-            <Tabs
-              selectedKey={selected}
-              onSelectionChange={handleSelect}
+            <NavList
+              links={mobileNav}
               isVertical
-              fullWidth
               size="lg"
-              color="secondary"
-              aria-label="Side Bar"
+              aria-label="Mobile Bar"
+              callback={handleClose}
               classNames={{
                 tabList: "w-full gap-4 bg-background",
                 tab: "w-full h-fit hover:bg-accent justify-start p-3",
-                tabContent: "group-data-[selected=true]:font-semibold",
+                tabContent: "w-full group-data-[selected=true]:font-semibold",
               }}
-            >
-              {mobileNav.map((link, index) => (
-                <Tab
-                  key={link.route}
-                  className={`${index === 0 && "hidden"}`}
-                  title={
-                    <div className="flex items-center gap-1">
-                      <div className="flex items-center gap-4">
-                        <Image
-                          src={link.imageUrl}
-                          alt={link.label}
-                          width={25}
-                          height={25}
-                          className={`group-hover:invert group-hover:brightness-0 ${
-                            isActive(link.route) && "invert brightness-0"
-                          }`}
-                        />
-                        <p className="group-hover:text-white">{link.label}</p>
-                      </div>
-                      <div></div>
-                    </div>
-                  }
-                />
-              ))}
-            </Tabs>
+            />
             <div className="flex flex-col gap-4 mt-52">
               <DarkModeToggler callback={handleClose} />
               <LogoutButton
