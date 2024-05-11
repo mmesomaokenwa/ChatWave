@@ -34,7 +34,7 @@ module.exports = {
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
