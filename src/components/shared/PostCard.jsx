@@ -1,12 +1,4 @@
 import React from 'react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { getServerSession } from 'next-auth';
 import { formatDateString, timePast } from '@/lib/utils';
 import Image from 'next/image';
@@ -17,29 +9,43 @@ import { PostCaptionAndTags } from './PostFooter';
 import PostTopControls from './PostTopControls';
 import PostControls from './PostControls';
 import PostCardWrapper from './PostCardWrapper';
+import { Card, CardBody, CardFooter, CardHeader, User } from '@nextui-org/react';
 
 const PostCard = async ({ post }) => {
   const session = await getServerSession(authOptions);
   const user = session?.user
 
   return (
-    <Card className="border-x-0 md:border-2">
+    <Card radius='lg'>
       <PostCardWrapper postId={post._id}>
-        <CardHeader className="flex-row gap-4 p-4">
-          <PostProfileImage post={post} />
-          <div>
-            <PostTitle post={post} />
-            <PostDescription post={post} />
-          </div>
-          {user?.id === post.creator._id.toString() && (
-            <PostTopControls post={post} />
-          )}
-        </CardHeader>
+      <CardHeader className="flex-row gap-4 p-2 lg:p-4">
+        <User
+          avatarProps={{
+            src:
+              post?.creator?.profileImage || "/assets/profile-placeholder.svg",
+            size: "md",
+          }}
+          name={post?.creator?.name}
+          description={
+            <>
+              <span>{timePast(post.createdAt)}</span>
+              {post.location && <span className='mx-1'>&#x2022;</span>}
+              {post.location && <span>{post.location}</span>}
+            </>
+          }
+          classNames={{
+            name: "font-medium"
+          }}
+        />
+        {user?.id === post.creator._id.toString() && (
+          <PostTopControls post={post} />
+        )}
+      </CardHeader>
       </PostCardWrapper>
-      <CardContent className="px-4 flex flex-col gap-3">
+      <CardBody className="px-2 lg:px-4 flex flex-col gap-1">
         <PostCaptionAndTags post={post} />
-        <CardCarousel postMedia={post.media} />
-      </CardContent>
+        <CardCarousel postMedia={post.media} radius={'lg'} />
+      </CardBody>
       <CardFooter className="p-4 pt-0">
         <PostControls post={post} />
       </CardFooter>

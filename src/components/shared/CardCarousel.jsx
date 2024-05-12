@@ -1,15 +1,18 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from 'next/image'
+import { Card, CardBody } from '@nextui-org/react';
+import { cn } from '@/lib/utils';
 
-const CardCarousel = ({ postMedia, className}) => {
+const CardCarousel = ({ postMedia, className, size, radius}) => {
   const [api, setApi] = useState()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -30,24 +33,26 @@ const CardCarousel = ({ postMedia, className}) => {
     <div className="relative">
       <Carousel
         setApi={setApi}
-        className={`w-full h-72 lg:h-[300px] rounded-xl overflow-hidden ${className}`}
+        className={cn(
+          `w-full h-72 lg:h-[300px] rounded-xl overflow-hidden ${radius === 'none' && 'rounded-none'} ${className} ${size}`
+        )}
       >
         <CarouselContent>
           {postMedia?.map((media, index) => (
             <CarouselItem key={index}>
-              <Card className="rounded-xl">
-                <CardContent className="flex aspect-square items-center justify-center p-0">
+              <Card radius={radius}>
+                <CardBody className="flex items-center justify-center p-0 overflow-visible aspect-auto">
                   {media.type.includes("image") ? (
                     <Image
                       src={media.url || URL.createObjectURL(media)}
                       alt={media.url}
-                      className="w-full h-full object-cover"
+                      className={cn(`w-full h-full object-cover ${size}`)}
                       width={500}
                       height={500}
                     />
                   ) : (
                     <video
-                      className="w-full h-full object-cover"
+                      className={cn(`w-full h-full object-cover ${size}`)}
                       autoPlay
                       loop
                       playsInline
@@ -55,11 +60,13 @@ const CardCarousel = ({ postMedia, className}) => {
                       <source src={media.url || URL.createObjectURL(media)} />
                     </video>
                   )}
-                </CardContent>
+                </CardBody>
               </Card>
             </CarouselItem>
           ))}
         </CarouselContent>
+        <CarouselPrevious className="absolute left-4 z-10 invisible lg:visible" />
+        <CarouselNext className="absolute right-4 z-10 invisible lg:visible" />
       </Carousel>
       <div className="flex justify-center gap-2 absolute top-[90%] right-0 left-0 z-10">
         {count > 1 &&

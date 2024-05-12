@@ -1,27 +1,20 @@
 import React from 'react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import Image from 'next/image';
 import Link from 'next/link';
+import { Button, Card, CardBody, CardFooter } from '@nextui-org/react';
 
-const PostPreviewCard = ({ post }) => {
+const PostPreviewCard = ({ post, showControls }) => {
   return (
-    <Link href={`/posts/${post._id}`}>
-      <Card className="overflow-hidden rounded-2xl h-[200px]">
-        <CardContent className="p-0 relative">
+    <Card isFooterBlurred className="overflow-hidden rounded-2xl h-[200px]">
+      <Link href={`/posts/${post._id}`}>
+        <div className="p-0 relative">
           {post?.media[0]?.type === "image" ? (
             <Image
               src={post.media[0].url}
               alt={post.media[0].url}
               width={500}
               height={500}
-              className='h-[200px] object-cover'
+              className="h-[200px] object-cover"
             />
           ) : (
             <video
@@ -43,9 +36,23 @@ const PostPreviewCard = ({ post }) => {
               className="absolute top-3 right-3"
             />
           )}
-        </CardContent>
-      </Card>
-    </Link>
+        </div>
+      </Link>
+      {showControls && (
+        <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+          <p className="text-tiny text-white/80">Available soon.</p>
+          <Button
+            className="text-tiny text-white bg-black/20"
+            variant="flat"
+            color="default"
+            radius="lg"
+            size="sm"
+          >
+            Notify me
+          </Button>
+        </CardFooter>
+      )}
+    </Card>
   );
 }
 

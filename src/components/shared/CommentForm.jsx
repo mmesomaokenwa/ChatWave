@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { commentPost } from '@/lib/mongodb/actions/post.actions';
 import Loader from './Loader';
 import { useSocket } from '@/providers/SocketProvider';
-import { Input } from '@nextui-org/react';
+import { Avatar, Input } from '@nextui-org/react';
 
 const CommentForm = ({ setComments, user, post, className }) => {
   const form = useForm({
@@ -59,12 +59,11 @@ const CommentForm = ({ setComments, user, post, className }) => {
         size="lg"
         radius="full"
         startContent={
-          <Image
+          <Avatar
             src={user?.profileImage || "/assets/profile-placeholder.svg"}
             alt="comment"
-            width={35}
-            height={35}
-            className="rounded-full -ml-2"
+            size="sm"
+            className='h-8 w-10 -ml-2'
           />
         }
         endContent={

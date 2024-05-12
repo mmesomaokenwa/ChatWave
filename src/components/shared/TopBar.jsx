@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import MobileNav from './MobileNav'
 import { Separator } from "@/components/ui/separator"
+import { Avatar } from '@nextui-org/react'
 
 const TopBar = () => {
   const { data: session } = useSession();
@@ -27,14 +28,12 @@ const TopBar = () => {
         </Link>
         <div className="flex items-center gap-4">
           <Link href={`/profile/${user?.id}`}>
-            <Image
-              className="size-8 rounded-full"
+            <Avatar
               src={
                 user?.profileImage || "/assets/profile-placeholder.svg"
               }
               alt="profile"
-              height={32}
-              width={32}
+              className='w-8 h-8'
             />
           </Link>
           <MobileNav />

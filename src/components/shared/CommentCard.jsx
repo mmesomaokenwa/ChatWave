@@ -6,7 +6,7 @@ import { Card, CardBody, CardFooter, CardHeader, User } from '@nextui-org/react'
 const CommentCard = ({ comment }) => {
   const formattedText = formatText(comment?.comment);
   return (
-    <Card className="border-0">
+    <Card className="overflow-visible">
       <Link href={`/profile/${comment?.user?._id}`}>
         <CardHeader className="flex-row items-start gap-4 p-4 space-y-0">
           <User
@@ -32,7 +32,7 @@ const CommentCard = ({ comment }) => {
           />
         </CardHeader>
       </Link>
-      <CardBody className="-mt-10">
+      <CardBody className="-mt-10 overflow-visible">
         <div className="text-sm lg:text-[16px] ml-14">{formattedText}</div>
       </CardBody>
       {/* <CardFooter>

@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
-import { CardFooter } from '../ui/card';
 import { badgeVariants } from "@/components/ui/badge";
 import Link from 'next/link';
 import { cn, formatText } from '@/lib/utils';
 import PostControls from './PostControls';
+import { CardFooter } from '@nextui-org/react';
 
 const PostFooter = ({ post }) => {
   return (
@@ -26,7 +26,7 @@ export const PostCaptionAndTags = ({ post }) => {
       {post.caption && (
         <div
           className={cn(
-            `w-full text-sm lg:text-[16px] font-medium ${
+            `w-full text-sm lg:text-[16px] ${
               !show ? "line-clamp-3" : ""
             }`
           )}
@@ -46,7 +46,7 @@ export const PostCaptionAndTags = ({ post }) => {
               href={`/explore?query=${tag}&tab=tags`}
               className={cn(
                 badgeVariants({ variant: "secondary" }),
-                `border-0 p-[.6rem] dark:bg-light-dark dark:text-light ${
+                `border-0 p-[.6rem] font-normal dark:bg-light-dark dark:text-light ${
                   tag === "" && "hidden"
                 }`
               )}

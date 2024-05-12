@@ -10,7 +10,7 @@ const LikeCard = async ({ like }) => {
   const sessionUser = await getServerSession(authOptions).then(res => res?.user)
 
   return (
-    <Card className="w-full py-2">
+    <Card className="w-full py-2 overflow-visible">
       <CardHeader className="flex items-center justify-between w-full">
         <Link href={`/profile/${like?._id}`}>
           <User

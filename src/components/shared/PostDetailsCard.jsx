@@ -1,35 +1,49 @@
 import React from 'react'
 import CardCarousel from './CardCarousel'
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
-import { PostDescription, PostProfileImage, PostTitle } from './PostCard';
 import { PostCaptionAndTags } from './PostFooter';
 import PostTopControls from './PostTopControls';
 import PostControls from './PostControls';
 import ViewLikes from './ViewLikes';
 import ViewComments from './ViewComments';
+import { Card, CardBody, CardFooter, CardHeader, User } from '@nextui-org/react';
+import { formatDateString } from '@/lib/utils';
 
 const PostDetailsCard = ({ post, userId }) => {
   const isOwner = userId === post.creator._id.toString();
   return (
-    <div className="w-full flex flex-col h-min lg:flex-row">
+    <div className="w-full flex flex-col h-max lg:flex-row">
       <div className="w-full grow lg:w-1/2 hidden lg:flex">
-        <CardCarousel postMedia={post?.media} className={"grow"} />
+        <CardCarousel postMedia={post?.media} size={"lg:h-[350px]  w-full"} radius={'none'} className={'lg:rounded-l-xl'} />
       </div>
-      <Card className="w-full h-full lg:w-1/2 border-0">
-        <CardHeader className="flex-row gap-4 p-4">
-          <PostProfileImage post={post} />
-          <div>
-            <PostTitle post={post} />
-            <PostDescription post={post} isFullDate />
-          </div>
+      <Card className="w-full h-full lg:w-1/2 border-0 lg:rounded-none lg:rounded-r-xl">
+        <CardHeader className="flex-row gap-4 p-2 lg:p-4">
+          <User
+            avatarProps={{
+              src:
+                post?.creator?.profileImage ||
+                "/assets/profile-placeholder.svg",
+              size: "md",
+            }}
+            name={post?.creator?.name}
+            description={
+              <>
+                <span>{formatDateString(post.createdAt)}</span>
+                {post.location && <span className="mx-1">&#x2022;</span>}
+                {post.location && <span>{post.location}</span>}
+              </>
+            }
+            classNames={{
+              name: "font-medium",
+            }}
+          />
           {isOwner && <PostTopControls post={post} addDeleteBtn />}
         </CardHeader>
-        <div className="px-4 flex flex-col gap-3">
+        <div className="px-2 lg:px-4 flex flex-col gap-1">
           <PostCaptionAndTags post={post} />
         </div>
-        <CardContent className="px-4 mt-3 lg:hidden">
+        <CardBody className="px-2 mt-0 lg:hidden">
           <CardCarousel postMedia={post.media} />
-        </CardContent>
+        </CardBody>
         <CardFooter className="p-4 pt-0">
           <PostControls post={post} />
         </CardFooter>

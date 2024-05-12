@@ -16,7 +16,7 @@ const PostCardList = ({ title, posts, showFilter, className }) => {
           <p className="col-span-2 lg:col-span-3 text-center mt-4">No posts under this category</p>
         ) : (
           posts?.map((post, index) => (
-            <PostPreviewCard key={index} post={post} />
+            <PostPreviewCard key={index} post={post} showControls />
           ))
         )}
       </div>
