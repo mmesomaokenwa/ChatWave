@@ -13,7 +13,7 @@ const RootLayout = async ({ children }) => {
     redirect("/sign-in");
   }
   return (
-    <div className="w-full h-screen md:flex overflow-y-auto">
+    <div className="w-full h-[100svh] md:flex overflow-y-auto">
       <TopBar />
       <SideBar />
       <main className="flex flex-1 h-full">
