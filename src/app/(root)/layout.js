@@ -19,7 +19,7 @@ const RootLayout = async ({ children }) => {
       <main className="flex flex-1 h-full">
         {children}
       </main>
-      <BottomBar />
+      {/* <BottomBar /> */}
     </div>
   );
 }
