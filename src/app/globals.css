@@ -74,9 +74,11 @@
     body {
       @apply bg-background text-foreground;
     }
-    input {
-      @apply touch-manipulation
-    }
+  }
+
+  input, textarea, select {
+    zoom: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .no-scrollbar::-webkit-scrollbar {
