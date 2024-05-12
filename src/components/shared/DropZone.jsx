@@ -47,7 +47,7 @@ const DropZone = ({ setValue, valueName, post, error }) => {
       <input {...getInputProps()} className="cursor-pointer" />
       {postMedia?.length > 0 ? (
         <>
-          <CardCarousel postMedia={postMedia} className="h-80 lg:h-[612px]" />
+          <CardCarousel postMedia={postMedia} size="h-80 lg:h-[400px]" ratio={'aspect-video'} />
           <p className="text-gray text-sm mb-2">
             Click to change or drag and drop
           </p>

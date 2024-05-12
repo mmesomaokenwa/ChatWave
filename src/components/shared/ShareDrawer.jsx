@@ -31,9 +31,10 @@ import { useSocket } from '@/providers/SocketProvider';
 import DirectMessageDrawer from './DirectMessageDrawer';
 import { User } from '@nextui-org/react';
 
-const ShareDrawer = ({ shares, postId }) => {
+const ShareDrawer = ({ post }) => {
   const [open, setOpen] = useState(false)
   const [width, setWidth] = useState(0)
+  const [shares, setShares] = useState(post.shares);
   const { toast } = useToast()
   const { data: session } = useSession()
   const userId = session?.user?.id
@@ -134,7 +135,7 @@ const ShareDrawer = ({ shares, postId }) => {
       <DrawerTrigger className="flex items-center">
         <Image src="/assets/share.svg" alt="share" width={23} height={23} />
         {shares.length > 0 && (
-          <p className="text-sm font-medium -ml-2">
+          <p className="text-sm ml-2">
             {formatNumber(shares.length)}
           </p>
         )}
@@ -200,7 +201,7 @@ const ShareDrawer = ({ shares, postId }) => {
       <AlertDialogTrigger className="flex items-center">
         <Image src="/assets/share.svg" alt="share" width={23} height={23} />
         {shares.length > 0 && (
-          <p className="text-sm font-medium -ml-2">
+          <p className="text-sm ml-2">
             {formatNumber(shares.length)}
           </p>
         )}

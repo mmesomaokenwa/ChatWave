@@ -1,7 +1,9 @@
 import React from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react';
+import { Button, Card, CardFooter } from '@nextui-org/react';
+import LikeButton from './LikeButton';
+import SaveButton from './SaveButton';
 
 const PostPreviewCard = ({ post, showControls }) => {
   return (
@@ -40,8 +42,8 @@ const PostPreviewCard = ({ post, showControls }) => {
       </Link>
       {showControls && (
         <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-          <p className="text-tiny text-white/80">Available soon.</p>
-          <Button
+          {/* <p className="text-tiny text-white/80">Available soon.</p> */}
+          {/* <Button
             className="text-tiny text-white bg-black/20"
             variant="flat"
             color="default"
@@ -49,7 +51,9 @@ const PostPreviewCard = ({ post, showControls }) => {
             size="sm"
           >
             Notify me
-          </Button>
+          </Button> */}
+          <LikeButton post={post} className={"bg-black/20 px-2 mr-auto"} />
+          <SaveButton post={post} className={"bg-black/20"} />
         </CardFooter>
       )}
     </Card>

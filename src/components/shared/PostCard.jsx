@@ -16,9 +16,9 @@ const PostCard = async ({ post }) => {
   const user = session?.user
 
   return (
-    <Card radius='lg'>
+    <Card className='rounded-none md:rounded-xl'>
       <PostCardWrapper postId={post._id}>
-      <CardHeader className="flex-row gap-4 p-2 lg:p-4">
+      <CardHeader className="flex-row gap-4 px-4 lg:p-4">
         <User
           avatarProps={{
             src:
@@ -42,9 +42,9 @@ const PostCard = async ({ post }) => {
         )}
       </CardHeader>
       </PostCardWrapper>
-      <CardBody className="px-2 lg:px-4 flex flex-col gap-1">
+      <CardBody className="px-4 flex flex-col gap-1">
         <PostCaptionAndTags post={post} />
-        <CardCarousel postMedia={post.media} radius={'lg'} />
+        <CardCarousel postMedia={post.media} radius={'lg'} size={'max-h-[300px]'} />
       </CardBody>
       <CardFooter className="p-4 pt-0">
         <PostControls post={post} />

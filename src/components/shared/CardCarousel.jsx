@@ -12,7 +12,7 @@ import Image from 'next/image'
 import { Card, CardBody } from '@nextui-org/react';
 import { cn } from '@/lib/utils';
 
-const CardCarousel = ({ postMedia, className, size, radius}) => {
+const CardCarousel = ({ postMedia, className, size, radius, ratio}) => {
   const [api, setApi] = useState()
   const [current, setCurrent] = useState(0)
   const [count, setCount] = useState(0)
@@ -34,14 +34,20 @@ const CardCarousel = ({ postMedia, className, size, radius}) => {
       <Carousel
         setApi={setApi}
         className={cn(
-          `w-full h-72 lg:h-[300px] rounded-xl overflow-hidden ${radius === 'none' && 'rounded-none'} ${className} ${size}`
+          `w-full h-fit rounded-xl overflow-hidden ${
+            radius === "none" && "rounded-none"
+          } ${className} ${size}`
         )}
       >
         <CarouselContent>
           {postMedia?.map((media, index) => (
             <CarouselItem key={index}>
               <Card radius={radius}>
-                <CardBody className="flex items-center justify-center p-0 overflow-visible aspect-auto">
+                <CardBody
+                  className={cn(
+                    `flex items-center justify-center p-0 overflow-visible aspect-auto ${ratio}`
+                  )}
+                >
                   {media.type.includes("image") ? (
                     <Image
                       src={media.url || URL.createObjectURL(media)}

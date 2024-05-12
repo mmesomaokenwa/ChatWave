@@ -44,9 +44,7 @@ export const PostCaptionAndTags = ({ post }) => {
             <Link
               key={index}
               href={`/explore?query=${tag}&tab=tags`}
-              className={cn(
-                badgeVariants({ variant: "secondary" }),
-                `border-0 p-[.6rem] font-normal dark:bg-light-dark dark:text-light ${
+              className={cn(`text-tiny ${
                   tag === "" && "hidden"
                 }`
               )}
