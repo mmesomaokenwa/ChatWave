@@ -74,6 +74,9 @@
     body {
       @apply bg-background text-foreground;
     }
+    input {
+      @apply touch-manipulation
+    }
   }
 
   .no-scrollbar::-webkit-scrollbar {
