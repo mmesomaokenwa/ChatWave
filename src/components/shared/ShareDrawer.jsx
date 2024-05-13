@@ -54,7 +54,7 @@ const ShareDrawer = ({ post }) => {
   }, [])
 
   const copyLink = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/posts/${postId}`)
+    navigator.clipboard.writeText(`${window.location.origin}/posts/${post?._id}`)
 
     setOpen(false)
 
@@ -70,7 +70,7 @@ const ShareDrawer = ({ post }) => {
     try {
       setOpen(false)
 
-      const postLink = `${window.location.origin}/posts/${postId}`;
+      const postLink = `${window.location.origin}/posts/${post?._id}`;
 
       if (navigator.share) {
         // Open the native share panel
@@ -104,7 +104,7 @@ const ShareDrawer = ({ post }) => {
       req: {
         sender: userId,
         receiver,
-        message: `${window.location.origin}/posts/${postId}`,
+        message: `${window.location.origin}/posts/${post?._id}`,
       },
       path: `/chat/${receiver}`,
     })

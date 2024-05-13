@@ -3,7 +3,7 @@ import NavList from './NavList';
 
 const BottomBar = () => {
   return (
-    <nav className="z-50 w-full fixed bottom-0 rounded-t-[20px] px-4 py-1 md:hidden">
+    <nav className="z-50 w-full rounded-t-[20px] px-4 py-1 md:hidden">
       <NavList
         links={bottombarLinks}
         aria-label="Bottom Bar"

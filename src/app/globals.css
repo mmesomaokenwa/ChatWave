@@ -77,7 +77,7 @@
   }
 
   input, textarea, select {
-    zoom: none;
+    zoom: none !important;
     -webkit-tap-highlight-color: transparent;
   }
 

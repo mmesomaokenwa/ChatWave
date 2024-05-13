@@ -15,7 +15,7 @@ const ChatRoomInfo = ({ chatRoom }) => {
   const showOnline = isOnline && !isTyping
   const showTyping = isOnline && isTyping
   return (
-    <div className="sticky top-16 md:top-0 max-w-5xl w-full flex items-center justify-between gap-3 py-3 bg-background border-b z-10">
+    <div className="sticky top-0 md:top-0 max-w-5xl w-full flex items-center justify-between gap-3 py-3 bg-background border-b z-10">
       <Link
         href={`/profile/${chatRoom._id}`}
         className="flex items-center gap-3"

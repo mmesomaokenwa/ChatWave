@@ -12,7 +12,7 @@ const Profile = async ({ params: { userId } }) => {
   ])
   return (
     <div className="flex flex-1">
-      <div className="flex flex-col flex-1 items-center gap overflow-y-scroll custom-scrollbar py-24 px-5 md:px-8 lg:p-14 relative">
+      <div className="flex flex-col flex-1 items-center gap overflow-y-scroll custom-scrollbar py-4 px-5 md:px-8 lg:p-14 relative">
         <ProfileCard user={user} sessionUser={sessionUser} />
         <ProfileTabs user={user} />
       </div>

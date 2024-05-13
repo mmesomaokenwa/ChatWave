@@ -8,7 +8,7 @@ const UpdatePost = async ({ params: { postId } }) => {
   const post = await postPromise
   return (
     <main className="flex flex-1">
-      <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll custom-scrollbar py-24 px-5 md:px-8 lg:p-14">
+      <div className="flex flex-col flex-1 items-center gap-10 overflow-y-scroll custom-scrollbar py-4 px-5 md:px-8 lg:p-14">
         <div className="max-w-5xl w-full flex justify-start gap-3">
           <Image
             src="/assets/add-post.svg"

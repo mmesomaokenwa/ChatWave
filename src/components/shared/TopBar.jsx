@@ -12,7 +12,7 @@ const TopBar = () => {
   const { data: session } = useSession();
   const user = session?.user;
   return (
-    <header className="fixed top-0 z-50 md:hidden w-full bg-background">
+    <header className="z-50 md:hidden w-full bg-background">
       <div className="flex justify-between items-center p-5">
         <Link
           href="/"

@@ -9,7 +9,7 @@ export default async function Home() {
   return (
     <div className="flex flex-1">
       <div
-        className={`flex flex-col flex-1 items-center gap-10 overflow-y-scroll overflow-x-hidden py-24 px-0 md:px-8 lg:p-14 custom-scrollbar`}
+        className={`flex flex-col flex-1 items-center gap-10 overflow-y-scroll overflow-x-hidden py-4 px-0 md:px-8 lg:p-14 custom-scrollbar`}
       >
         <div className="max-w-screen-sm flex flex-col items-center w-full gap-6 md:gap-9">
           <h2 className="text-3xl md:text-2xl font-bold text-left w-full ml-4">

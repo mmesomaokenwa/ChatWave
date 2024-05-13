@@ -27,7 +27,7 @@ const ChatLayoutWrapper = ({ chatRooms, chatRoom }) => {
   return (
     <main className="flex flex-1">
       <div
-        className={`flex flex-col flex-1 items-center gap-8 overflow-y-scroll py-24 px-5 md:px-8 lg:p-14 w-full lg:w-[200px] custom-scrollbar ${
+        className={`flex flex-col flex-1 items-center gap-8 overflow-y-scroll py-4 px-5 md:px-8 lg:p-14 w-full lg:w-[200px] custom-scrollbar ${
           isNotLaptop && !isActive && "hidden"
         }`}
       >
