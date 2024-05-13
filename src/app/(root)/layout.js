@@ -13,10 +13,10 @@ const RootLayout = async ({ children }) => {
     redirect("/sign-in");
   }
   return (
-    <div className="w-full h-screen flex flex-col md:flex-row relative">
+    <div className="w-full h-[100svh] flex flex-col md:flex-row relative">
       <TopBar />
       <SideBar />
-      <main className="flex flex-1 h-[calc(100vh_-_10rem)] md:h-full">
+      <main className="flex flex-1 h-[calc(100svh_-_10rem)] md:h-full">
         {children}
       </main>
       <BottomBar />
