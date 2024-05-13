@@ -63,7 +63,7 @@ const CommentForm = ({ setComments, user, post, className }) => {
             src={user?.profileImage || "/assets/profile-placeholder.svg"}
             alt="comment"
             size="sm"
-            className='h-8 w-10 -ml-2'
+            className="h-8 w-10 -ml-2"
           />
         }
         endContent={
@@ -89,6 +89,12 @@ const CommentForm = ({ setComments, user, post, className }) => {
         {...register}
         isInvalid={form.formState.errors.comment}
         color={form.formState.errors.comment ? "danger" : "default"}
+        classNames={{
+          input: "bg-transparent text-sm",
+          inputWrapper:
+            "bg-default-200/50 dark:bg-default/30 hover:bg-default-200/70 dark:hover:bg-default/50 group-data-[focus=true]:bg-default-200/70 dark:group-data-[focus=true]:bg-default/50",
+          innerWrapper: "bg-transparent",
+        }}
       />
     </form>
   );

@@ -143,6 +143,12 @@ export default function UserAuthForm({ className, mode }) {
               isInvalid={form.formState.errors.name}
               errorMessage={form.formState.errors.name?.message}
               color={form.formState.errors.name ? "danger" : "default"}
+              classNames={{
+                input: "bg-transparent",
+                inputWrapper:
+                  "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+                innerWrapper: "bg-transparent",
+              }}
             />
             <Input
               type={"text"}
@@ -153,6 +159,12 @@ export default function UserAuthForm({ className, mode }) {
               isInvalid={form.formState.errors.username}
               errorMessage={form.formState.errors.username?.message}
               color={form.formState.errors.username ? "danger" : "default"}
+              classNames={{
+                input: "bg-transparent",
+                inputWrapper:
+                  "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+                innerWrapper: "bg-transparent",
+              }}
             />
           </>
         )}
@@ -165,6 +177,12 @@ export default function UserAuthForm({ className, mode }) {
           isInvalid={form.formState.errors.email}
           errorMessage={form.formState.errors.email?.message}
           color={form.formState.errors.email ? "danger" : "default"}
+          classNames={{
+            input: "bg-transparent",
+            inputWrapper:
+              "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+            innerWrapper: "bg-transparent",
+          }}
         />
         <Input
           type={"password"}
@@ -175,6 +193,12 @@ export default function UserAuthForm({ className, mode }) {
           isInvalid={form.formState.errors.password}
           errorMessage={form.formState.errors.password?.message}
           color={form.formState.errors.password ? "danger" : "default"}
+          classNames={{
+            input: "bg-transparent",
+            inputWrapper:
+              "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+            innerWrapper: "bg-transparent",
+          }}
         />
         {mode === "signup" && (
           <Input
@@ -186,6 +210,12 @@ export default function UserAuthForm({ className, mode }) {
             isInvalid={form.formState.errors.confirmPassword}
             errorMessage={form.formState.errors.confirmPassword?.message}
             color={form.formState.errors.confirmPassword ? "danger" : "default"}
+            classNames={{
+              input: "bg-transparent",
+              inputWrapper:
+                "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+              innerWrapper: "bg-transparent",
+            }}
           />
         )}
         <Button

@@ -27,7 +27,6 @@ const PostControls = ({ post }) => {
   
   return (
     <div ref={ref} className="w-full flex flex-col gap-2">
-      {/* <Separator /> */}
       <div className="w-full flex items-center justify-between gap-6">
         <LikeButton post={post} />
         <div className="flex items-center">
@@ -46,7 +45,6 @@ const PostControls = ({ post }) => {
         <ShareDrawer post={post} />
         <SaveButton post={post} />
       </div>
-      <Separator />
       <CommentForm
         setComments={setComments}
         user={user}

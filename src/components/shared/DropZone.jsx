@@ -37,7 +37,7 @@ const DropZone = ({ setValue, valueName, post, error }) => {
     <div
       {...getRootProps()}
       className={cn(
-        `flex flex-col items-center justify-center bg-default-100 hover:bg-default transition rounded-lg ${
+        `flex flex-col items-center justify-center bg-default/40 hover:bg-default/50 transition rounded-lg ${
           error && "bg-danger-50 hover:bg-danger-100"
         } ${isDragActive && "ring-2 ring-accent"} ${
           isDragReject && "ring-2 ring-red-500"
@@ -64,7 +64,7 @@ const DropZone = ({ setValue, valueName, post, error }) => {
           <p className="text-gray">or</p>
           <p
             role="button"
-            className="btn btn-ghost bg-gray dark:bg-dark-2 text-accent hover:bg-light-dark transition"
+            className="btn btn-ghost text-accent hover:bg-light-dark transition"
           >
             Browse files
           </p>

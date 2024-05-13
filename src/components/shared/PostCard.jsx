@@ -16,7 +16,7 @@ const PostCard = async ({ post }) => {
   const user = session?.user
 
   return (
-    <Card className="rounded-none md:rounded-xl">
+    <Card className="rounded-none md:rounded-3xl bg-card border border-divider">
       <PostCardWrapper postId={post._id}>
         <CardHeader className="flex-row gap-4 px-4 lg:p-4">
           <Link href={`/profile/${post.creator._id}`}>

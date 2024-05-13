@@ -16,7 +16,7 @@ const PostDetailsCard = ({ post, userId }) => {
       <div className="w-full grow lg:w-1/2 hidden lg:flex">
         <CardCarousel postMedia={post?.media} size={"lg:h-[350px]  w-full"} radius={'none'} className={'lg:rounded-l-xl'} />
       </div>
-      <Card className="w-full h-full lg:w-1/2 border-0 rounded-none lg:rounded-r-xl">
+      <Card className="w-full h-full lg:w-1/2 border-0 lg:border border-divider rounded-none lg:rounded-r-xl bg-card">
         <CardHeader className="flex-row gap-4 px-4 lg:p-4">
           <User
             avatarProps={{

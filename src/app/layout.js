@@ -32,7 +32,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={poppins.className} style={{overflow: 'auto'}}>
+      <body className={poppins.className}>
         <UIProvider>
           <AuthProvider>
             <SocketProvider>

@@ -151,6 +151,12 @@ const ProfileForm = ({ user }) => {
         isInvalid={form.formState.errors.name}
         errorMessage={form.formState.errors.name?.message}
         color={form.formState.errors.name ? "danger" : "default"}
+        classNames={{
+          input: "bg-transparent",
+          inputWrapper:
+            "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+          innerWrapper: "bg-transparent",
+        }}
       />
       <Input
         label="Username"
@@ -159,6 +165,12 @@ const ProfileForm = ({ user }) => {
         isInvalid={form.formState.errors?.username}
         errorMessage={form.formState.errors.username?.message}
         color={form.formState.errors.username ? "danger" : "default"}
+        classNames={{
+          input: "bg-transparent",
+          inputWrapper:
+            "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+          innerWrapper: "bg-transparent",
+        }}
       />
       <Input
         label="Email"
@@ -167,6 +179,12 @@ const ProfileForm = ({ user }) => {
         isInvalid={form.formState.errors?.email}
         errorMessage={form.formState.errors?.email?.message}
         color={form.formState.errors.email ? "danger" : "default"}
+        classNames={{
+          input: "bg-transparent",
+          inputWrapper:
+            "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+          innerWrapper: "bg-transparent",
+        }}
       />
       <Textarea
         label="Bio"
@@ -176,6 +194,12 @@ const ProfileForm = ({ user }) => {
         isInvalid={form.formState.errors?.bio}
         errorMessage={form.formState.errors?.bio?.message}
         color={form.formState.errors.bio ? "danger" : "default"}
+        classNames={{
+          input: "bg-transparent",
+          inputWrapper:
+            "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+          innerWrapper: "bg-transparent",
+        }}
       />
       <div className="w-full flex justify-end gap-2">
         <Button type="button" variant="destructive">

@@ -46,12 +46,24 @@ const Search = () => {
     <Input
       type={"text"}
       placeholder={"Search"}
-      size=''
-      startContent={<Image src={"/assets/search.svg"} alt={"search"} width={20} height={20} />}
+      startContent={
+        <Image
+          src={"/assets/search.svg"}
+          alt={"search"}
+          width={20}
+          height={20}
+        />
+      }
       value={query}
       onChange={(e) => setQuery(e.target.value)}
       onClear={() => setQuery("")}
       isClearable
+      classNames={{
+        input: "bg-transparent",
+        inputWrapper:
+          "dark:bg-default/40 dark:hover:bg-default/50 dark:group-data-[focus=true]:bg-default/50",
+        innerWrapper: "bg-transparent",
+      }}
     />
   );
 }

@@ -37,6 +37,12 @@ const SearchUsers = ({ setUsers }) => {
       onChange={(e) => setQuery(e.target.value)}
       onClear={() => setQuery("")}
       isClearable
+      classNames={{
+        input: "bg-transparent",
+        inputWrapper:
+          "dark:bg-default/40 dark:hover:bg-default/50 dark:group-data-[focus=true]:bg-default/50",
+        innerWrapper: "bg-transparent",
+      }}
     />
   );
 }

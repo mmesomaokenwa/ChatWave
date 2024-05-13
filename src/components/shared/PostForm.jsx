@@ -162,6 +162,12 @@ const PostForm = ({ post, action }) => {
         isInvalid={form.formState.errors.caption}
         errorMessage={form.formState.errors.caption?.message}
         color={form.formState.errors.caption ? "danger" : "default"}
+        classNames={{
+          input: "bg-transparent",
+          inputWrapper:
+            "dark:bg-default/40 dark:group-data-[invalid=true]:bg-danger/20 dark:hover:bg-default/50 dark:focus-within:bg-default/50 dark:group-data-[invalid=true]:hover:bg-danger/30",
+          innerWrapper: "bg-transparent",
+        }}
       />
       <div>
         <Label className={form.formState.errors.media && "text-red-500"}>
@@ -179,11 +185,27 @@ const PostForm = ({ post, action }) => {
           </p>
         )}
       </div>
-      <Input type={"text"} label="Location" {...register.location} />
+      <Input
+        type={"text"}
+        label="Location"
+        {...register.location}
+        classNames={{
+          input: "bg-transparent",
+          inputWrapper:
+            "dark:bg-default/40 dark:hover:bg-default/50 dark:group-data-[focus=true]:bg-default/50",
+          innerWrapper: "bg-transparent",
+        }}
+      />
       <Input
         type={"text"}
         label="Add Tags (separated by comma ' , ')"
         {...register.tags}
+        classNames={{
+          input: "bg-transparent",
+          inputWrapper:
+            "dark:bg-default/40 dark:hover:bg-default/50 dark:group-data-[focus=true]:bg-default/50",
+          innerWrapper: "bg-transparent",
+        }}
       />
       <div className="flex justify-end gap-4">
         <Button type="button" variant="destructive">
