@@ -48,7 +48,7 @@ const DirectMessageDrawer = ({ Link, setParentOpen }) => {
           <MessageCircle />
           Send as Direct Message
         </DrawerTrigger>
-        <DrawerContent className="!h-[95vh] px-4 !w-screen">
+        <DrawerContent className="!h-[90vh] px-4 !w-screen">
           <DrawerHeader>
             <DrawerTitle>Send To</DrawerTitle>
             <DrawerDescription>Select users to send to.</DrawerDescription>
